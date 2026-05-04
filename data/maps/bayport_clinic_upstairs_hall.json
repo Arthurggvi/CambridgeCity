@@ -1,0 +1,43 @@
+{
+  "id": "bayport_clinic_upstairs_hall",
+  "name": "边港诊所 · 二楼大厅",
+  "description": "灯光更冷，走廊两侧是诊室门与门牌编号，候诊区铁长椅贴墙排开。",
+  "descriptionByMinuteOfDay": [
+    { "start": 360, "end": 1079, "text": "你走上二楼，灯更亮，温度更低。走廊两侧是一排诊室门，门牌编号顺着墙排开。候诊区在转角，铁长椅贴墙，空气里是更浓的消毒水味。" },
+    { "start": 1080, "end": 1439, "text": "夜里二楼只留走廊灯，亮一段暗一段，光偏冷。诊室门大多关着，门牌在灯下反光，候诊区几乎没人。" },
+    { "start": 0, "end": 359, "text": "夜深后二楼更安静。灯只照到走廊的一半，门牌和分诊牌在冷光里泛白，只有远处偶尔传来推车轮声。" }
+  ],
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "bench_wait_2f",
+      "text": "候诊区长椅（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "clinic_door_blocked",
+      "text": "诊室（0:01，未安排不可入）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "stairs_down_1f",
+      "text": "下楼（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic", "minutes": 1 }
+    },
+    {
+      "id": "stairs_up_rooftop",
+      "text": "上天台（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_rooftop", "minutes": 1 }
+    }
+  ]
+}

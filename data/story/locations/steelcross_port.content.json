@@ -1,0 +1,790 @@
+{
+  "location_id": "steelcross_port",
+  "RuntimeText": {
+    "mapTextByMapId": {
+      "steelcross_port": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "站牌挨着港区外沿立着，脚下硬地被黑水、旧盐斑和靴底磨得发亮。护栏外的风贴着泊位边线掠过去，牌杆背风一侧还挂着一圈没化开的霜。",
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["low_sun", "polar_day"] },
+              "mode": "replace",
+              "text": "白光压在牌杆和护栏上，泊位边那截硬地把旧盐斑和浅水痕一起顶出来。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night", "whiteout"] },
+              "mode": "replace",
+              "text": "灯下，牌杆、护栏转角和泊位边那截硬地亮着，后面的吊臂是黑影，压在风里。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true, "lightPhase": ["low_sun", "polar_day"] },
+              "mode": "replace",
+              "text": "白光压在牌杆和护栏上，雪线贴着硬地一阵阵掠过去，旧盐斑和浅水痕很快又被薄白盖住。"
+            },
+            {
+              "when": { "isSnowing": true, "lightPhase": ["twilight", "polar_night", "whiteout"] },
+              "mode": "replace",
+              "text": "灯下，牌杆、护栏转角和泊位边那截硬地亮着，雪线在风里斜着扫过去，后面的吊臂是黑影，压在白里。"
+            }
+          ]
+        }
+      },
+      "steelcross_dock_placeholder": {
+        "sceneId": "steelcross_dock_main",
+        "description": {
+          "base": "钢梁和护栏把这截泊位压得又窄又硬，旧缆绳在边角磨出一圈发黑的痕。廊桥尽头空着，风里带着潮气、铁锈和一点散不掉的盐味。",
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["low_sun", "polar_day"] },
+              "text": "白与碎蓝有些刺眼。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night", "whiteout"] },
+              "text": "岸灯和桅灯在风里闪烁，你听见黑水反复推向岸的声音。"
+            }
+          ]
+        }
+      },
+      "steelcross_market_01": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你走进钢十字港集会的第一段通路，两侧的旧帆布和木箱沿着护栏压开了一道窄缝。风从水面斜斜掠过来，带着一点潮冷。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "箱盖都掀着，有人蹲在箱口前翻找。摊子还没全摆开，只有零星几个人站着说话。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "不少人停在摊位前，你依稀从上面辨认出几罐黄豆罐头。",
+                "几个人在一片空地大声争吵，可惜声音被风吹散了。",
+                "你经过了一个工具货摊时，有人瞟了你一眼。",
+                "有人捧着热壶靠在木桶旁，你感觉有些拥挤。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "人们正在收起地上的货物，有几个人正从岸边上船。"
+            }
+          }
+        }
+      },
+      "steelcross_market_02": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你沿着钢十字港集会继续往里走，脚边的旧帆布和箱角把路压得更窄，护栏外的水面反着冷光。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "这段摊布还在往外铺，几个人正把箱子从靠栏的一侧拖出来，嘴里压着很低的招呼声。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "这里站着的人更密一些，几只旧木桶被临时拿来垫货。",
+                "有人侧着身从你旁边挤过去，手里还拎着没封好的布袋。",
+                "一阵风掀起摊布边角，下面压着的旧铁件碰出几声闷响。",
+                "你看见几个人围在一起压低声音谈价，但一句完整的话也听不清。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "这一段已经有人开始把摊布卷回箱顶，留在地上的脚印和拖痕交叠在一起。"
+            }
+          }
+        }
+      },
+      "steelcross_market_03": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你站在集会中段，护栏旁压着的旧木箱和翻开的布面把人流切成了几股，脚下的雪壳被踩得发硬。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "有人正在把箱盖竖起来挡风，另一些人蹲着把散开的零碎重新聚到一处。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "你看见几只手同时伸向同一块摊布，最后又都慢慢缩了回去。",
+                "一侧的箱口里堆着看不清的旧物件，旁边有人一直没有离开。",
+                "路中间空出的那点位置不断有人停住又离开，像是一直有人在犹豫。",
+                "有人把热气腾腾的壶按在脚边，像是在借那点温度撑着不走。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "中段的说话声已经散了，大多数人正把还没收完的东西往箱口里塞。"
+            }
+          }
+        }
+      },
+      "steelcross_market_04": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你顺着集会的主通路再往前一段，脚印和箱轮印已经在雪壳上叠了几层，路边挂着被风吹硬的旧布条。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "这段的人还在忙着把货挪到顺手的位置，偶尔有人停下来朝港口那头看一眼。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "你从一堆旧箱之间穿过去时，听见有人用很快的语速报了两个数字。",
+                "有个人抱着胳膊站在风口边，不买也不走，像是在等谁。",
+                "摊布上压着的几块石头被碰得歪了一点，很快又有人伸手扶正。",
+                "两边的人声被风切碎以后，只剩下偶尔冒出来的一两个重音。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "有人把能提走的小件先收进袋里，空出来的布面一下显得冷清了很多。"
+            }
+          }
+        }
+      },
+      "steelcross_market_05": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你来到集会更深处的一段，堆着货的旧箱子把摊位和水边的风隔开了一层，空气里有股木头和潮气混在一起的味道。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "这里的摊布刚刚压稳，箱口边还有人弯着腰整理没摆好的东西。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "有人拎着半满的口袋从你身边经过，脚步很急，像是不想在这里停太久。",
+                "靠里侧的几个人围成了一个很小的圈子，谁也没有把声音放大。",
+                "你看见一块摊布上摆得很满，但真正伸手的人并不多。",
+                "有个人蹲在木桶边喝热水，另一只手还搭在脚边的包上。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "这里收摊收得更快，已经有几只箱盖重新扣上，只剩零散的人还在停留。"
+            }
+          }
+        }
+      },
+      "steelcross_market_06": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你走到靠近岸边的一段集会通路，风从护栏缝里灌进来，摊布边角一直在抖，水面那边的冷意更直接了。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "这一段刚把东西搬出来不久，几个人正用石块和绳头压住摊布边角。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "风一阵阵掠过时，靠栏那侧的人都会下意识把衣领往上提一点。",
+                "你听见箱子被拖动的摩擦声，然后又很快被人声盖了过去。",
+                "有人把脚边的包往里侧踢了踢，给路上让出一点更稳的站位。",
+                "这一段的人不算最密，但每个人停下来的时间都比前面更长。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "靠栏这一带的人正趁风再起前收紧布面，往返的人明显少了下来。"
+            }
+          }
+        }
+      },
+      "steelcross_market_07": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你来到集会最里侧，摊位和木桶已经贴近靠船的边沿，脚下的雪被踩成了发硬的灰白，最外侧还能听见岸边的水声。",
+          "scheduleVariants": {
+            "opening": {
+              "when": { "minuteOfDay": { "gte": 300, "lt": 360 } },
+              "text": "最里侧这几摊刚刚撑开，几个人正把压在最底下的东西一点点翻出来。"
+            },
+            "market": {
+              "when": { "minuteOfDay": { "gte": 360, "lt": 720 } },
+              "pool": [
+                "有人站在靠船那边朝集会里回望，像是在等一个还没走到这里的人。",
+                "你经过时，旁边那只木桶上正搁着半开的布包，没人急着把它合上。",
+                "最里侧的人流已经慢下来，更多是停住、看一眼，再各自散开。",
+                "岸边传来的冷风把这里的话声压得更低，谁也没有说得太久。"
+              ]
+            },
+            "closing": {
+              "when": { "minuteOfDay": { "gte": 720, "lt": 780 } },
+              "text": "最里侧已经开始散市，几个人拎着东西朝靠船那头走去，摊位之间空了不少。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_01_placeholder": {
+        "sceneId": "steelcross_market_stall_01_service",
+        "description": {
+          "base": "哈德坐在一张钓鱼凳上，周围的雪被粗暴地铲去一旁\n你依稀辨认出摊位上有几只你认识的银鱼"
+        }
+      },
+      "steelcross_market_stall_02_placeholder": {
+        "sceneId": "steelcross_market_stall_02_service",
+        "description": {
+          "base": "箱口边挤着杂货、罐头和零散补缺件，摆得很满，却仍留着几只手能翻找的缝。"
+        }
+      },
+      "steelcross_market_stall_03_placeholder": {
+        "sceneId": "steelcross_market_stall_03_service",
+        "description": {
+          "base": "风口边挂着几件收拾得还算像样的旧防寒件，补线、拉链和翻开的里层都摊在手边。"
+        }
+      },
+      "steelcross_market_stall_04_placeholder": {
+        "sceneId": "steelcross_market_stall_04_service",
+        "description": {
+          "base": "短绳、扣件和甲板边零碎平码在布上，每样东西都被压得结结实实。"
+        }
+      },
+      "steelcross_market_stall_05_placeholder": {
+        "sceneId": "steelcross_market_stall_05_service",
+        "description": {
+          "base": "暖箱边摆着几样能立刻下肚的热食，热气和香味都压得很近。"
+        }
+      },
+      "steelcross_market_stall_06_placeholder": {
+        "sceneId": "steelcross_market_stall_06_service",
+        "description": {
+          "base": "台面上平码着表格、手续单和登记册，纸边被风吹得不断轻响。"
+        }
+      },
+      "steelcross_market_stall_07_placeholder": {
+        "sceneId": "steelcross_market_stall_07_service",
+        "description": {
+          "base": "旧零件、修复件和电池盒平码在一处，金属边角上全是旧划痕。"
+        }
+      },
+      "steelcross_mutual_aid_placeholder": {
+        "sceneId": "steelcross_mutual_aid_main",
+        "description": {
+          "base": "门口压着卷绳、湿木箱和半截铁钩，门板边上全是手套蹭出来的暗亮。",
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["low_sun", "polar_day"] },
+              "text": "门缝发白，脚下那层硬雪被来回踩出发黑的冰壳。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night", "whiteout"] },
+              "text": "檐下小灯照着门把和半截台阶，风一过，门板就轻轻磕一下框。"
+            }
+          ]
+        }
+      },
+      "steelcross_port_theseus_docked": {
+        "sceneId": "steelcross_port_theseus_docked_main",
+        "description": {
+          "base": "忒修斯号贴着港边停着，深色船体把岸上的风切成两股，舷侧编号和护舷饱经海水磨砺。\n你听见船上的人们嘈杂。"
+        }
+      }
+    },
+    "actionTextByMapId": {
+      "steelcross_port": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "to_steelcross_dock_placeholder": {
+            "actionLabel": {
+              "base": "前往码头"
+            },
+            "actionFeedback": {
+              "base": "你沿着暂时开放的外沿通路走向码头占位段。"
+            }
+          },
+          "to_steelcross_market_01": {
+            "actionLabel": {
+              "base": "到港集会"
+            },
+            "actionFeedback": {
+              "base": "你顺着港口边的摊位缝隙走进集市主链的第一段。"
+            }
+          },
+          "to_steelcross_mutual_aid_placeholder": {
+            "actionLabel": {
+              "base": "前往互助堂"
+            },
+            "actionFeedback": {
+              "base": "你朝互助堂的门口走去。"
+            }
+          },
+          "theseus_luggage_shift": {
+            "actionLabel": {
+              "base": "杂务工作"
+            },
+            "actionFeedback": {
+              "base": "你在港口这边接下一轮临时杂务，准备去帮乘客提行李、搬箱包，再把挡路的杂物挪开。"
+            }
+          },
+          "open_steelcross_port_bus_choice": {
+            "actionLabel": {
+              "base": "等待接驳车"
+            },
+            "actionFeedback": {
+              "base": "你走到港口站牌边的等车点。"
+            }
+          },
+          "board_steelcross_port_to_industrial": {
+            "actionLabel": {
+              "base": "上车（往工业区方向）"
+            },
+            "actionFeedback": {
+              "base": "你朝工业区方向那侧车门靠过去。"
+            }
+          },
+          "board_steelcross_port_to_outpost": {
+            "actionLabel": {
+              "base": "上车（往前哨方向）"
+            },
+            "actionFeedback": {
+              "base": "你朝前哨方向那侧车门靠过去。"
+            }
+          },
+          "return_steelcross_port_from_bus_choice": {
+            "actionLabel": {
+              "base": "返回港口站牌"
+            },
+            "actionFeedback": {
+              "base": "你从等车位置退回站牌前。"
+            }
+          }
+        }
+      },
+      "steelcross_dock_placeholder": {
+        "sceneId": "steelcross_dock_main",
+        "actionTextByActionId": {
+          "steelcross_dock_to_theseus_view": {
+            "actionLabel": {
+              "base": "前往忒修斯号"
+            },
+            "actionFeedback": {
+              "base": "你沿着码头外沿靠近忒修斯号，把视线压到舷侧编号、护舷和缆绳最近的一段。"
+            }
+          },
+          "inspect_port_notice_board": {
+            "actionLabel": {
+              "base": "查看告示牌"
+            },
+            "actionFeedback": {
+              "serviceVariants": [
+                {
+                  "when": { "shippingState": "closure" },
+                  "mode": "replace",
+                  "text": "告示牌上的最后一条航运通知停在封海前。后面的日期全空着，只剩红笔写下的停航提醒和一串作废的靠泊编号；这个时节不会有船来。"
+                },
+                {
+                  "when": { "shippingState": "no_ship" },
+                  "mode": "replace",
+                  "text": "今天的告示牌没挂出新的靠泊安排。上一班船离开后，更新栏就一直空着，只留一张尚未撤掉的值班表；可能现在不是时候。"
+                },
+                {
+                  "when": { "shippingState": "ship_docked" },
+                  "mode": "replace",
+                  "text": "告示牌上已经换了新单子，靠泊时间、卸货窗口和登船限制都被重新钉了出来。有人用铅笔在边上补了一行船名，说明这一班已经到了。"
+                }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你查看了码头的告示牌。"
+              }
+            }
+          },
+          "steelcross_dock_return_port": {
+            "actionLabel": {
+              "base": "返回钢十字港口"
+            },
+            "actionFeedback": {
+              "base": "你沿原路退回钢十字港口。"
+            }
+          }
+        }
+      },
+      "steelcross_port_theseus_docked": {
+        "sceneId": "steelcross_port_theseus_docked_main",
+        "actionTextByActionId": {
+          "steelcross_port_theseus_docked_return_port": {
+            "actionLabel": {
+              "base": "返回码头"
+            },
+            "actionFeedback": {
+              "base": "你沿着岸边退回去，把那条紧绷的船影重新留在港口外缘。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你离开忒修斯号，回到了码头。"
+              }
+            }
+          }
+        }
+      },
+      "steelcross_market_01": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_01_forward": {
+            "actionLabel": {
+              "base": "向前探寻"
+            },
+            "actionFeedback": {
+              "base": "你沿着摊位之间压出来的窄路继续往集市深处走去。"
+            }
+          },
+          "steelcross_market_01_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你离开集市第一段，沿来路退回钢十字港口。"
+            }
+          },
+          "steelcross_market_01_enter_stall": {
+            "actionLabel": {
+              "base": "好食味"
+            },
+            "actionFeedback": {
+              "base": "你靠到好食味前，先看见暖箱边压着几样热食，热气都拢在摊口附近。"
+            }
+          }
+        }
+      },
+      "steelcross_market_02": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_02_forward": {
+            "actionLabel": {
+              "base": "向前探寻"
+            },
+            "actionFeedback": {
+              "base": "你继续顺着集市主通路往前走了一段。"
+            }
+          },
+          "steelcross_market_02_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你从集市第二段退回钢十字港口。"
+            }
+          },
+          "steelcross_market_02_enter_stall_intro": {
+            "actionLabel": {
+              "base": "捕鱼人哈德"
+            },
+            "actionFeedback": {
+              "base": "你走到捕鱼人哈德前，先看见他那张钓鱼凳和摊上平码着的几只银鱼。"
+            }
+          },
+          "steelcross_market_02_enter_stall": {
+            "actionLabel": {
+              "base": "捕鱼人哈德"
+            },
+            "actionFeedback": {
+              "base": "你走到捕鱼人哈德前，先看见他那张钓鱼凳和摊上平码着的几只银鱼。"
+            }
+          }
+        }
+      },
+      "steelcross_market_03": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_03_forward": {
+            "actionLabel": {
+              "base": "向前探寻"
+            },
+            "actionFeedback": {
+              "base": "你穿过中段的人流，继续往更里面走去。"
+            }
+          },
+          "steelcross_market_03_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你离开集市中段，退回钢十字港口。"
+            }
+          },
+          "steelcross_market_03_enter_stall": {
+            "actionLabel": {
+              "base": "新四杂货"
+            },
+            "actionFeedback": {
+              "base": "你靠近新四杂货的摊前，先看见杂货、补缺用的小件和几罐罐头挤在一起。"
+            }
+          }
+        }
+      },
+      "steelcross_market_04": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_04_forward": {
+            "actionLabel": {
+              "base": "向前探寻"
+            },
+            "actionFeedback": {
+              "base": "你沿着脚印叠起来的窄路继续往前探。"
+            }
+          },
+          "steelcross_market_04_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你从第四段折回，重新退回钢十字港口。"
+            }
+          },
+          "steelcross_market_04_enter_stall": {
+            "actionLabel": {
+              "base": "旧海补丁铺"
+            },
+            "actionFeedback": {
+              "base": "你走到旧海补丁铺前，先看见补缝、换拉链和翻开的旧防寒件边角。"
+            }
+          }
+        }
+      },
+      "steelcross_market_05": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_05_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你离开第五段，沿原路退回钢十字港口。"
+            }
+          },
+          "steelcross_market_05_enter_stall": {
+            "actionLabel": {
+              "base": "单证代办桌"
+            },
+            "actionFeedback": {
+              "base": "你走近单证代办桌，台面上压着表格、手续单、配额和登记册。"
+            }
+          }
+        }
+      },
+      "steelcross_market_06": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_06_forward": {
+            "actionLabel": {
+              "base": "向前探寻"
+            },
+            "actionFeedback": {
+              "base": "你顶着靠栏的风，又往集市更里面挪了一段。"
+            }
+          },
+          "steelcross_market_06_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你从靠岸这段离开，退回钢十字港口。"
+            }
+          },
+          "steelcross_market_06_enter_stall": {
+            "actionLabel": {
+              "base": "单证代办桌"
+            },
+            "actionFeedback": {
+              "base": "你走近单证代办桌，台面上压着表格、手续单、配额和登记册。"
+            }
+          }
+        }
+      },
+      "steelcross_market_07": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "steelcross_market_07_return_port": {
+            "actionLabel": {
+              "base": "返回港口"
+            },
+            "actionFeedback": {
+              "base": "你从集市最里侧退回钢十字港口。"
+            }
+          },
+          "steelcross_market_07_enter_stall": {
+            "actionLabel": {
+              "base": "修复件与电池"
+            },
+            "actionFeedback": {
+              "base": "你靠近修复件与电池这一摊，先看见旧零件、修复件和电池盒堆在一处。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_01_placeholder": {
+        "sceneId": "steelcross_market_stall_01_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_01_open_goods_panel": {
+            "actionLabel": {
+              "base": "查看货物"
+            }
+          },
+          "steelcross_market_stall_01_talk": {
+            "actionLabel": {
+              "base": "交谈"
+            }
+          },
+          "steelcross_market_stall_01_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开捕鱼人哈德这摊，退回集市第二段。"
+            }
+          },
+          "steelcross_market_stall_01_talk_nothing": {
+            "actionLabel": {
+              "base": "没什么"
+            }
+          },
+          "steelcross_market_stall_01_talk_only_fish_topic": {
+            "actionLabel": {
+              "base": "为什么这里只有你卖鱼？"
+            }
+          },
+          "steelcross_market_stall_01_talk_quota_topic": {
+            "actionLabel": {
+              "base": "我怎么获得配额"
+            }
+          },
+          "steelcross_market_stall_01_talk_only_fish_return": {
+            "actionLabel": {
+              "base": "返回"
+            }
+          },
+          "steelcross_market_stall_01_talk_quota_return": {
+            "actionLabel": {
+              "base": "返回"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_02_placeholder": {
+        "sceneId": "steelcross_market_stall_02_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_02_open_goods_panel": {
+            "actionLabel": {
+              "base": "查看货物"
+            }
+          },
+          "steelcross_market_stall_02_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开新四杂货这摊，退回集市第三段。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_03_placeholder": {
+        "sceneId": "steelcross_market_stall_03_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_03_open_goods_panel": {
+            "actionLabel": {
+              "base": "查看货物"
+            }
+          },
+          "steelcross_market_stall_03_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开旧海补丁铺这摊，退回集市第四段。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_04_placeholder": {
+        "sceneId": "steelcross_market_stall_04_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_04_open_goods_panel": {
+            "actionLabel": {
+              "base": "查看货物"
+            }
+          },
+          "steelcross_market_stall_04_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开绳具与甲板小件这摊，退回集市第四段。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_05_placeholder": {
+        "sceneId": "steelcross_market_stall_05_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_05_open_goods_panel": {
+            "actionLabel": {
+              "base": "查看货物"
+            }
+          },
+          "steelcross_market_stall_05_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开好食味这摊，退回集市第一段。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_06_placeholder": {
+        "sceneId": "steelcross_market_stall_06_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_06_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开单证代办桌这摊，退回集市第五段。"
+            }
+          }
+        }
+      },
+      "steelcross_market_stall_07_placeholder": {
+        "sceneId": "steelcross_market_stall_07_service",
+        "actionTextByActionId": {
+          "steelcross_market_stall_07_open_goods_panel": {
+            "actionLabel": {
+              "base": "查看货物"
+            }
+          },
+          "steelcross_market_stall_07_return_market": {
+            "actionLabel": {
+              "base": "返回集市"
+            },
+            "actionFeedback": {
+              "base": "你离开修复件与电池这摊，退回集市第七段。"
+            }
+          }
+        }
+      },
+      "steelcross_mutual_aid_placeholder": {
+        "sceneId": "steelcross_mutual_aid_main",
+        "actionTextByActionId": {
+          "steelcross_mutual_aid_return_port": {
+            "actionLabel": {
+              "base": "返回钢十字港口"
+            },
+            "actionFeedback": {
+              "base": "你从互助堂退回钢十字港口。"
+            }
+          }
+        }
+      }
+    }
+  }
+}

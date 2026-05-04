@@ -1,0 +1,57 @@
+{
+  "id": "steelcross_port_theseus_docked",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "tags": ["ship", "theseus"],
+  "name": "忒修斯号",
+  "description": "忒修斯号贴着港边停着，船身外侧和缆绳附近的那一小段视角现在能暂时靠近。",
+  "entrySceneId": "steelcross_port_theseus_docked_main",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "open",
+  "shelter": "none",
+  "environment": {
+    "exposureLevel": "Open"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "Open",
+    "windShelter": 0,
+    "heatSource": 0,
+    "drying": 0.08
+  },
+  "scenes": [
+    {
+      "id": "steelcross_port_theseus_docked_main",
+      "type": "POINT",
+      "name": "忒修斯号停泊视角"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "steelcross_port_theseus_approach_crew",
+      "sceneId": "steelcross_port_theseus_docked_main",
+      "type": "OBSERVE",
+      "text": "接近船员",
+      "eventId": "ev_steelcross_port_theseus_crew_intro"
+    },
+    {
+      "id": "steelcross_port_theseus_docked_return_port",
+      "sceneId": "steelcross_port_theseus_docked_main",
+      "type": "TRANSITION",
+      "text": "返回钢十字港口",
+      "edgeId": "steelcross_port_theseus_docked_return_port_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_port_theseus_docked_return_port_edge",
+      "fromSceneId": "steelcross_port_theseus_docked_main",
+      "toMapId": "steelcross_dock_placeholder",
+      "minutes": 2
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

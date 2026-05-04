@@ -1,0 +1,43 @@
+{
+  "id": "industrial_bus_stop",
+  "mapType": "link",
+  "name": "工业区站牌",
+  "description": "围栏在这里抬高了一截，地上的车辙更深。导向牌只分两边：维修厂，仓储区。白天门禁灯也亮着，没人会在这里久站。",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "actions": [
+    {
+      "id": "board_industrial_to_steelcross_port",
+      "text": "上车（往钢十字港口方向）",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_industrial",
+        "lineId": "west2_shuttle_line_01",
+        "direction": 1
+      }
+    },
+    {
+      "id": "board_industrial_to_heatcorridor",
+      "text": "上车（往热廊方向）",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_industrial",
+        "lineId": "west2_shuttle_line_01",
+        "direction": -1
+      }
+    },
+    {
+      "id": "leave_industrial_bus_stop",
+      "text": "离开站牌",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "industrial_split",
+        "minutes": 1
+      }
+    }
+  ]
+}

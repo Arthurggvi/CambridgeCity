@@ -1,0 +1,129 @@
+{
+  "id": "bayport_clinic_ward",
+  "name": "边港诊所 · 二楼病房区",
+  "description": "病房区贴着床位号与注意事项，护士站在转角，空气干冷，消毒水味更重。",
+  "descriptionByMinuteOfDay": [
+    { "start": 360, "end": 1079, "text": "二楼走廊尽头是病房区，门口贴着床位号和注意事项。床与床之间拉着半高帘子，能听到咳嗽、翻身和低声问答。护士推车经过地缝时会发出一声轻响。" },
+    { "start": 1080, "end": 1439, "text": "夜里病房区灯光被压暗，只留床头灯和走廊灯。帘子后大多安静，护士站有人值守，但动作更慢，说话更短。" },
+    { "start": 0, "end": 359, "text": "凌晨病房区更冷。床头灯零星亮着，帘子后偶有翻身声，护士站只留必要照明。" }
+  ],
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "ward_bed_24h",
+      "text": "病床（住院休息，24:00）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "WARD_BED",
+      "payload": { "minutes": 1440 }
+    },
+    {
+      "id": "ward_query_status",
+      "text": "护士站：查询住院状态（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "ward_pay_all",
+      "text": "护士站：缴费（全部，0:01）",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "bill_payment",
+        "businessType": "payment",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "payment": {
+          "channel": "medical_bill",
+          "mode": "FULL",
+          "cents": 0
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "world.money", "op": ">", "value": 0 },
+          { "path": "world.medical.bills.totalCents", "op": ">", "value": 0 }
+        ]
+      },
+      "kind": "MEDICAL_BILL_PAY",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "mode": "FULL", "minutes": 1 }
+    },
+    {
+      "id": "ward_pay_200",
+      "text": "护士站：缴费（200，0:01）",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "bill_payment",
+        "businessType": "payment",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "payment": {
+          "channel": "medical_bill",
+          "mode": "FIXED",
+          "cents": 20000
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "world.money", "op": ">", "value": 0 },
+          { "path": "world.medical.bills.totalCents", "op": ">", "value": 0 }
+        ]
+      },
+      "kind": "MEDICAL_BILL_PAY",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "mode": "FIXED", "cents": 20000, "minutes": 1 }
+    },
+    {
+      "id": "ward_corridor_bench",
+      "text": "走廊长椅（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "ward_discharge_ready",
+      "text": "办理出院（已达标准）",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": ">=", "value": 80 }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "set", "path": "world.flags.discharged", "value": true }
+      ]
+    },
+    {
+      "id": "ward_discharge_denied",
+      "text": "办理出院（未达标准）",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": "<", "value": 80 }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "ward_leave_blocked",
+      "text": "离开病房区",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "world.flags.discharged", "op": "!=", "value": true }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "WARD_NON_BED",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "ward_leave_allowed",
+      "text": "离开病房区",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "world.flags.discharged", "op": "==", "value": true }] },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_upstairs_hall", "minutes": 1 }
+    }
+  ]
+}

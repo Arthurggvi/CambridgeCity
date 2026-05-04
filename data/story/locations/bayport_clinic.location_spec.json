@@ -1,0 +1,25 @@
+{
+  "location_id": "bayport_clinic",
+  "location_name": "边港诊所",
+  "theme_keywords": ["海湾内侧", "背风", "冷", "潮湿海风", "消毒水", "登记", "账单", "床位稀缺"],
+  "function_scope": ["止血", "复温", "缝合", "记录", "外运标注"],
+  "social_rule": ["不提供庇护", "不承诺未来", "职责清晰不解释"],
+  "economy_rule": ["收费明确", "占床计费"],
+  "core_divide": ["离开=纳入运转体系", "留下=等待与被催促离开"],
+  "time_policy": {
+    "rule_segments": [
+      { "id": "day", "range": "06:00-17:59" },
+      { "id": "night", "range": "18:00-05:59" }
+    ],
+    "mood_segments": ["06:00-10:59", "11:00-13:59", "14:00-17:59", "18:00-20:59", "21:00-23:59", "00:00-05:59"]
+  },
+  "medical_rules": {
+    "inpatient": { "heal_per_day": 20, "cost_per_day": 200, "discharge_threshold_health": 80 },
+    "observation": { "hp_cap": 50, "heal_tick_minutes": 30, "cost_per_hour": 25, "handover_time": "06:00" }
+  },
+  "access_rules": {
+    "clinic_room_requires_referral": true,
+    "night_only_emergency": true,
+    "emergency_gate": { "accept_if_hp_lte": 50, "reject_if_hp_gt": 50 }
+  }
+}

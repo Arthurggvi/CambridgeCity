@@ -1,0 +1,404 @@
+{
+  "id": "gov_hall_main_hall",
+  "name": "政务大厅 · 大厅",
+  "description": "大厅。",
+  "descriptionByRuntimeState": {
+    "day_open": "大厅是主舱体，空间比一号仓大，但仍被护栏压成单向流。取号机与公告屏并排，窗口区一排玻璃隔断，顶部写“营业中”。角落有缴费终端与打印台，地面撒了细砂防滑，走起来声音更干。",
+    "day_closed": "照明降级，取号机熄屏，公告屏显示“窗口关闭”。护栏队列还在，但没有叫号声；窗口遮帘拉下。你能站在这里，但所有“办理”都停止。",
+    "night_open": "冷白光把大厅压得更硬，公告屏最亮；护栏反光条一段段跳。窗口只开一两扇，队列推进慢，工作人员话更短。屏幕显示“应急值守”，并提示“仅限缴费/紧急登记”。",
+    "night_closed": "只保留应急照明；取号机熄屏，窗口全遮帘。公告屏显示“非营业，下一营业日09:00”。大厅仍能进出，但不会给你任何受理入口。"
+  },
+  "descriptionByFlags": [
+    {
+      "path": "world.flags.govHallCDialogQueueSuccess",
+      "equals": true,
+      "text": "业务员按下取号键：\n\n“取号成功，你的号码为{{world.flags.govHallQueueNumber}}号”"
+    },
+    {
+      "path": "world.flags.govHallCDialogQueueRejected",
+      "equals": true,
+      "text": "业务员瞟了你一眼：\n\n“不要重复取号！”"
+    },
+    {
+      "path": "world.flags.govHallCDialogWindowRejected",
+      "equals": true,
+      "text": "窗口业务员指了指叫号屏：\n\n“没有取号不要捣乱！”"
+    },
+    {
+      "path": "world.flags.govHallCDialogCitizenApplyIntro",
+      "equals": true,
+      "text": "公民申请\n\n业务员：\"公民申请三条路，自己对号入座。\""
+    },
+    {
+      "path": "world.flags.govHallCDialogCitizenApplyPaths",
+      "equals": true,
+      "text": "业务员：\"雇佣转正：有编制工作满一年证明；三个月内无犯罪记录；罚款全部缴纳；医院账单结清。\n技术引进：协会/研究科研站授权的特邀名额。\n担保配额：由公民配额担保，担保人在场。\""
+    },
+    {
+      "path": "world.flags.govHallCDialogCitizenApplyAskDocs",
+      "equals": true,
+      "text": "业务员：\"文件带了吗？\""
+    },
+    {
+      "path": "world.flags.govHallCDialogCitizenApplyRejected",
+      "equals": true,
+      "text": "业务员：\"没有就别占窗口。下一位。\""
+    },
+    {
+      "path": "world.flags.govHallSeaOfferActive",
+      "equals": true,
+      "text": "业务员：\"出海名额......现在只剩忒修斯号还有名额。票价一万六。\"\n\n业务员：\"要不要？\""
+    },
+    {
+      "path": "world.flags.govHallCDialogSeaOfferUnavailable",
+      "equals": true,
+      "text": "业务员：\"出海名额申请仅在十一月至次年三月、周一至周六 09:00–18:00 受理。请在开放时段再来。\""
+    },
+    {
+      "path": "world.flags.govHallCDialogSeaOfferInsufficient",
+      "equals": true,
+      "text": "业务员：\"钱不够。\""
+    },
+    {
+      "path": "world.flags.govHallCDialogSeaOfferSuccess",
+      "equals": true,
+      "text": "业务员从抽屉里抽出一张薄票，盖了一个硬章。\n\"请在3月13日前去港口码头登船。过期作废。\""
+    },
+    {
+      "path": "world.flags.govHallCDialogSeaOfferDeclined",
+      "equals": true,
+      "text": "业务员：\"那就下一项。\""
+    }
+  ],
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "gov_c_queue_take_number",
+      "text": "排队摇号（0:10）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_c_window_enter",
+      "text": "前往窗口（0:02）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_c_dialog_return",
+      "text": "返回（0:00）",
+      "requires": {
+        "any": [
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_c_window_view_bill",
+      "text": "查看账单（0:00）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_pay_bill",
+      "text": "缴纳罚款（0:00）",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "bill_payment",
+        "businessType": "payment",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "payment": {
+          "channel": "gov_fine"
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_citizen_no_docs",
+      "text": "申请公民（0:00）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_citizen_continue",
+      "text": "继续",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_citizen_continue_ask",
+      "text": "继续",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_citizen_no",
+      "text": "没有",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_sea_inquire",
+      "text": "申请出海名额（0:00）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_sea_buy_yes",
+      "text": "要（0:00）",
+      "ui": {
+        "type": "button",
+        "disabledRequires": {
+          "all": [
+            { "path": "world.money", "op": "<", "value": 16000 }
+          ]
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_sea_buy_no",
+      "text": "不要（0:00）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_window_back",
+      "text": "返回大厅（0:00）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      }
+    },
+    {
+      "id": "gov_c_try_to_d",
+      "text": "尝试进入侧廊（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallSeaOfferActive", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "gov_hall_side_corridor", "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "门牌写着“闲人免进”，门缝里透出更冷的光。" }
+      ],
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_c_back_a",
+      "text": "返回入口（0:02）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallWindowMenuOpen", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogQueueRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogWindowRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyIntro", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyPaths", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogCitizenApplyRejected", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferUnavailable", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferInsufficient", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferSuccess", "op": "==", "value": false },
+          { "path": "world.flags.govHallCDialogSeaOfferDeclined", "op": "==", "value": false }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "gov_hall_entry_split", "minutes": 2 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你离开护栏区，回到分流闸附近。" },
+        { "op": "set", "path": "world.flags.govHallWindowMenuOpen", "value": false },
+        { "op": "set", "path": "world.flags.govHallSeaOfferActive", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogCitizenApplyIntro", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogCitizenApplyPaths", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogCitizenApplyAskDocs", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogCitizenApplyRejected", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogSeaOfferUnavailable", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogSeaOfferInsufficient", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogSeaOfferSuccess", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogSeaOfferDeclined", "value": false }
+      ],
+      "ui": { "type": "button" }
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "id": "bayport_clinic_counter_day",
+  "name": "边港诊所 · 白班窗口",
+  "description": "你走到窗口前。护士抬头看你一眼，把表格拉到面前。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "apply_treatment_accept",
+      "text": "申请治疗（接受住院）",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": "<", "value": 80 }] },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_ward", "minutes": 1 },
+      "effects": [
+        { "op": "set", "path": "world.flags.discharged", "value": false }
+      ]
+    },
+    {
+      "id": "apply_treatment_reject",
+      "text": "申请治疗（暂不住院）",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": "<", "value": 80 }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "apply_treatment_not_needed",
+      "text": "申请治疗",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": ">=", "value": 80 }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "clinic_open_goods_panel_day",
+      "text": "查看售卖货物",
+      "ui": { "type": "button", "panel": "shop_goods" },
+      "kind": "MENU_OPEN"
+    },
+    {
+      "id": "clinic_purchase_thermometer_harness",
+      "text": "购买便携体温计（测试钩子）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.phase1_1PurchaseHarness", "op": "==", "value": true }
+        ]
+      },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "shop_purchase",
+        "businessType": "purchase",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "purchase": {
+          "channel": "shop_goods",
+          "goodsId": "clinic_portable_thermometer"
+        }
+      }
+    },
+    {
+      "id": "bill_query_day",
+      "text": "查询账单（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "bill_pay_all_day",
+      "text": "缴费（全部，0:01）",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "bill_payment",
+        "businessType": "payment",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "payment": {
+          "channel": "medical_bill",
+          "mode": "FULL",
+          "cents": 0
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "world.money", "op": ">", "value": 0 },
+          { "path": "world.medical.bills.totalCents", "op": ">", "value": 0 }
+        ]
+      },
+      "kind": "MEDICAL_BILL_PAY",
+      "sessionCoverage": "NONE",
+      "payload": { "mode": "FULL", "minutes": 1 }
+    },
+    {
+      "id": "bill_pay_200_day",
+      "text": "缴费（200，0:01）",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "bill_payment",
+        "businessType": "payment",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "payment": {
+          "channel": "medical_bill",
+          "mode": "FIXED",
+          "cents": 20000
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "world.money", "op": ">", "value": 0 },
+          { "path": "world.medical.bills.totalCents", "op": ">", "value": 0 }
+        ]
+      },
+      "kind": "MEDICAL_BILL_PAY",
+      "sessionCoverage": "NONE",
+      "payload": { "mode": "FIXED", "cents": 20000, "minutes": 1 }
+    },
+    {
+      "id": "leave_queue_day",
+      "text": "退出排队（0:00）",
+      "ui": { "type": "button" },
+      "targetMapId": "bayport_clinic"
+    }
+  ]
+}

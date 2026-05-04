@@ -1,0 +1,10 @@
+{
+  "id": "ev_steelcross_port_theseus_work_resume_rien_where",
+  "name": "返回忒修斯号船员里恩去向对话",
+  "steps": [
+    {
+      "type": "goto_map",
+      "mapId": "steelcross_port_theseus_work_rien_where"
+    }
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "id": "gov_hall_window_1",
+  "name": "政务大厅 · 一号仓",
+  "description": "一号仓。",
+  "descriptionByRuntimeState": {
+    "day_open": "仓里压得很低，柜台后面隔着一整条长玻璃，投递口窄得只能塞进文件。夹板墙上贴着流程清单、补办须知和几张卷边的旧通知，最显眼的是“临时身份证明 / 公民身份证补办”的牌子。",
+    "day_closed": "柜台灯熄，玻璃后无人；窗口遮帘拉下。屏幕显示“窗口关闭”，只剩营业时间与“请于营业时间办理”。供暖保底，冷感更实。",
+    "night_open": "柜台灯比外面更刺眼，玻璃反光像镜面；投递口的边缘结着薄霜。屏幕显示“应急受理：仅临时证明/补办”，并提示“材料不齐一律退回”。队列短，但推进更慢。",
+    "night_closed": "只剩安保照明，柜台后全暗；门禁常闭。屏幕显示“非营业”，没有任何按钮能把窗口叫醒。"
+  },
+  "descriptionByFlags": [
+    {
+      "path": "world.flags.govHallBDialogDossierCreated",
+      "equals": true,
+      "text": "窗口工作人员接过文件夹，快速整理并录入信息后将其递回。\n\n“档案建立完成。请妥善保管，后续如需调阅或更新，可凭身份资料申请。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogAlreadyHasIdentity",
+      "equals": true,
+      "text": "业务员看了你一眼：\n\n“你已经有身份了，不要浪费我的时间。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogNeedIdentityForCitizen",
+      "equals": true,
+      "text": "业务员把表格推回去：\n\n“申请公民身份去大厅办。你现在连临时身份证明都没有，先在这儿把临时办了。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogCitizenGoHall",
+      "equals": true,
+      "text": "业务员抬了抬下巴：\n\n“这儿不受理。带着你的身份证明去大厅。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogTempIssued",
+      "equals": true,
+      "text": "业务员把回执压在玻璃下：\n\n“可以。20分钟后来取临时身份证明。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogNotCitizen",
+      "equals": true,
+      "text": "业务员语气发硬：\n\n“你没有公民身份，别浪费我的时间。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogAlreadyHasCitizenCard",
+      "equals": true,
+      "text": "业务员把单子推回去：\n\n“你已经有证件了，不要浪费我的时间。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogReissuePrompt",
+      "equals": true,
+      "text": "业务员敲了敲柜台：\n\n“办理收费200，20分钟后来取证。”"
+    },
+    {
+      "path": "world.flags.govHallBDialogReissueIssued",
+      "equals": true,
+      "text": "业务员把新证件递到投递口：\n\n“拿好。下次丢了还得交钱。”"
+    },
+    {
+      "path": "world.flags.govHallBWindowOpen",
+      "equals": true,
+      "text": "你走到柜台前，业务员抬头扫了你一眼：\n\n“你要办理什么业务？”"
+    }
+  ],
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "gov_b_window_intro",
+      "text": "前往窗口（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallBWindowOpen", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_b_issue_temp_id",
+      "text": "办理临时身份证明",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallBWindowOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogDossierCreated", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogAlreadyHasIdentity", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogCitizenGoHall", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogTempIssued", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogNotCitizen", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogReissuePrompt", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogReissueIssued", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_b_redirect_to_hall",
+      "text": "申请公民身份",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallBWindowOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogDossierCreated", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogAlreadyHasIdentity", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogCitizenGoHall", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogTempIssued", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogNotCitizen", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogReissuePrompt", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogReissueIssued", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_b_reissue_citizen",
+      "text": "补办公民身份证",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallBWindowOpen", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogDossierCreated", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogAlreadyHasIdentity", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogCitizenGoHall", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogTempIssued", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogNotCitizen", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogReissuePrompt", "op": "==", "value": false },
+          { "path": "world.flags.govHallBDialogReissueIssued", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_b_continue_issue_temp",
+      "text": "继续（0:20）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallBWindowOpen", "op": "==", "value": true }
+        ],
+        "any": [
+          { "path": "world.flags.govHallBDialogTempIssued", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogDossierCreated", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_b_dialog_return",
+      "text": "返回",
+      "requires": {
+        "any": [
+          { "path": "world.flags.govHallBDialogAlreadyHasIdentity", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogCitizenGoHall", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogTempIssued", "op": "==", "value": true }
+          ,
+          { "path": "world.flags.govHallBDialogNotCitizen", "op": "==", "value": true },
+          { "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_b_back_a",
+      "text": "返回入口（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallBDialogDossierCreated", "op": "!=", "value": true },
+          { "path": "world.flags.govHallBDialogAlreadyHasIdentity", "op": "!=", "value": true },
+          { "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "op": "!=", "value": true },
+          { "path": "world.flags.govHallBDialogCitizenGoHall", "op": "!=", "value": true },
+          { "path": "world.flags.govHallBDialogTempIssued", "op": "!=", "value": true },
+          { "path": "world.flags.govHallBDialogNotCitizen", "op": "!=", "value": true },
+          { "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "op": "!=", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "gov_hall_entry_split", "minutes": 1 },
+      "effects": [
+        { "op": "set", "path": "world.flags.govHallBWindowOpen", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogAlreadyHasIdentity", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogCitizenGoHall", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogTempIssued", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogDossierCreated", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogQueueSuccess", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogQueueRejected", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogWindowRejected", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogNotCitizen", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogReissuePrompt", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogReissueIssued", "value": false }
+      ],
+      "ui": { "type": "button" }
+    }
+  ]
+}

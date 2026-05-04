@@ -1,0 +1,43 @@
+{
+  "schema": "MapSystemBoundary/v1",
+  "RegionConfig": {
+    "type": "static_table",
+    "key": "RegionId",
+    "fields": {
+      "RegionId": { "type": "string", "enum": ["West2", "CambCity", "OldCamb", "South1"] },
+      "T_base": { "type": "number", "unit": "celsius", "range": "-100..20" },
+      "A_region": { "type": "number", "unit": "celsius", "range": "0..30" },
+      "Pmax": { "type": "number", "unit": "mm_per_hour", "range": "0..20" },
+      "MoistureIndex": { "type": "number", "unit": "ratio", "range": "0..1" },
+      "SunAmp": { "type": "number", "unit": "celsius", "range": "0..10" },
+      "SnowWarmAmp": { "type": "number", "unit": "celsius", "range": "0..10" },
+      "WindBase": { "type": "number", "unit": "m_per_s", "range": "0..40" },
+      "WindVar": { "type": "number", "unit": "m_per_s", "range": "0..30" },
+      "WindDir_prevailing": { "type": "enum", "enum": ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] }
+    }
+  },
+  "WorldWeatherState": {
+    "type": "dynamic_state",
+    "fields": {
+      "cloudType": { "enum": ["Clear", "Cirrus", "Stratiform", "Cumulonimbus"] },
+      "stormIntensity": { "type": "number", "range": "0..1" },
+      "sun": { "type": "number", "unit": "0_100", "range": "0..100" },
+      "sunLevel": { "enum": ["Dark", "Dim", "Weak", "Strong"] },
+      "snowfallRate": { "type": "number", "unit": "mm_per_hour", "range": "0..20" },
+      "snowIntensityLevel": { "enum": ["None", "Light", "Moderate", "Heavy"] },
+      "isSnowing": { "type": "boolean" },
+      "windSpeed_region": { "type": "number", "unit": "m_per_s", "range": "0..80" },
+      "windDir_region": { "enum": ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] },
+      "exposureLevel": { "enum": ["Sheltered", "SemiSheltered", "Open", "Ridge"] },
+      "windSpeed_local": { "type": "number", "unit": "m_per_s", "range": "0..120" },
+      "windDir_local": { "enum": ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] },
+      "tEnv_region": { "type": "number", "unit": "celsius", "range": "-120..30" }
+    }
+  },
+  "MapContent": {
+    "type": "location_content",
+    "entry": "location_id",
+    "requires": ["SceneList", "EdgeList", "InteractionList", "BlockerSpec", "SessionSpec"],
+    "time_contract": "AdvanceTime(deltaMinutes, context) is the only time entry"
+  }
+}

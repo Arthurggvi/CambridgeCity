@@ -1,0 +1,53 @@
+{
+  "location_id": "outpost_bus_stop",
+  "RuntimeText": {
+    "mapTextByMapId": {
+      "outpost_bus_stop": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "站牌被收在前哨入口内侧的候车点里，墙边的长椅和告示框挨得很近，进出的人都会在这里短暂停步等车。",
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "mode": "append",
+              "text": "顶灯把玻璃上的反光压得更亮。"
+            }
+          ]
+        }
+      }
+    },
+    "actionTextByMapId": {
+      "outpost_bus_stop": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "board_outpost_to_industrial": {
+            "actionLabel": {
+              "base": "等待接驳车"
+            },
+            "actionFeedback": {
+              "base": "你回到候车点的站牌边等车。返程车会先折回钢十字港口，再沿原线回到工业区方向。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你在前哨候车点等待返程接驳。"
+              }
+            }
+          },
+          "leave_outpost_bus_stop": {
+            "actionLabel": {
+              "base": "进入前哨区域"
+            },
+            "actionFeedback": {
+              "base": "你离开候车点，往前哨区域总导航那边走。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你从前哨候车点进入了前哨区域。"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

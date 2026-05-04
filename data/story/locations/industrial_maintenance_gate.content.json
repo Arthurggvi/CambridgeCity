@@ -1,0 +1,151 @@
+{
+  "location_id": "industrial_maintenance_gate",
+  "SceneList": [
+    { "id": "1.0", "type": "HUB_LOBBY", "text": "维修厂门口", "default_return": "1.0" }
+  ],
+  "EdgeList": [
+    { "from": "1.0", "to": "1.0" }
+  ],
+  "InteractionList": [
+    { "id": "maintenance_scan_tools", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "看看门口的工具箱和零件箱" },
+    { "id": "maintenance_check_access", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "检查维修区门禁" },
+    { "id": "maintenance_watch_staff_flow", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "观察进出的人员" },
+    { "id": "maintenance_listen_inside", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "凑近听听里头的动静" },
+    { "id": "maintenance_ask_entry_help", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "试着问问能不能进去帮忙" },
+    { "id": "maintenance_back_split", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:03", "condition": null, "goto": "industrial_split", "text": "返回工区分流口" }
+  ],
+  "BlockerSpec": { "blockers": [] },
+  "SessionSpec": { "sessions": [] },
+  "RuntimeText": {
+    "actionTextByMapId": {
+      "industrial_maintenance_gate": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "maintenance_scan_tools": {
+            "actionLabel": {
+              "base": "看看门口的工具箱和零件箱"
+            },
+            "actionFeedback": {
+              "base": "工具箱里扳手、夹具和检修包分类码放，零件箱上都贴着退件批号。门口有一大片油污擦痕——看来经常在这儿做快速检修。",
+              "lightVariants": [
+                { "when": { "lightPhase": "polar_night" }, "text": "极夜的冷光把金属边照得发白，只能靠轮廓辨认箱体位置。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "雪花落在工具箱上，金属面结了一层细霜，摸上去冰手。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "工具箱和零件箱按批号摆放，常用件扎在外侧。"
+              }
+            }
+          },
+          "maintenance_check_access": {
+            "actionLabel": {
+              "base": "检查维修区门禁"
+            },
+            "actionFeedback": {
+              "base": "门禁绿灯只亮一小会儿就跳红，锁止时红灯常亮。旁边的黄黑警示线把停留区卡得很窄，门牌上写着“非授权勿入”。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "text": "白班期间，门禁会放行排班人员，没授权的访客只能站在门口干等。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜里门禁严得要命，除了值班和夜修名单上的人，谁也别想进。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风雪糊在门上，黄黑警示线和门禁灯反倒更显眼了，门牌上的小字得凑近才看清。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "视线有点模糊，你只能先锁定门禁灯和感应区，再补读门牌上的字。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "雪雾太浓，门禁灯几乎是唯一能看清的信号，其他的得贴脸才辨认得出。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "门禁切换很干脆：绿灯放行，红灯锁止。"
+              }
+            }
+          },
+          "maintenance_watch_staff_flow": {
+            "actionLabel": {
+              "base": "观察进出的人员"
+            },
+            "actionFeedback": {
+              "base": "盯了一会儿，进出的人比仓储区少得多。每个人都刷卡、进门或离开，没人站着闲聊，干脆利落。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "text": "白班时段偶尔有人交接领件，但停留时间极短。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜班只剩下值班和夜修的人，半天才进出一次。" }
+              ],
+              "lightVariants": [
+                { "when": { "lightPhase": "twilight" }, "text": "傍晚时分，人影被拉得又碎又长，最先注意到的是反光条和门禁灯。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "出入的人不多，刷卡就走，没人逗留。"
+              }
+            }
+          },
+          "maintenance_listen_inside": {
+            "actionLabel": {
+              "base": "凑近听听里头的动静"
+            },
+            "actionFeedback": {
+              "base": "门缝里传来持续的嗡嗡低鸣，中间夹着短促的敲击声和扳手落在台面上的脆响。听起来很机械，也很克制，应该只保留了必要的工位在运行。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "night_service" }, "text": "夜班时声源更少，但每次启动声都特别清楚，像是在做小批量的检修。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风雪声压住了门缝外头，细碎的碰撞听不到了，只剩下沉闷的低鸣和金属回弹还能穿出来。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "视线不好，你先靠门禁灯定位，然后贴近门缝分辨里头到底是风机声还是敲击声。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "雪雾太厚，你几乎全靠耳朵判断：先听到低鸣，再从缝隙里捕捉到偶尔的金属碰撞声。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "门后有低鸣和间歇敲击声，像是在做短周期检修。"
+              }
+            }
+          },
+          "maintenance_ask_entry_help": {
+            "actionLabel": {
+              "base": "试着问问能不能进去帮忙"
+            },
+            "actionFeedback": {
+              "base": "你开口问能不能进去搭把手。门口那人只瞟了你一眼，冷冷回道：“不收外来临工，没授权别进维修区。”",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "lightPhase": "polar_day", "visibilityBand": ["clear", "low"] }, "text": "白班也只认已登记名单，现场不会临时加人。" },
+                { "when": { "serviceBand": "day_service", "lightPhase": "twilight", "visibilityBand": ["clear", "low"] }, "text": "傍晚这人只顾着收尾检修，直接摆手拒绝。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜班连解释都省了，一句“不收”就打发你走。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度太差，门口那人连话都懒得说，直接挥手让你退回分流口。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "被拒了：不收外来临工，未授权不得进入。"
+              }
+            }
+          },
+          "maintenance_back_split": {
+            "actionLabel": {
+              "base": "返回工区分流口"
+            },
+            "actionFeedback": {
+              "base": "你顺着黄黑警示线和围栏，离开了维修厂门口，回到工区分流口。",
+              "serviceVariants": [],
+              "weatherVariants": [],
+              "visibilityVariants": []
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你沿警示边退回工区分流口。"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

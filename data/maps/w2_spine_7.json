@@ -1,0 +1,8 @@
+{
+  "id": "w2_spine_7",
+  "name": "W2-Spine-7 内陆通道入口",
+  "description": "沿岸主走廊内陆入口，占位地图。",
+  "actions": [
+    { "id": "to_spine_6", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_6" }
+  ]
+}

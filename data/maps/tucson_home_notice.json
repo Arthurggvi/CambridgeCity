@@ -1,0 +1,11 @@
+{
+  "id": "tucson_home_notice",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "入院须知：\n家属探视时间：每周六14:00-16:00，超时按每小时200元收费。\n……",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_home_notice_return", "text": "返回", "targetMapId": "tucson_home_desk", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

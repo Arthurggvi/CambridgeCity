@@ -1,0 +1,21 @@
+{
+  "id": "bayport_clinic_queue_intro_2",
+  "name": "边港诊所 · 窗口",
+  "description": "护士皱了下眉，压低声音：\"如果你现在没有身份证，先去对面的政务大厅补办。\"\n\n她指了指账单上的数字：\"你目前欠费 1200.00，记得回来缴费，不然会影响信用记录。\"\n\n说完，她把账单往前又推了半寸，示意你收好。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "queue_intro_take_bill",
+      "text": "接过账单",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic", "minutes": 0 },
+      "socialEffects": [
+        { "type": "discover_npc", "npcId": "npc_lin", "reason": "queue_intro_take_bill" }
+      ],
+      "effects": [
+        { "op": "set", "path": "world.flags.windowQueueVisited", "value": true }
+      ],
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

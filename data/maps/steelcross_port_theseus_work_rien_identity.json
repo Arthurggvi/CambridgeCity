@@ -1,0 +1,22 @@
+{
+  "id": "steelcross_port_theseus_work_rien_identity",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号船员",
+  "description": "“里恩以前是忒提斯号的船长。后来出了那场事，他就不跑船了。”\n\n船员朝船身那边偏了偏下巴，语气里没多少敬意，也没多少轻慢，更像是在说一个你最好别随便拿来开玩笑的人。\n\n“现在真要说的话，他算是我们这边的话事人。不是天天站在甲板上发号施令的那种，是那种很多事你看不见，但最后都得过他那边一道的人。”\n\n“只是他现在基本不碰船上的活了。”",
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "theseus_work_ask_where_find_rien",
+      "text": "哪里能找到里恩？",
+      "eventId": "ev_steelcross_port_theseus_work_ask_where_find_rien",
+      "ui": { "type": "button", "priority": "primary" }
+    },
+    {
+      "id": "theseus_work_rien_identity_return",
+      "text": "返回",
+      "eventId": "ev_steelcross_port_theseus_work_return_intro",
+      "ui": { "type": "button" }
+    }
+  ]
+}

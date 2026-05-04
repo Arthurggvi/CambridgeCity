@@ -1,0 +1,103 @@
+{
+  "id": "industrial_maintenance_gate",
+  "name": "维修厂门口",
+  "description": "维修厂门口。",
+  "descriptionByMinuteOfDay": [
+    {
+      "start": 360,
+      "end": 1079,
+      "text": "白天的维修厂门口更窄更硬。工具箱和旧零件箱贴着墙摆，黄黑警示边把通道切出一条直线。结霜的金属门旁门禁灯常亮，冷白灯下能看到油污和擦拭痕。"
+    },
+    {
+      "start": 1080,
+      "end": 359,
+      "text": "夜里维修厂门口更安静也更不欢迎停留。门禁灯和警示边先被看见，门后的低鸣断断续续，偶尔夹一声金属碰撞。人影很少，经过的人几乎都不停步。"
+    }
+  ],
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "ui": {
+    "actionGroups": [
+      {
+        "id": "maintenance_gate_observe_bundle",
+        "title": "观察维修门口",
+        "childrenActionIds": [
+          "maintenance_scan_tools",
+          "maintenance_check_access",
+          "maintenance_watch_staff_flow",
+          "maintenance_listen_inside"
+        ],
+        "defaultCollapsed": true,
+        "hint": "4项"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "maintenance_scan_tools",
+      "text": "看门口工具与零件箱（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.4, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "工具箱和旧零件箱按批次贴标，常用件被单独捆扎在外侧。" }
+      ]
+    },
+    {
+      "id": "maintenance_check_access",
+      "text": "检查维修门禁（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.4, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你先看门禁灯再看门牌，放行和锁止状态切得很硬。" }
+      ]
+    },
+    {
+      "id": "maintenance_watch_staff_flow",
+      "text": "观察出入人员（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.42, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "出入的人不多，停留更短，多数人直接刷门禁进出。" }
+      ]
+    },
+    {
+      "id": "maintenance_listen_inside",
+      "text": "听里面的动静（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.42, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "门后有低鸣和间歇敲击声，像是在做短周期检修。" }
+      ]
+    },
+    {
+      "id": "maintenance_ask_entry_help",
+      "text": "询问能否进去帮忙（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "门口回应很冷：当前不收外来临工，未授权不得进入维修区。" }
+      ]
+    },
+    {
+      "id": "maintenance_back_split",
+      "text": "返回工区分流口（0:03）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.9, "activity": "transit" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "industrial_split", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你离开维修门口，沿警示边退回工区分流口。" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "start_minimal_p02",
+  "name": "START - P0-2 最小验收",
+  "description": "【最小验收地图】点击 TRANSITION 切到 link_01，并可选推进时间。",
+  "actions": [
+    {
+      "id": "go_next",
+      "text": "继续探索",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "link_01", "minutes": 60 }
+    },
+    {
+      "id": "go_requires_test",
+      "text": "（测试）Requires 门禁",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "test_requires", "minutes": 0 }
+    }
+  ]
+}

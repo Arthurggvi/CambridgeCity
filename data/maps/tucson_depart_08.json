@@ -1,0 +1,15 @@
+{
+  "id": "tucson_depart_08",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "我还是会梦见那片暴雪中的天光\n\n完",
+  "entrySignals": [
+    { "type": "achievement.signal", "key": "theseus_departure_complete" }
+  ],
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "menu_exit_main", "text": "返回主菜单", "ui": { "type": "button", "priority": "primary" } },
+    { "id": "menu_go_load", "text": "读取存档", "ui": { "type": "button" } }
+  ]
+}

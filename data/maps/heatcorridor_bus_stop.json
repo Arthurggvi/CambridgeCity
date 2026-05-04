@@ -1,0 +1,43 @@
+{
+  "id": "heatcorridor_bus_stop",
+  "mapType": "link",
+  "name": "热廊站牌",
+  "description": "棚顶压得更低，门帘一开一合，会带出一点潮热和烘干后的布料味。挡风板旁只留一截窄候车带，脚边积着被雪水反复踩开的暗痕。",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "actions": [
+    {
+      "id": "board_heatcorridor_to_winddyke",
+      "text": "上车（往风堤街方向）",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_heatcorridor",
+        "lineId": "west2_shuttle_line_01",
+        "direction": -1
+      }
+    },
+    {
+      "id": "board_heatcorridor_to_industrial",
+      "text": "上车（往工业区方向）",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_heatcorridor",
+        "lineId": "west2_shuttle_line_01",
+        "direction": 1
+      }
+    },
+    {
+      "id": "leave_heatcorridor_bus_stop",
+      "text": "进入前廊",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "heatcorridor_front_hall",
+        "minutes": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "items": [
+    {
+      "id": "abandoned_special_lithium_battery",
+      "name": "废弃特种锂电池",
+      "category": "material",
+      "stackable": true,
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 28,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "brass_statue",
+      "name": "黄铜雕像",
+      "category": "material",
+      "stackable": true,
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 700,
+        "quality": "pink"
+      }
+    }
+  ]
+}

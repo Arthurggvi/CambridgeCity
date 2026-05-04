@@ -1,0 +1,56 @@
+{
+  "id": "bayport_clinic_obs",
+  "name": "边港诊所 · 二楼观察区",
+  "description": "床位挨得很近，帘子拉得严严实实。没有闲聊，只有短促的指令和刷刷的记录声。",
+  "descriptionByMinuteOfDay": [
+    { "start": 360, "end": 1079, "text": "观察区挤在病房区边上，床位一个挨一个。你只能听见护士低声交代几句，然后就是笔尖划过病历本的声音。" },
+    { "start": 1080, "end": 1439, "text": "现在只剩走廊灯和床头灯亮着，帘子后头偶尔传来翻身声和压低的咳嗽。空气闷闷的，混着消毒水味。" },
+    { "start": 0, "end": 359, "text": "这里安静得只剩流程声。护士把脚步压得很轻，但推车轮碾过地缝时还是会“咯噔”一下。" }
+  ],
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "obs_stay_30m",
+      "text": "留在床位（继续观察，0:30）",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "world.flags.obs_handover_pending", "op": "!=", "value": true }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "OBS",
+      "payload": { "minutes": 30 }
+    },
+    {
+      "id": "obs_stay_12h",
+      "text": "留在床位（长跳 12 小时）",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "world.flags.obs_handover_pending", "op": "!=", "value": true }] },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "OBS",
+      "payload": { "minutes": 720 }
+    },
+    {
+      "id": "obs_try_leave",
+      "text": "尝试离开（0:00）",
+      "ui": { "type": "button" },
+      "targetMapId": "bayport_clinic_obs"
+    },
+    {
+      "id": "obs_handover_to_ward",
+      "text": "白班接管：转住院",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "world.flags.obs_handover_pending", "op": "==", "value": true }] },
+      "targetMapId": "bayport_clinic_ward",
+      "effects": [
+        { "op": "set", "path": "world.flags.obs_handover_pending", "value": false },
+        { "op": "set", "path": "world.flags.discharged", "value": false }
+      ]
+    },
+    {
+      "id": "obs_handover_decline",
+      "text": "白班接管：不住院",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "world.flags.obs_handover_pending", "op": "==", "value": true }] },
+      "targetMapId": "bayport_clinic_upstairs_hall",
+      "effects": [{ "op": "set", "path": "world.flags.obs_handover_pending", "value": false }]
+    }
+  ]
+}

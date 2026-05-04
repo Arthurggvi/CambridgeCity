@@ -1,0 +1,29 @@
+{
+  "name": "cambridge-city",
+  "private": true,
+  "license": "SEE LICENSE.md",
+  "scripts": {
+    "build": "node ./scripts/build_release.mjs build",
+    "release:pack": "node ./scripts/build_release.mjs pack",
+    "bump": "node ./scripts/bump_build.mjs ; node ./scripts/update_ops_doc.mjs",
+    "opsdoc": "node ./scripts/update_ops_doc.mjs",
+    "build:launcher-bundle": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/build_launcher_bundle.ps1",
+    "debug:scene": "node ./src/engine/debug/scene_walker.js --report=./reports/generated/scene_walker/default.json",
+    "debug:scene:clinic": "node ./src/engine/debug/scene_walker.js --preset=clinic --entry=bayport_clinic --report=./qa/scene_walker/clinic.json",
+    "debug:scene:gov": "node ./src/engine/debug/scene_walker.js --preset=gov --entry=gov_hall_entry_split --report=./qa/scene_walker/gov.json",
+    "test:regression:maps": "node ./src/engine/debug/scene_walker.js --preset=clinic --report=./qa/scene_walker/regression.json",
+    "test:regression:scene-walker": "powershell -NoProfile -ExecutionPolicy Bypass -File ./scripts/scene_walker_regression.ps1",
+    "test:smoke:overlay": "node ./scripts/overlay_smoke.mjs",
+    "test:social:minimal": "node ./scripts/social_regression_minimal.mjs",
+    "test:business:phase1": "node ./scripts/business_phase1_regression.mjs",
+    "test:business:phase1_1": "node ./scripts/business_phase1_1_regression.mjs",
+    "audit:business:phase1": "node ./scripts/business_phase1_grep_audit.mjs",
+    "test:archive-reading:minimal": "node ./scripts/archive_reading_minimal.mjs",
+    "test:records:boundaries": "node ./scripts/records_boundary_check.mjs",
+    "launch:game": "powershell -ExecutionPolicy Bypass -File ./launcher/CambrianLauncher.ps1",
+    "launch:stop": "powershell -ExecutionPolicy Bypass -File ./launcher/CambrianLauncher.ps1 -Shutdown"
+  },
+  "devDependencies": {
+    "playwright": "^1.58.2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "menu_credits",
+  "name": "开发组信息",
+  "description": "寒武城 / Cambrian City\n\n制作\n开发 / 设计 / 写作 / 美术 / 音效整合：唐吉诃德（单人开发）\n\n引擎与实现\nWeb 端自研轻量框架：数据驱动 UI，行为以 Action → Resolve → Commit 的流水线执行\n存档：本地 LocalStorage（设置与存档分离）\n\n致谢\n感谢所有测试与反馈提供者\n感谢开源工具与生态（具体依赖以仓库清单为准）\n\n版权与许可\n本作品及其设定、文本与美术资源 © 唐吉诃德\n未经许可禁止转载、二次发布或商业使用",
+  "actions": [
+    {
+      "id": "menu_back_main",
+      "text": "返回"
+    }
+  ]
+}

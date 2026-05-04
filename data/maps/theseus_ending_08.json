@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_08",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号",
+  "description": "雪",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_08_continue", "text": "继续", "targetMapId": "theseus_ending_09", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

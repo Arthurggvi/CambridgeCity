@@ -1,0 +1,15 @@
+{
+  "id": "ev_steelcross_port_theseus_work_intro_entry",
+  "name": "忒修斯号船员询问工作入口",
+  "steps": [
+    {
+      "type": "set_flag",
+      "key": "theseusCrewWorkIntroSeen",
+      "value": true
+    },
+    {
+      "type": "goto_map",
+      "mapId": "steelcross_port_theseus_work_intro"
+    }
+  ]
+}

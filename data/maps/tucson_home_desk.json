@@ -1,0 +1,26 @@
+{
+  "id": "tucson_home_desk",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "书桌上堆着几样零散的东西，像是被人反复翻动过，又勉强收拾整齐。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_home_view_photo", "text": "某张照片", "eventId": "ev_tucson_home_view_photo", "ui": { "type": "button", "priority": "primary" } },
+    { "id": "tucson_home_view_blue_book", "text": "蓝色的书", "eventId": "ev_tucson_home_view_blue_book", "ui": { "type": "button" } },
+    { "id": "tucson_home_view_tea", "text": "热茶", "targetMapId": "tucson_home_tea", "ui": { "type": "button" } },
+    {
+      "id": "tucson_home_view_notice",
+      "text": "一张纸",
+      "eventId": "ev_tucson_home_view_notice",
+      "requires": {
+        "all": [
+          { "path": "world.flags.tucsonHomeViewedPhoto", "op": "==", "value": true },
+          { "path": "world.flags.tucsonHomeViewedBlueBook", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    { "id": "tucson_home_desk_return", "text": "返回", "targetMapId": "tucson_home", "ui": { "type": "button" } }
+  ]
+}

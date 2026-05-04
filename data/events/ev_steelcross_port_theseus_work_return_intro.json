@@ -1,0 +1,10 @@
+{
+  "id": "ev_steelcross_port_theseus_work_return_intro",
+  "name": "返回忒修斯号船员页面",
+  "steps": [
+    {
+      "type": "goto_map",
+      "mapId": "steelcross_port_theseus_crew_intro"
+    }
+  ]
+}

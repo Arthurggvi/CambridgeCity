@@ -1,0 +1,204 @@
+{
+  "location_id": "industrial_warehouse_gate",
+  "SceneList": [
+    { "id": "1.0", "type": "HUB_LOBBY", "text": "仓储区门口", "default_return": "1.0" }
+  ],
+  "EdgeList": [
+    { "from": "1.0", "to": "1.0" }
+  ],
+  "InteractionList": [
+    { "id": "warehouse_scan_stack", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "看堆场与货箱" },
+    { "id": "warehouse_check_slot_tags", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "看堆位编号/贴签" },
+    { "id": "warehouse_track_loading_marks", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "观察装卸痕迹" },
+    { "id": "warehouse_listen_ambient", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "听周围动静" },
+    { "id": "warehouse_ask_entry", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "询问能否进入仓储区" },
+    { "id": "warehouse_subsidy_tag_shift", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:45", "condition": "06:00-17:59", "goto": "1.0", "text": "补贴标签短工" },
+    { "id": "warehouse_back_split", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:03", "condition": null, "goto": "industrial_split", "text": "返回工区分流口" }
+  ],
+  "BlockerSpec": { "blockers": [] },
+  "SessionSpec": { "sessions": [] },
+  "RuntimeText": {
+    "actionTextByMapId": {
+      "industrial_warehouse_gate": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "warehouse_scan_stack": {
+            "actionLabel": {
+              "base": "看堆场与货箱",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "贴着围栏看堆场轮廓" }
+              ]
+            },
+            "actionFeedback": {
+              "base": "你顺着围栏扫过去，箱体按高度和批次分层，外侧是周转快的短停位，内侧是等调度的整列位。堆场比工区分流口更开，但边界仍然锁死在门口线外。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "text": "白班堆场换位频繁，叉车和手推车都在短停位间来回。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜里堆场仍在运转，但节奏明显降下来，外沿多是待次日交接的箱列。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风雪压低后，先被看见的是反光边和箱角标识，再是整排箱体。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度差时，编号段和反光条比箱体本身更可靠。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你沿围栏看了一圈堆场，箱体高度和编号段分得很清楚。"
+              }
+            }
+          },
+          "warehouse_check_slot_tags": {
+            "actionLabel": {
+              "base": "看堆位编号/贴签"
+            },
+            "actionFeedback": {
+              "base": "堆位牌按区段挂着，贴签上有批号、重量段和去向码。改贴过的位置会留下旧胶痕，边缘还沾着细雪。",
+              "lightVariants": [
+                { "when": { "lightPhase": "twilight" }, "text": "傍晚冷白灯把贴签边缘照得发亮，旧签和新签的层次更明显。" },
+                { "when": { "lightPhase": "polar_night" }, "text": "夜灯下，先能辨认的是编号和反光框，细字要凑近才看全。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "湿冷把贴签边角先冻硬再返潮，旧胶痕会发白起壳，手套压签时更容易滑开，编号要反复复核。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "能见度偏低时先跳出来的是大编号和反光贴，堆位细分和贴签翘边要再靠近半步才分得清。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "雪雾最重时你几乎只抓得住反光贴和编号头两位，箱体细节和小字得贴到围栏边逐条补读。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "堆位牌和贴签被反复改贴，旧胶痕在冷气里发白。"
+              }
+            }
+          },
+          "warehouse_track_loading_marks": {
+            "actionLabel": {
+              "base": "观察装卸痕迹"
+            },
+            "actionFeedback": {
+              "base": "拖车轮印、刹停痕和手推车窄轨叠在一起，深浅能直接看出流量高低。堆位前沿的雪泥被砂砾压成硬壳，说明这段线一直在用。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "text": "白班痕迹更新更快，旧印常在半小时内被新轮印覆盖。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜里新增轮印减少，留下更多白班未抹平的深槽。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "新雪和吹雪会先抹掉浅拖痕，只剩较深轮沟和刚刹停留下的压痕还能看出走向。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "视线偏低时你先认出地面被压过的带状轮廓，再慢慢补出轮印和拖痕的分层。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "雪雾压下来后细痕几乎全退，只能靠最深的轮沟和砂砾带判断这条线还在跑。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "拖车轮印和刹停痕在雪泥里交错，能看出这段线一直在转。"
+              }
+            }
+          },
+          "warehouse_listen_ambient": {
+            "actionLabel": {
+              "base": "听周围动静"
+            },
+            "actionFeedback": {
+              "base": "你停在围栏边听了片刻，近处是链条和滚轮声，远一点是短促口令和编号复诵。整体节奏快，但每段都很短。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "text": "装卸和复核交替出现，几乎不停档。" },
+                { "when": { "serviceBand": "night_service" }, "text": "这里只剩零散交接声，通道空档拉长。" }
+              ],
+              "lightVariants": [
+                { "when": { "lightPhase": "polar_night" }, "text": "夜灯稀疏后，声音比人影更先到。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你听见链条、拖轮和短促口令声，节奏快但不乱。"
+              }
+            }
+          },
+          "warehouse_ask_entry": {
+            "actionLabel": {
+              "base": "询问能否进入仓储区"
+            },
+            "actionFeedback": {
+              "base": "你问门口能不能进去。对方先看你的登记牌，再看派工单号，语气很硬：无登记、无单号、非受理时段，一律不放行。需要领活先回工区分流口。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "lightPhase": "polar_day", "visibilityBand": ["clear", "low"] }, "text": "白班可受理边界问询，但仍需登记和派工单才能进前场内线。" },
+                { "when": { "serviceBand": "day_service", "lightPhase": "twilight", "visibilityBand": ["clear", "low"] }, "text": "傍晚窗口只处理收尾单，新的临时入场申请基本不接。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜里不新收临工，也不批临时进场，白班再来。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "风雪掠过这片窗口。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "门口只给边界回复：未登记、无派工单或非受理时段，均不得入内；领活请回工区分流口。"
+              }
+            }
+          },
+          "warehouse_subsidy_tag_shift": {
+            "actionLabel": {
+              "base": "补贴标签短工",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "closing" }, "mode": "replace", "text": "补贴标签短工（即将停收）" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "补贴标签短工（已满）" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "补贴标签短工（风压暂停）" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "visibility_suspended" }, "mode": "replace", "text": "补贴标签短工（能见度暂停）" },
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "补贴标签短工（夜里停收）" }
+              ]
+            },
+            "actionFeedback": {
+              "base": "你按分流口派工板给的箱号和堆位单，从外沿短停位开始补贴标签。翘边和冻裂的旧签先揭，再把新签对齐编号线压实；错签要先划掉再重贴。\n\n胶面在低温里不服帖，手套又把细动作拖慢半拍。风一阵一阵抖纸单，你每换一排都得先压住边角。做完后门口按单复核，结算按前场临工规则记账入账。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "open" }, "text": "当前受理中：补贴标签按单执行，做完即结。" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "closing" }, "text": "当前即将停收：这是收尾批次，做完这轮通常不再加单。" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "补贴标签本批已满。请回工区分流口看下一轮派工。" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "风压太大，标签和胶边压不住，补贴标签先挂起。请回工区分流口等复开。" },
+                { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "visibility_suspended" }, "mode": "replace", "text": "外场能见度太差，标签细位对不稳，补贴标签暂停受理。请回工区分流口等待。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜里不新收这类补贴标签短工。要接单请白班回工区分流口登记。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "湿雪贴在箱体边角，旧胶更难揭，你得一边压平一边核对编号。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度差时你几乎贴着箱面作业，先核箱号，再贴反光签。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你按派工板给的箱号和堆位单，先把翘边和冻硬的旧标签一张张揭下。"
+              },
+              "1": {
+                "base": "胶边在低温里发硬，你戴着手套按签总慢半拍，风一阵一阵把纸单边角吹起。",
+                "weatherVariants": [
+                  { "when": { "isSnowing": true }, "text": "雪粒黏在手套上，你每贴一张都要先抹掉水痕再压胶边。" }
+                ]
+              },
+              "2": {
+                "base": "补贴和换签做完后，门口按单核了编号与堆位，短工款按前场记账规则入账。",
+                "serviceVariants": [
+                  { "when": { "serviceBand": "day_service", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "补贴标签本批已满，未受理新单。" },
+                  { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "夜里窗口停收补签活，这轮未受理。" }
+                ]
+              }
+            }
+          },
+          "warehouse_back_split": {
+            "actionLabel": {
+              "base": "返回工区分流口"
+            },
+            "actionFeedback": {
+              "base": "你离开仓储门口，沿围栏和反光边退回工区分流口。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你沿围栏退回分流口，门禁灯和导向牌重新并在一处。"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "id": "heatcorridor_night_kitchen",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "24/7夜灶",
+  "description": "门外挂着一块旧发光招牌，门里不断往外顶热气和油味。里面自然分成热食窗口和堂食窄台两块，来回的人脚下拖出一串串湿脚印。",
+  "entrySceneId": "night_kitchen_floor",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "scenes": [
+    {
+      "id": "night_kitchen_floor",
+      "type": "SERVICE_HUB",
+      "name": "24/7夜灶"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "night_kitchen_check_sign",
+      "sceneId": "night_kitchen_floor",
+      "type": "OBSERVE",
+      "text": "看一眼门外招牌",
+      "minutes": 0,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你抬头看了看24/7夜灶门外那块旧招牌。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_to_window",
+      "sceneId": "night_kitchen_floor",
+      "type": "TRANSITION",
+      "text": "前往热食窗口",
+      "edgeId": "night_kitchen_to_window_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "朝热食窗口那边挪过去。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_to_counter",
+      "sceneId": "night_kitchen_floor",
+      "type": "TRANSITION",
+      "text": "去堂食窄台",
+      "edgeId": "night_kitchen_to_counter_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "朝堂食窄台那边走过去。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_to_front_hall",
+      "sceneId": "night_kitchen_floor",
+      "type": "TRANSITION",
+      "text": "返回前廊",
+      "edgeId": "night_kitchen_to_front_hall_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "从24/7夜灶退回前廊。" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "night_kitchen_to_window_edge",
+      "fromSceneId": "night_kitchen_floor",
+      "toMapId": "heatcorridor_night_kitchen_window",
+      "minutes": 1
+    },
+    {
+      "id": "night_kitchen_to_counter_edge",
+      "fromSceneId": "night_kitchen_floor",
+      "toMapId": "heatcorridor_night_kitchen_counter",
+      "minutes": 1
+    },
+    {
+      "id": "night_kitchen_to_front_hall_edge",
+      "fromSceneId": "night_kitchen_floor",
+      "toMapId": "heatcorridor_front_hall",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

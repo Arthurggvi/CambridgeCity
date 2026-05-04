@@ -1,0 +1,14 @@
+{
+  "id": "test_broken_ref",
+  "mapType": "normal",
+  "name": "P0-4 Broken Ref Test",
+  "desc": "This map intentionally references a missing mapId to test ValidateAllMaps.",
+  "actions": [
+    {
+      "id": "go_missing",
+      "label": "Go to missing map (P0-4)",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "__THIS_MAP_DOES_NOT_EXIST__", "minutes": 5 }
+    }
+  ]
+}

@@ -1,0 +1,946 @@
+{
+  "id": "west2_outpost_rescue_station",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "西部二区野外支援与搜救站",
+  "description": "搜救站把半封闭的前厅帐篷、车棚与维修通道、休息与急救中心压成一条最短闭环，制度线和外场边界都写得很硬。",
+  "entrySceneId": "west2_outpost_rescue_front_tent",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.58,
+    "heatSource": 0.09,
+    "drying": 0.14
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_rescue_front_tent",
+      "type": "HUB_LOBBY",
+      "name": "西部二区野外支援与搜救站"
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent",
+      "type": "HUB_LOBBY",
+      "name": "主帐篷"
+    },
+    {
+      "id": "west2_outpost_rescue_area_map",
+      "type": "POINT",
+      "name": "区域简图"
+    },
+    {
+      "id": "eason_intro_01",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_21",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_22",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_221_waiting_no_stretcher",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_221_waiting_with_stretcher",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_222",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_after_class",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_31",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_31_yes",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_31_no",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "eason_intro_32",
+      "type": "POINT",
+      "name": "主帐篷"
+    },
+    {
+      "id": "west2_outpost_rescue_ethan",
+      "type": "POINT",
+      "name": "伊森"
+    },
+    {
+      "id": "west2_outpost_rescue_field_course",
+      "type": "POINT",
+      "name": "报名野外课程"
+    },
+    {
+      "id": "west2_outpost_rescue_join_team",
+      "type": "POINT",
+      "name": "成为搜救队员"
+    },
+    {
+      "id": "west2_outpost_rescue_submit_supplies",
+      "type": "POINT",
+      "name": "提交物资"
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate",
+      "type": "POINT",
+      "name": "出站口"
+    },
+    {
+      "id": "west2_outpost_rescue_exit_notice",
+      "type": "POINT",
+      "name": "出站通告"
+    },
+    {
+      "id": "west2_outpost_rescue_exit_attempt",
+      "type": "POINT",
+      "name": "出站"
+    },
+    {
+      "id": "west2_outpost_rescue_vehicle_shed",
+      "type": "WORK_PASSAGE",
+      "name": "车棚与维修通道"
+    },
+    {
+      "id": "west2_outpost_rescue_vehicle_shed_observation",
+      "type": "POINT",
+      "name": "观察车棚"
+    },
+    {
+      "id": "west2_outpost_rescue_sneak_out_attempt",
+      "type": "POINT",
+      "name": "尝试溜出去"
+    },
+    {
+      "id": "west2_outpost_rescue_aid_tent",
+      "type": "REST_POINT",
+      "name": "急救帐篷"
+    },
+    {
+      "id": "eason_take_stretcher",
+      "type": "POINT",
+      "name": "急救帐篷"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect_area_map",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "看区域简图",
+      "edgeId": "west2_outpost_rescue_main_tent_to_area_map_edge"
+    },
+    {
+      "id": "go_to_rescue_eason_intro_01",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "伊森",
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 1020 },
+          { "path": "world.flags.eason_intro_finished", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_requested", "op": "!=", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_main_tent_to_eason_intro_01_edge"
+    },
+    {
+      "id": "go_to_rescue_eason_intro_waiting_no_stretcher",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "伊森",
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 1020 },
+          { "path": "world.flags.eason_intro_finished", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_requested", "op": "==", "value": true },
+          { "path": "world.flags.eason_intro_class_over", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_taken", "op": "!=", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_main_tent_to_eason_intro_221_no_stretcher_edge"
+    },
+    {
+      "id": "go_to_rescue_eason_intro_waiting_with_stretcher",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "伊森",
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 1020 },
+          { "path": "world.flags.eason_intro_finished", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_requested", "op": "==", "value": true },
+          { "path": "world.flags.eason_intro_class_over", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_taken", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_main_tent_to_eason_intro_221_with_stretcher_edge"
+    },
+    {
+      "id": "go_to_rescue_eason_intro_after_class",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "伊森",
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 1020 },
+          { "path": "world.flags.eason_intro_finished", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_requested", "op": "==", "value": true },
+          { "path": "world.flags.eason_intro_class_over", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_main_tent_to_eason_intro_after_class_edge"
+    },
+    {
+      "id": "go_to_rescue_ethan_menu",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "伊森",
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 1020 },
+          { "path": "world.flags.eason_intro_finished", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_main_tent_to_ethan_edge"
+    },
+    {
+      "id": "go_to_rescue_main_tent",
+      "sceneId": "west2_outpost_rescue_front_tent",
+      "type": "TRANSITION",
+      "text": "主帐篷",
+      "edgeId": "west2_outpost_rescue_front_tent_to_main_tent_edge"
+    },
+    {
+      "id": "go_to_rescue_exit_gate",
+      "sceneId": "west2_outpost_rescue_front_tent",
+      "type": "TRANSITION",
+      "text": "出站口",
+      "edgeId": "west2_outpost_rescue_front_tent_to_exit_gate_edge"
+    },
+    {
+      "id": "go_to_rescue_vehicle_shed",
+      "sceneId": "west2_outpost_rescue_front_tent",
+      "type": "TRANSITION",
+      "text": "车棚与维修通道",
+      "edgeId": "west2_outpost_rescue_front_tent_to_vehicle_shed_edge"
+    },
+    {
+      "id": "go_to_rescue_aid_tent",
+      "sceneId": "west2_outpost_rescue_front_tent",
+      "type": "TRANSITION",
+      "text": "急救帐篷",
+      "edgeId": "west2_outpost_rescue_front_tent_to_aid_tent_edge"
+    },
+    {
+      "id": "return_to_outpost_hub_from_rescue",
+      "sceneId": "west2_outpost_rescue_front_tent",
+      "type": "TRANSITION",
+      "text": "返回前哨导航",
+      "edgeId": "west2_outpost_rescue_front_tent_to_hub_edge"
+    },
+    {
+      "id": "return_to_rescue_front_tent_from_main_tent",
+      "sceneId": "west2_outpost_rescue_main_tent",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_main_tent_to_front_tent_edge"
+    },
+    {
+      "id": "return_to_rescue_main_tent_from_area_map",
+      "sceneId": "west2_outpost_rescue_area_map",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_area_map_to_main_tent_edge"
+    },
+    {
+      "id": "eason_intro_01_opt_know_you",
+      "sceneId": "eason_intro_01",
+      "type": "TRANSITION",
+      "text": "我？我认识你吗？",
+      "edgeId": "eason_intro_01_to_21_edge"
+    },
+    {
+      "id": "eason_intro_01_opt_stretcher",
+      "sceneId": "eason_intro_01",
+      "type": "TRANSITION",
+      "text": "担架？",
+      "edgeId": "eason_intro_01_to_22_edge"
+    },
+    {
+      "id": "eason_intro_21_opt_wait_20",
+      "sceneId": "eason_intro_21",
+      "type": "TRANSITION",
+      "text": "好吧",
+      "edgeId": "eason_intro_21_to_31_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_class_over", "value": true }
+      ],
+      "socialEffects": [
+        { "type": "discover_npc", "npcId": "npc_eason", "reason": "map_enter" },
+        { "type": "unlock_dossier_entry", "npcId": "npc_eason", "entryId": "npc_eason_first_meet_001", "reason": "map_enter" },
+        { "type": "set_dossier_flag", "npcId": "npc_eason", "flagId": "nameKnown", "value": true, "reason": "eason_intro_name_revealed" }
+      ]
+    },
+    {
+      "id": "eason_intro_22_opt_know_you",
+      "sceneId": "eason_intro_22",
+      "type": "TRANSITION",
+      "text": "我……认识你吗？",
+      "edgeId": "eason_intro_22_to_21_edge"
+    },
+    {
+      "id": "eason_intro_22_opt_get_stretcher",
+      "sceneId": "eason_intro_22",
+      "type": "TRANSITION",
+      "text": "去拿担架",
+      "edgeId": "eason_intro_22_to_front_tent_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_stretcher_requested", "value": true },
+        { "op": "set", "path": "world.flags.eason_intro_stretcher_taken", "value": false },
+        { "op": "set", "path": "world.flags.eason_intro_helped_with_stretcher", "value": false },
+        { "op": "set", "path": "world.flags.eason_intro_class_over", "value": false }
+      ]
+    },
+    {
+      "id": "eason_intro_221_no_stretcher_opt_know_you",
+      "sceneId": "eason_intro_221_waiting_no_stretcher",
+      "type": "TRANSITION",
+      "text": "我真的……认识你吗？",
+      "edgeId": "eason_intro_221_no_to_21_edge"
+    },
+    {
+      "id": "eason_intro_221_no_stretcher_opt_back",
+      "sceneId": "eason_intro_221_waiting_no_stretcher",
+      "type": "TRANSITION",
+      "text": "马上就来",
+      "edgeId": "eason_intro_221_no_to_front_tent_edge"
+    },
+    {
+      "id": "eason_intro_221_with_stretcher_opt_continue",
+      "sceneId": "eason_intro_221_waiting_with_stretcher",
+      "type": "TRANSITION",
+      "text": "我本来也不认识你",
+      "edgeId": "eason_intro_221_with_to_222_edge"
+    },
+    {
+      "id": "eason_intro_222_opt_wait_20_with_favor",
+      "sceneId": "eason_intro_222",
+      "type": "TRANSITION",
+      "text": "好吧",
+      "requires": {
+        "all": [
+          { "path": "world.flags.eason_intro_helped_with_stretcher", "op": "!=", "value": true }
+        ]
+      },
+      "edgeId": "eason_intro_222_to_31_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_helped_with_stretcher", "value": true },
+        { "op": "set", "path": "world.flags.eason_intro_class_over", "value": true }
+      ],
+      "socialEffects": [
+        { "type": "discover_npc", "npcId": "npc_eason", "reason": "map_enter" },
+        { "type": "unlock_dossier_entry", "npcId": "npc_eason", "entryId": "npc_eason_first_meet_001", "reason": "map_enter" },
+        { "type": "set_dossier_flag", "npcId": "npc_eason", "flagId": "nameKnown", "value": true, "reason": "eason_intro_name_revealed" },
+        { "type": "favor_delta", "npcId": "npc_eason", "delta": 10, "reason": "eason_intro_helped_with_stretcher" }
+      ]
+    },
+    {
+      "id": "eason_intro_222_opt_wait_20_no_favor",
+      "sceneId": "eason_intro_222",
+      "type": "TRANSITION",
+      "text": "好吧",
+      "requires": {
+        "all": [
+          { "path": "world.flags.eason_intro_helped_with_stretcher", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "eason_intro_222_to_31_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_class_over", "value": true }
+      ],
+      "socialEffects": [
+        { "type": "discover_npc", "npcId": "npc_eason", "reason": "map_enter" },
+        { "type": "unlock_dossier_entry", "npcId": "npc_eason", "entryId": "npc_eason_first_meet_001", "reason": "map_enter" }
+      ]
+    },
+    {
+      "id": "eason_intro_after_class_opt_not_mind",
+      "sceneId": "eason_intro_after_class",
+      "type": "TRANSITION",
+      "text": "不介意",
+      "edgeId": "eason_intro_after_class_to_32_edge",
+      "socialEffects": [
+        { "type": "discover_npc", "npcId": "npc_eason", "reason": "map_enter" },
+        { "type": "unlock_dossier_entry", "npcId": "npc_eason", "entryId": "npc_eason_first_meet_001", "reason": "map_enter" },
+        { "type": "set_dossier_flag", "npcId": "npc_eason", "flagId": "nameKnown", "value": true, "reason": "eason_intro_name_revealed" }
+      ]
+    },
+    {
+      "id": "eason_intro_31_opt_yes",
+      "sceneId": "eason_intro_31",
+      "type": "TRANSITION",
+      "text": "是",
+      "edgeId": "eason_intro_31_to_yes_edge"
+    },
+    {
+      "id": "eason_intro_31_opt_no",
+      "sceneId": "eason_intro_31",
+      "type": "TRANSITION",
+      "text": "不是",
+      "edgeId": "eason_intro_31_to_no_edge"
+    },
+    {
+      "id": "eason_intro_31_yes_opt_return",
+      "sceneId": "eason_intro_31_yes",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "eason_intro_yes_to_main_tent_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_finished", "value": true }
+      ]
+    },
+    {
+      "id": "eason_intro_31_no_opt_return",
+      "sceneId": "eason_intro_31_no",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "eason_intro_no_to_main_tent_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_finished", "value": true }
+      ]
+    },
+    {
+      "id": "eason_intro_32_opt_return",
+      "sceneId": "eason_intro_32",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "eason_intro_32_to_main_tent_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_finished", "value": true }
+      ]
+    },
+    {
+      "id": "register_field_course",
+      "sceneId": "west2_outpost_rescue_ethan",
+      "type": "TRANSITION",
+      "text": "报名野外课程",
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 720 }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_ethan_to_field_course_edge"
+    },
+    {
+      "id": "ask_to_join_rescue_team",
+      "sceneId": "west2_outpost_rescue_ethan",
+      "type": "TRANSITION",
+      "text": "成为搜救队员",
+      "edgeId": "west2_outpost_rescue_ethan_to_join_team_edge"
+    },
+    {
+      "id": "submit_found_supplies",
+      "sceneId": "west2_outpost_rescue_ethan",
+      "type": "TRANSITION",
+      "text": "提交物资",
+      "runtime": {
+        "helper": "rescue_station_submit_supplies"
+      },
+      "edgeId": "west2_outpost_rescue_ethan_to_submit_supplies_edge"
+    },
+    {
+      "id": "return_to_rescue_main_tent_from_ethan",
+      "sceneId": "west2_outpost_rescue_ethan",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_ethan_to_main_tent_edge"
+    },
+    {
+      "id": "return_to_rescue_ethan_from_field_course",
+      "sceneId": "west2_outpost_rescue_field_course",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_field_course_to_ethan_edge"
+    },
+    {
+      "id": "return_to_rescue_ethan_from_join_team",
+      "sceneId": "west2_outpost_rescue_join_team",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_join_team_to_ethan_edge"
+    },
+    {
+      "id": "return_to_rescue_ethan_from_submit_supplies",
+      "sceneId": "west2_outpost_rescue_submit_supplies",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_submit_supplies_to_ethan_edge"
+    },
+    {
+      "id": "wilderness_start_west2_old_marker_patrol",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "OBSERVE",
+      "text": "沿旧标记杆巡查线出站",
+      "runtime": {
+        "helper": "wilderness_start_session"
+      },
+      "wilderness": {
+        "areaId": "west2_old_marker_patrol_line"
+      }
+    },
+    {
+      "id": "inspect_exit_notice",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "TRANSITION",
+      "text": "看出站通告",
+      "edgeId": "west2_outpost_rescue_exit_gate_to_exit_notice_edge"
+    },
+    {
+      "id": "exit_rescue_station",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "TRANSITION",
+      "text": "出站",
+      "edgeId": "west2_outpost_rescue_exit_gate_to_exit_attempt_edge"
+    },
+    {
+      "id": "return_to_rescue_front_tent_from_exit_gate",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_exit_gate_to_front_tent_edge"
+    },
+    {
+      "id": "return_to_rescue_exit_gate_from_exit_notice",
+      "sceneId": "west2_outpost_rescue_exit_notice",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_exit_notice_to_exit_gate_edge"
+    },
+    {
+      "id": "return_to_rescue_exit_gate_from_exit_attempt",
+      "sceneId": "west2_outpost_rescue_exit_attempt",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_exit_attempt_to_exit_gate_edge"
+    },
+    {
+      "id": "inspect_vehicle_shed",
+      "sceneId": "west2_outpost_rescue_vehicle_shed",
+      "type": "TRANSITION",
+      "text": "观察车棚",
+      "edgeId": "west2_outpost_rescue_vehicle_shed_to_observation_edge"
+    },
+    {
+      "id": "attempt_sneak_out",
+      "sceneId": "west2_outpost_rescue_vehicle_shed",
+      "type": "TRANSITION",
+      "text": "尝试溜出去",
+      "edgeId": "west2_outpost_rescue_vehicle_shed_to_sneak_out_attempt_edge"
+    },
+    {
+      "id": "return_to_rescue_front_tent_from_vehicle_shed",
+      "sceneId": "west2_outpost_rescue_vehicle_shed",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_vehicle_shed_to_front_tent_edge"
+    },
+    {
+      "id": "return_to_rescue_vehicle_shed_from_observation",
+      "sceneId": "west2_outpost_rescue_vehicle_shed_observation",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_vehicle_shed_observation_to_vehicle_shed_edge"
+    },
+    {
+      "id": "return_to_rescue_vehicle_shed_from_sneak_out_attempt",
+      "sceneId": "west2_outpost_rescue_sneak_out_attempt",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_sneak_out_attempt_to_vehicle_shed_edge"
+    },
+    {
+      "id": "return_to_rescue_front_tent_from_aid_tent",
+      "sceneId": "west2_outpost_rescue_aid_tent",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_aid_tent_to_front_tent_edge"
+    },
+    {
+      "id": "eason_take_stretcher_action",
+      "sceneId": "west2_outpost_rescue_aid_tent",
+      "type": "TRANSITION",
+      "text": "拿走担架",
+      "requires": {
+        "all": [
+          { "path": "world.flags.eason_intro_stretcher_requested", "op": "==", "value": true },
+          { "path": "world.flags.eason_intro_finished", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_taken", "op": "!=", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_aid_tent_to_take_stretcher_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_stretcher_taken", "value": true }
+      ]
+    },
+    {
+      "id": "eason_take_stretcher_return",
+      "sceneId": "eason_take_stretcher",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "eason_take_stretcher_to_aid_tent_edge"
+    },
+    {
+      "id": "eason_wait_for_class_over_20",
+      "sceneId": "west2_outpost_rescue_front_tent",
+      "type": "TRANSITION",
+      "text": "等伊森下课（20分钟）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.eason_intro_finished", "op": "!=", "value": true },
+          { "path": "world.flags.eason_intro_stretcher_requested", "op": "==", "value": true },
+          { "path": "world.flags.eason_intro_class_over", "op": "!=", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_rescue_front_tent_to_eason_intro_after_class_edge",
+      "effects": [
+        { "op": "set", "path": "world.flags.eason_intro_class_over", "value": true }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_rescue_main_tent_to_area_map_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "west2_outpost_rescue_area_map",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent_to_ethan_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "west2_outpost_rescue_ethan",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent_to_eason_intro_01_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "eason_intro_01",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent_to_eason_intro_221_no_stretcher_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "eason_intro_221_waiting_no_stretcher",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent_to_eason_intro_221_with_stretcher_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "eason_intro_221_waiting_with_stretcher",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent_to_eason_intro_after_class_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "eason_intro_after_class",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_main_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_front_tent",
+      "toSceneId": "west2_outpost_rescue_main_tent",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_01_to_21_edge",
+      "fromSceneId": "eason_intro_01",
+      "toSceneId": "eason_intro_21",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_01_to_22_edge",
+      "fromSceneId": "eason_intro_01",
+      "toSceneId": "eason_intro_22",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_22_to_21_edge",
+      "fromSceneId": "eason_intro_22",
+      "toSceneId": "eason_intro_21",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_22_to_front_tent_edge",
+      "fromSceneId": "eason_intro_22",
+      "toSceneId": "west2_outpost_rescue_front_tent",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_21_to_31_edge",
+      "fromSceneId": "eason_intro_21",
+      "toSceneId": "eason_intro_31",
+      "minutes": 20
+    },
+    {
+      "id": "eason_intro_221_no_to_21_edge",
+      "fromSceneId": "eason_intro_221_waiting_no_stretcher",
+      "toSceneId": "eason_intro_21",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_221_no_to_front_tent_edge",
+      "fromSceneId": "eason_intro_221_waiting_no_stretcher",
+      "toSceneId": "west2_outpost_rescue_front_tent",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_221_with_to_222_edge",
+      "fromSceneId": "eason_intro_221_waiting_with_stretcher",
+      "toSceneId": "eason_intro_222",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_222_to_31_edge",
+      "fromSceneId": "eason_intro_222",
+      "toSceneId": "eason_intro_31",
+      "minutes": 20
+    },
+    {
+      "id": "eason_intro_after_class_to_32_edge",
+      "fromSceneId": "eason_intro_after_class",
+      "toSceneId": "eason_intro_32",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_31_to_yes_edge",
+      "fromSceneId": "eason_intro_31",
+      "toSceneId": "eason_intro_31_yes",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_31_to_no_edge",
+      "fromSceneId": "eason_intro_31",
+      "toSceneId": "eason_intro_31_no",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_yes_to_main_tent_edge",
+      "fromSceneId": "eason_intro_31_yes",
+      "toSceneId": "west2_outpost_rescue_main_tent",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_no_to_main_tent_edge",
+      "fromSceneId": "eason_intro_31_no",
+      "toSceneId": "west2_outpost_rescue_main_tent",
+      "minutes": 0
+    },
+    {
+      "id": "eason_intro_32_to_main_tent_edge",
+      "fromSceneId": "eason_intro_32",
+      "toSceneId": "west2_outpost_rescue_main_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_exit_gate_edge",
+      "fromSceneId": "west2_outpost_rescue_front_tent",
+      "toSceneId": "west2_outpost_rescue_exit_gate",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_vehicle_shed_edge",
+      "fromSceneId": "west2_outpost_rescue_front_tent",
+      "toSceneId": "west2_outpost_rescue_vehicle_shed",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_aid_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_front_tent",
+      "toSceneId": "west2_outpost_rescue_aid_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_hub_edge",
+      "fromSceneId": "west2_outpost_rescue_front_tent",
+      "toMapId": "west2_outpost_hub",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_main_tent_to_front_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_main_tent",
+      "toSceneId": "west2_outpost_rescue_front_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_area_map_to_main_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_area_map",
+      "toSceneId": "west2_outpost_rescue_main_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_ethan_to_field_course_edge",
+      "fromSceneId": "west2_outpost_rescue_ethan",
+      "toSceneId": "west2_outpost_rescue_field_course",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_ethan_to_join_team_edge",
+      "fromSceneId": "west2_outpost_rescue_ethan",
+      "toSceneId": "west2_outpost_rescue_join_team",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_ethan_to_submit_supplies_edge",
+      "fromSceneId": "west2_outpost_rescue_ethan",
+      "toSceneId": "west2_outpost_rescue_submit_supplies",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_ethan_to_main_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_ethan",
+      "toSceneId": "west2_outpost_rescue_main_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_field_course_to_ethan_edge",
+      "fromSceneId": "west2_outpost_rescue_field_course",
+      "toSceneId": "west2_outpost_rescue_ethan",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_join_team_to_ethan_edge",
+      "fromSceneId": "west2_outpost_rescue_join_team",
+      "toSceneId": "west2_outpost_rescue_ethan",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_submit_supplies_to_ethan_edge",
+      "fromSceneId": "west2_outpost_rescue_submit_supplies",
+      "toSceneId": "west2_outpost_rescue_ethan",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate_to_exit_notice_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_gate",
+      "toSceneId": "west2_outpost_rescue_exit_notice",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate_to_exit_attempt_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_gate",
+      "toSceneId": "west2_outpost_rescue_exit_attempt",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate_to_front_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_gate",
+      "toSceneId": "west2_outpost_rescue_front_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_exit_notice_to_exit_gate_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_notice",
+      "toSceneId": "west2_outpost_rescue_exit_gate",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_exit_attempt_to_exit_gate_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_attempt",
+      "toSceneId": "west2_outpost_rescue_exit_gate",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_vehicle_shed_to_observation_edge",
+      "fromSceneId": "west2_outpost_rescue_vehicle_shed",
+      "toSceneId": "west2_outpost_rescue_vehicle_shed_observation",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_vehicle_shed_to_sneak_out_attempt_edge",
+      "fromSceneId": "west2_outpost_rescue_vehicle_shed",
+      "toSceneId": "west2_outpost_rescue_sneak_out_attempt",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_vehicle_shed_to_front_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_vehicle_shed",
+      "toSceneId": "west2_outpost_rescue_front_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_vehicle_shed_observation_to_vehicle_shed_edge",
+      "fromSceneId": "west2_outpost_rescue_vehicle_shed_observation",
+      "toSceneId": "west2_outpost_rescue_vehicle_shed",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_sneak_out_attempt_to_vehicle_shed_edge",
+      "fromSceneId": "west2_outpost_rescue_sneak_out_attempt",
+      "toSceneId": "west2_outpost_rescue_vehicle_shed",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_aid_tent_to_front_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_aid_tent",
+      "toSceneId": "west2_outpost_rescue_front_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_aid_tent_to_take_stretcher_edge",
+      "fromSceneId": "west2_outpost_rescue_aid_tent",
+      "toSceneId": "eason_take_stretcher",
+      "minutes": 0
+    },
+    {
+      "id": "eason_take_stretcher_to_aid_tent_edge",
+      "fromSceneId": "eason_take_stretcher",
+      "toSceneId": "west2_outpost_rescue_aid_tent",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_eason_intro_after_class_edge",
+      "fromSceneId": "west2_outpost_rescue_front_tent",
+      "toSceneId": "eason_intro_after_class",
+      "minutes": 20
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

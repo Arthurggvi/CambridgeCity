@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_14",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "“东西收拾好了吗？”",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_14_continue", "text": "继续", "targetMapId": "theseus_ending_15", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

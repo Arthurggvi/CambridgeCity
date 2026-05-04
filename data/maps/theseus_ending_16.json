@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_16",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "“记得下午我会来接你，别忘了。”\n他停了一下，慢慢站起身来，像是还有话要说，却终究没有开口。\n随后他转过身，安静地离开了房间。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_finish", "text": "继续", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "menu_more",
+  "name": "更多选项",
+  "description": "游戏设置与存档管理",
+  "actions": [
+    {
+      "id": "ui_open_inventory",
+      "text": "打开背包"
+    },
+    {
+      "id": "go_back",
+      "text": "返回"
+    }
+  ]
+}

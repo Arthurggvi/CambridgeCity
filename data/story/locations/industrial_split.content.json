@@ -1,0 +1,281 @@
+{
+  "location_id": "industrial_split",
+  "SceneList": [
+    { "id": "1.0", "type": "HUB_LOBBY", "text": "工区分流口", "default_return": "1.0" }
+  ],
+  "EdgeList": [
+    { "from": "1.0", "to": "1.0" }
+  ],
+  "InteractionList": [
+    { "id": "check_split_signage", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "看导向牌" },
+    { "id": "inspect_access_lights", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "检查门禁灯" },
+    { "id": "read_dispatch_board", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:02", "condition": null, "goto": "1.0", "text": "看派工板" },
+    { "id": "ask_temp_shift_window", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "靠近签到窗问短工" },
+    { "id": "observe_split", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "观察人流与车流" },
+    { "id": "take_temp_manifest_shift", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "1:30", "condition": "06:00-17:59", "goto": "1.0", "text": "报名箱单核对短工" },
+    { "id": "to_warehouse_gate", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:03", "condition": null, "goto": "industrial_warehouse_gate", "text": "去仓储区门口" },
+    { "id": "to_maintenance_gate", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:03", "condition": null, "goto": "industrial_maintenance_gate", "text": "去维修厂门口" }
+  ],
+  "BlockerSpec": { "blockers": [] },
+  "SessionSpec": { "sessions": [] },
+  "RuntimeText": {
+    "actionTextByMapId": {
+      "industrial_split": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "check_split_signage": {
+            "actionLabel": {
+              "base": "看导向牌",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "mode": "replace", "text": "贴近导向牌看箭头" },
+                { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "贴着导向牌确认方向" }
+              ]
+            },
+            "actionFeedback": {
+              "base": "导向牌的字不多，箭头分得很硬：仓储区在左，维修厂在右，回风堤街在后。底部小字写着未登记者勿在分流口停留。\n\n牌边结着一层薄霜，你得稍微靠近一点，才能把最下排的小字看全。",
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风一压过来，雪粉沿牌面和地面一起跑，牌边细霜会黏在手套上，你读小字只能再贴近半步。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "能见度掉下去后，先抓到的是箭头和区段名，限制性小字要贴近牌面才读得全。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "雪雾最重时先能看见反光箭头，句子会被雾带切碎，你得靠很近才把方向和限制词拼完整。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "导向牌把仓储线、维修线和回风堤街分得很硬，停留提示挂在最下方。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "雪雾把边线吞掉后，你主要靠箭头和关键词把三条方向重新扣住。" }
+                ]
+              }
+            }
+          },
+          "inspect_access_lights": {
+            "actionLabel": {
+              "base": "检查门禁灯"
+            },
+            "actionFeedback": {
+              "base": "你先看门禁灯，再看门。绿灯那条放行线走得快，红灯位前的人会自动停半步，待机灯则稳稳挂在两线中间。\n\n这里没人把它当机关，灯色只是每天都要先确认的秩序外壳。",
+              "lightVariants": [
+                { "when": { "lightPhase": ["twilight", "polar_night"] }, "text": "夜里门和字都退到后面，灯色几乎先于一切把通行状态顶出来。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风雪扫过来时，灯点在白雾里更硬，像钉在通道上的固定节拍。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度掉下去后，你几乎只靠灯色判断哪条线还在正常放行。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "门禁灯位在风里稳着不闪，先于门和字把通行状态亮出来。",
+                "lightVariants": [
+                  { "when": { "lightPhase": ["twilight", "polar_night"] }, "text": "夜段里你几乎先看见灯，再看见门和人。" }
+                ]
+              }
+            }
+          },
+          "read_dispatch_board": {
+            "actionLabel": {
+              "base": "看派工板"
+            },
+            "actionFeedback": {
+              "base": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：受理中\n- 仓储前场补贴标签：受理中\n- 去向：仓储前场\n- 备注：满额即止，夜间不新收临工",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "open" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：受理中\n- 仓储前场补贴标签：受理中\n- 去向：仓储前场\n- 备注：满额即止" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：即将停收\n- 仓储前场补贴标签：因风压暂停\n- 去向：仓储前场\n- 备注：风稳前不放标签活" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：已满\n- 仓储前场补贴标签：因风压暂停\n- 去向：仓储前场\n- 备注：等待下一轮" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "weather_suspended", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：因风雪暂停\n- 仓储前场补贴标签：因风雪暂停\n- 去向：仓储前场\n- 备注：外场不放人继续干" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "visibility_suspended", "industrialSubsidyTagStatus": "visibility_suspended" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：因能见度暂停\n- 仓储前场补贴标签：因能见度暂停\n- 去向：仓储前场\n- 备注：反光边可认，细字不稳" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "closing" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：受理中\n- 仓储前场补贴标签：即将停收\n- 去向：仓储前场\n- 备注：补贴标签本轮收尾" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：即将停收\n- 仓储前场补贴标签：已满\n- 去向：仓储前场\n- 备注：仅处理最后一轮箱单" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "今日短工（工区分流口登记）\n- 仓储前场箱单核对：已满\n- 仓储前场补贴标签：已满\n- 去向：仓储前场\n- 备注：本批满额，等待下一轮" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜间不新收临工。派工板只留值班和夜修交接提示，短工栏位全部停受理。" }
+              ],
+              "lightVariants": [
+                { "when": { "lightPhase": "twilight" }, "text": "傍晚冷白灯打在湿纸上，停收提示比岗位细则更先被看见。" },
+                { "when": { "lightPhase": "polar_night" }, "text": "夜里光圈只罩住板中心，外圈条目退进阴影，短工栏位全是停收标记。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风把纸边和订钉位来回扯动，受潮纸角发硬卷起，你得一手压板沿一手对条目，才能不看串行。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "能见度偏低时，你先看清的是“受理中/即将停收/已满”这几排粗字，再补读下面的细项。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "雪雾压下来后远处人影都在退，板面上先留下粗字和粗线，细则要贴脸才读得住。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "派工板写明两类仓储前场短工：箱单核对与补贴标签，均由分流口统一登记派发。",
+                "serviceVariants": [
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "open" }, "mode": "replace", "text": "派工板显示：箱单核对受理中，补贴标签受理中。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "派工板显示：箱单即将停收，补贴标签因风压暂停。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "派工板显示：箱单已满，补贴标签因风压暂停。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "weather_suspended", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "派工板显示：两类短工因风雪暂停。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "visibility_suspended", "industrialSubsidyTagStatus": "visibility_suspended" }, "mode": "replace", "text": "派工板显示：两类短工因能见度暂停。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "closing" }, "mode": "replace", "text": "派工板显示：箱单核对受理中，补贴标签即将停收。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "派工板显示：箱单核对即将停收，补贴标签已满。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "派工板显示：两类短工本批已满，暂停新收。" },
+                  { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "夜班段的派工板只剩值班和交接条目，短工栏位都停了。" }
+                ]
+              }
+            }
+          },
+          "ask_temp_shift_window": {
+            "actionLabel": {
+              "base": "靠近签到窗问短工"
+            },
+            "actionFeedback": {
+              "base": "你凑近签到窗，里面的人没抬头。窗口只给短答：收不收、满没满、去哪边。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "open" }, "mode": "replace", "text": "箱单还收。补贴标签还收。去仓储前场。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "补标签先挂了。箱单只收这一轮。去仓储前场。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "补标签因风压停收。箱单也满了。等下一轮。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "weather_suspended", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "风雪太硬，两类短工都挂了。先别往前场走。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "visibility_suspended", "industrialSubsidyTagStatus": "visibility_suspended" }, "mode": "replace", "text": "外头看不稳，两类短工都暂停。等能见度回升。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "closing" }, "mode": "replace", "text": "箱单还收。补贴标签快停了，要接就现在。去仓储前场。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "标签满了。箱单只收这一轮。去仓储前场。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "标签满了。箱单这会儿也满了。等下一轮。" },
+                { "when": { "serviceBand": "night_service" }, "text": "窗口只回一句：夜间不新收临工，白班再来登记。" }
+              ],
+              "lightVariants": [
+                { "when": { "lightPhase": "twilight" }, "text": "傍晚的窗内灯偏冷，值班员说话更快：这批收完就停。" },
+                { "when": { "lightPhase": "polar_night" }, "text": "夜灯把玻璃霜边照得发白，窗口只重复夜里不新收临工。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风雪贴窗时，你得侧着站才听清，对方只留最短答复。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度差时窗口只示意下一位，登记与否以牌面红字为准。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "窗口回话很短：是否受理、是否满额、统一去仓储前场，全部以分流口当前批次为准。",
+                "serviceVariants": [
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "open" }, "mode": "replace", "text": "窗口回话：两类短工都在收，先登记再去仓储前场。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "窗口回话：补标签因风压暂停，箱单只收本轮。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "窗口回话：补标签停了，箱单已满，暂停受理。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "weather_suspended", "industrialSubsidyTagStatus": "weather_suspended" }, "mode": "replace", "text": "窗口回话：风雪压线，前场短工全挂起。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "visibility_suspended", "industrialSubsidyTagStatus": "visibility_suspended" }, "mode": "replace", "text": "窗口回话：能见度不够，前场短工全暂停。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "open", "industrialSubsidyTagStatus": "closing" }, "mode": "replace", "text": "窗口回话：箱单还收，补贴标签即将停收。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "窗口回话：补贴标签已满，箱单只收本轮。" },
+                  { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full", "industrialSubsidyTagStatus": "full" }, "mode": "replace", "text": "窗口回话：本批短工满额，暂停受理。" },
+                  { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "夜班窗口直接拒收新临工，只让你白班再来。" }
+                ]
+              }
+            }
+          },
+          "observe_split": {
+            "actionLabel": {
+              "base": "观察人流与车流"
+            },
+            "actionFeedback": {
+              "base": "你靠围栏站了一会。去仓储线的人更多，推小车和轻件转运车会沿最深车辙走；去维修线的人更少，但背工具包的比例更高。\n\n签到窗前总有人停一下，看牌、领活、被拦，再继续走。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "text": "白班节奏更紧，分流口几乎一直在吐人和车。" },
+                { "when": { "serviceBand": "night_service" }, "text": "夜班只剩值班、夜修和巡检，流量明显收窄。" }
+              ],
+              "lightVariants": [
+                { "when": { "lightPhase": "twilight" }, "text": "傍晚灯带压亮了反光边，车流开始快进快出，不再停留等单。" },
+                { "when": { "lightPhase": "polar_night" }, "text": "夜灯下的人影更碎，先动的是反光条和门禁灯，再是具体人脸。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风一大，人和车都会贴着围栏或深车辙走，原本在板前停两秒的人会立刻散开，整段流动更急。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "text": "视线偏低时，先动起来的是反光条和门禁灯，再慢半拍才分出人流和车流。" },
+                { "when": { "visibilityBand": "hazard" }, "text": "夜里雪雾压实后，你几乎先看到反光带在挪动，再勉强分出那是推车还是人影。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "分流口前的人和车都只做短停：看牌、领活、被门禁拦一下，再各走各线。",
+                "serviceVariants": [
+                  { "when": { "serviceBand": "night_service" }, "text": "夜里人流降下去后，留下来的几乎都是值班和夜修线路。" }
+                ]
+              }
+            }
+          },
+          "to_warehouse_gate": {
+            "actionLabel": {
+              "base": "前往仓储区门口",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "沿仓储线反光边前行" }
+              ]
+            },
+            "actionFeedback": {
+              "base": "你沿仓储线出去。那边通道更开，车辙更深，堆垛轮廓在围栏后排成一层层暗块。\n\n继续前行会抵达仓储区门口。",
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风把雪粉压在地面跑，推车声和链条摩擦声一路贴着你走。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你沿着仓储线前进，围栏后是堆垛和低矮设备轮廓。"
+              }
+            }
+          },
+          "to_maintenance_gate": {
+            "actionLabel": {
+              "base": "前往维修厂门口"
+            },
+            "actionFeedback": {
+              "base": "你转进维修线。通道更窄，门禁和工具箱标识更密，金属低鸣从前方一点点压过来。\n\n继续前行会抵达维修厂门口。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你转向维修线，门禁灯像固定的亮点，金属低鸣更近。"
+              }
+            }
+          },
+          "take_temp_manifest_shift": {
+            "actionLabel": {
+              "base": "报名箱单核对短工",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing" }, "mode": "replace", "text": "报名箱单核对短工（只收本轮）" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full" }, "mode": "replace", "text": "报名箱单核对短工（已满）" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "weather_suspended" }, "mode": "replace", "text": "报名箱单核对短工（风雪暂停）" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "visibility_suspended" }, "mode": "replace", "text": "报名箱单核对短工（能见度暂停）" },
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "报名箱单核对短工（夜里停收）" }
+              ]
+            },
+            "actionFeedback": {
+              "base": "你领到一叠潮软的纸单，跟着编号核对几排箱子。贴错的签要当场改，字迹糊掉的要重抄。\n\n风一直从围栏上方压下来，手套越戴越硬。做完这一轮后，窗口在单子上划了一笔，结算记到你的账上。",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "closing" }, "text": "窗口提醒你这是最后一轮，做完就停收。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "full" }, "mode": "replace", "text": "箱单核对这会儿已满，窗口不再加单。请回工区分流口等下一轮。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "weather_suspended" }, "mode": "replace", "text": "风雪压线，箱号和纸单都不稳，箱单核对先挂起。请回工区分流口等复开。" },
+                { "when": { "serviceBand": "day_service", "industrialManifestStatus": "visibility_suspended" }, "mode": "replace", "text": "外场能见度太差，箱号看不稳，箱单核对暂停受理。请回工区分流口等待。" },
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "夜里不新收临工，箱单核对停受理。白班再来。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "雪粉贴着地面打转，你每翻一页都要压住纸角，免得被风卷走。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你按箱号一排排核对，错位的贴签当场重贴，模糊的编号重新誊写。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "hazard" }, "text": "你贴近箱体才看清编号，先核对再重贴，避免整排错签。" }
+                ]
+              },
+              "1": {
+                "base": "纸单受潮发软，手套在风里越戴越硬，翻页和按签都变慢。",
+                "weatherVariants": [
+                  { "when": { "isSnowing": true }, "text": "雪粉不断压在纸角上，你每翻一页都得先把边角按住。" }
+                ]
+              },
+              "2": {
+                "base": "交回单子后，签到窗在结算栏划单记账，短工钱已入账。",
+                "serviceVariants": [
+                  { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "夜班窗口只做交接，不再受理这类短工结算。" }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

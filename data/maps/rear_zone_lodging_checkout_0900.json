@@ -1,0 +1,15 @@
+{
+  "id": "rear_zone_lodging_checkout_0900",
+  "mapType": "link",
+  "name": "退房",
+  "description": "",
+  "actions": [
+    {
+      "id": "rear_zone_lodging_checkout_return",
+      "text": "回到后区",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "heatcorridor_rear_section", "minutes": 0 }
+    }
+  ]
+}

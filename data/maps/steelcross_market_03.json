@@ -1,0 +1,44 @@
+{
+  "id": "steelcross_market_03",
+  "legacy": true,
+  "mapType": "link",
+  "name": "钢十字港集会",
+  "description": "你站在集会中段，护栏旁压着的旧木箱和翻开的布面把人流切成几股。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "actions": [
+    {
+      "id": "steelcross_market_03_forward",
+      "text": "向前探寻（0:02）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_04", "minutes": 2 }
+    },
+    {
+      "id": "steelcross_market_03_return_port",
+      "text": "返回港口（0:03）",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_port", "minutes": 3 }
+    },
+    {
+      "id": "steelcross_market_03_enter_stall",
+      "text": "新四杂货（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_02_placeholder", "minutes": 1 }
+    }
+  ]
+}

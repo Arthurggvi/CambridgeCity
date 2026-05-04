@@ -1,0 +1,17 @@
+{
+  "id": "w2_spine_3",
+  "name": "W2-Spine-3 工区分流口",
+  "description": "沿岸主走廊工区分叉，占位地图。",
+  "actions": [
+    { "id": "to_spine_2", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_2" },
+    { "id": "to_spine_4", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_4" },
+    { "id": "enter_industrial_split", "text": "进入工区分流口", "ui": { "type": "button" }, "targetMapId": "industrial_split" },
+    {
+      "id": "enter_industrial_bus_stop",
+      "text": "前往工业区站牌",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_STOP_ENTRY",
+      "payload": { "stopId": "stop_industrial", "intentType": "transit_stop" }
+    }
+  ]
+}

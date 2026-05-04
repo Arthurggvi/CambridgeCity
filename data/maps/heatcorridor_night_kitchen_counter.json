@@ -1,0 +1,77 @@
+{
+  "id": "heatcorridor_night_kitchen_counter",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "堂食窄台",
+  "description": "靠墙窄台收得很紧，桌面和边角都留着水印与汤滴。端着热饭的人大多低头吃完就走。",
+  "entrySceneId": "night_kitchen_counter_seating",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "scenes": [
+    {
+      "id": "night_kitchen_counter_seating",
+      "type": "DINING_COUNTER",
+      "name": "堂食窄台"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "night_kitchen_counter_watch_people",
+      "sceneId": "night_kitchen_counter_seating",
+      "type": "OBSERVE",
+      "text": "看周围的人",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你看了看堂食窄台周围的人。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_counter_rest_briefly",
+      "sceneId": "night_kitchen_counter_seating",
+      "type": "REST",
+      "text": "坐在窄台边歇一会儿",
+      "minutes": 10,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你在堂食窄台边坐下歇了一会儿。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_counter_to_window",
+      "sceneId": "night_kitchen_counter_seating",
+      "type": "TRANSITION",
+      "text": "去热食窗口",
+      "edgeId": "night_kitchen_counter_to_window_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你从窄台边起身，往窗口那边走过去。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_counter_to_hub",
+      "sceneId": "night_kitchen_counter_seating",
+      "type": "TRANSITION",
+      "text": "返回24/7夜灶",
+      "edgeId": "night_kitchen_counter_to_hub_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你从堂食窄台边退回夜灶中间那段通道。" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "night_kitchen_counter_to_window_edge",
+      "fromSceneId": "night_kitchen_counter_seating",
+      "toMapId": "heatcorridor_night_kitchen_window",
+      "minutes": 1
+    },
+    {
+      "id": "night_kitchen_counter_to_hub_edge",
+      "fromSceneId": "night_kitchen_counter_seating",
+      "toMapId": "heatcorridor_night_kitchen",
+      "minutes": 1
+    }
+  ]
+  ,"blockers": [],
+  "sessions": []
+}

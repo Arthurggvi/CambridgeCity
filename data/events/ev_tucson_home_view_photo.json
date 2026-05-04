@@ -1,0 +1,15 @@
+{
+  "id": "ev_tucson_home_view_photo",
+  "name": "图森宅屋查看照片",
+  "steps": [
+    {
+      "type": "set_flag",
+      "key": "tucsonHomeViewedPhoto",
+      "value": true
+    },
+    {
+      "type": "goto_map",
+      "mapId": "tucson_home_photo"
+    }
+  ]
+}

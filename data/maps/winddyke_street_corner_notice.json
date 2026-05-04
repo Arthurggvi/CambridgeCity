@@ -1,0 +1,117 @@
+{
+  "id": "winddyke_street_corner_notice",
+  "name": "风堤街-转角公告段",
+  "description": "风堤街分流转角。公告墙、导向牌与围栏在此重排人流：一线去风堤街站牌，一线去仓储/维修工区。",
+  "environment": {
+    "exposureLevel": "Open"
+  },
+  "ui": {
+    "actionGroups": [
+      {
+        "id": "corner_notice_observe_bundle",
+        "title": "观察转角设施",
+        "childrenActionIds": [
+          "check_signage",
+          "inspect_ground_grit",
+          "observe_split_flow"
+        ],
+        "defaultCollapsed": true,
+        "hint": "3项"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "read_notice_wall_day",
+      "text": "读公告墙（白天 0:02）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 1079 }
+        ]
+      },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 2 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "白天的公告反光刺眼，封海、警报与登记条款被层层覆盖。" }
+      ]
+    },
+    {
+      "id": "read_notice_wall_night",
+      "text": "读公告墙（夜晚 0:02）",
+      "ui": { "type": "button" },
+      "requires": {
+        "any": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 1080 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 359 }
+        ]
+      },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 2 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "夜里的公告更短更硬，停运与封廊的语气像直接的拒绝。" }
+      ]
+    },
+    {
+      "id": "check_signage",
+      "text": "看导向牌（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "导向牌把路线切得很清楚：站牌、工区、回诊所，各走各线。" }
+      ]
+    },
+    {
+      "id": "inspect_ground_grit",
+      "text": "检查地面（防滑网/撒砂砾，0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "砂砾区是转角最稳的一小段，离开后雪面立刻变滑。" }
+      ]
+    },
+    {
+      "id": "observe_split_flow",
+      "text": "观察围栏分流口（人流/车流，0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你盯着围栏外的动线：去站牌的人会短暂停一下，工区线更快更硬。" }
+      ]
+    },
+    {
+      "id": "to_gov_hall_entry",
+      "text": "前往政务大厅入口（0:03）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "gov_hall_entry_split", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你离开转角公告段，沿导向护栏走向政务大厅的风廊入口。" }
+      ]
+    },
+    {
+      "id": "to_clinic_segment",
+      "text": "回诊所方向（0:03）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "winddyke_street_clinic_segment", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿原路退回，反光杆编号倒着跳回诊所门口。" }
+      ]
+    },
+    {
+      "id": "enter_transit_stop_winddyke",
+      "text": "前往风堤街站牌",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_STOP_ENTRY",
+      "payload": { "stopId": "stop_winddyke", "intentType": "transit_stop" },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你朝背风侧的站牌走去，灯罩里的薄霜把冷光压得更低。" }
+      ]
+    }
+  ]
+}

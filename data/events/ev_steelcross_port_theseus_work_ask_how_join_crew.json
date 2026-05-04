@@ -1,0 +1,15 @@
+{
+  "id": "ev_steelcross_port_theseus_work_ask_how_join_crew",
+  "name": "忒修斯号船员说明补人条件",
+  "steps": [
+    {
+      "type": "set_flag",
+      "key": "theseusCrewWorkAskRienUnlocked",
+      "value": true
+    },
+    {
+      "type": "goto_map",
+      "mapId": "steelcross_port_theseus_work_how_join_crew"
+    }
+  ]
+}

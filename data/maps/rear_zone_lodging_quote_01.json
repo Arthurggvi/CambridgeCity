@@ -1,0 +1,25 @@
+{
+  "id": "rear_zone_lodging_quote_01",
+  "mapType": "link",
+  "name": "后区柜台",
+  "description": "",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "rear_zone_lodging_quote_accept",
+      "text": "住",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_lodging_confirm_01", "minutes": 0 }
+    },
+    {
+      "id": "rear_zone_lodging_quote_decline",
+      "text": "不用了",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_lodging_counter_01", "minutes": 0 }
+    }
+  ]
+}

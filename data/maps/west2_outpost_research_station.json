@@ -1,0 +1,274 @@
+{
+  "id": "west2_outpost_research_station",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "西部二区综合科研总站",
+  "description": "你站在一楼，偶尔有人推着样品车穿过。",
+  "entrySceneId": "west2_outpost_research_lobby",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "sheltered",
+  "shelter": "full",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "Sheltered",
+    "windShelter": 0.86,
+    "heatSource": 0.08,
+    "drying": 0.14
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_research_lobby",
+      "type": "HUB_LOBBY",
+      "name": "科研主楼一楼"
+    },
+    {
+      "id": "west2_outpost_research_frontdesk",
+      "type": "SERVICE_COUNTER",
+      "name": "接待前台"
+    },
+    {
+      "id": "west2_outpost_research_frontdesk_refusal",
+      "type": "POINT",
+      "name": "前台答复"
+    },
+    {
+      "id": "west2_outpost_research_maintenance_window",
+      "type": "SERVICE_COUNTER",
+      "name": "仪器维护窗口"
+    },
+    {
+      "id": "west2_outpost_research_access_denied",
+      "type": "POINT",
+      "name": "门禁答复"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "enter_research_frontdesk",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TIME_SKIP",
+      "text": "接待前台",
+      "minutes": 1,
+      "effects": [
+        { "op": "set", "path": "currentSceneId", "value": "west2_outpost_research_frontdesk" },
+        {
+          "op": "set",
+          "path": "currentScene",
+          "value": {
+            "id": "west2_outpost_research_frontdesk",
+            "type": "SERVICE_COUNTER",
+            "name": "接待前台"
+          }
+        }
+      ]
+    },
+    {
+      "id": "go_to_research_maintenance_window",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "仪器维护窗口",
+      "edgeId": "west2_outpost_research_lobby_to_maintenance_edge"
+    },
+    {
+      "id": "go_to_research_experiment_room",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "综合实验间",
+      "edgeId": "west2_outpost_research_lobby_to_access_denied_from_experiment_edge",
+      "requires": {
+        "all": [
+          { "path": "world.flags.west2_outpost_research_experiment_room_access", "op": "!=", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "enter_research_experiment_room_authorized",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "综合实验间",
+      "edgeId": "west2_outpost_research_lobby_to_experiment_room_edge",
+      "requires": {
+        "all": [
+          { "path": "world.flags.west2_outpost_research_experiment_room_access", "op": "==", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "go_to_research_sample_storage",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "样品暂存区",
+      "edgeId": "west2_outpost_research_lobby_to_access_denied_from_sample_storage_edge",
+      "requires": {
+        "all": [
+          { "path": "world.flags.west2_outpost_research_sample_storage_access", "op": "!=", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "enter_research_sample_storage_authorized",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "样品暂存区",
+      "edgeId": "west2_outpost_research_lobby_to_sample_storage_edge",
+      "requires": {
+        "all": [
+          { "path": "world.flags.west2_outpost_research_sample_storage_access", "op": "==", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "go_upstairs",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "上楼",
+      "edgeId": "west2_outpost_research_lobby_to_access_denied_from_upstairs_edge",
+      "requires": {
+        "all": [
+          { "path": "world.flags.west2_outpost_research_upper_floor_access", "op": "!=", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "enter_research_upstairs_authorized",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "上楼",
+      "edgeId": "west2_outpost_research_lobby_to_upper_floor_edge",
+      "requires": {
+        "all": [
+          { "path": "world.flags.west2_outpost_research_upper_floor_access", "op": "==", "value": true }
+        ]
+      }
+    },
+    {
+      "id": "return_to_outpost_hub_from_research",
+      "sceneId": "west2_outpost_research_lobby",
+      "type": "TRANSITION",
+      "text": "返回前哨导航",
+      "edgeId": "west2_outpost_research_lobby_to_hub_edge"
+    },
+    {
+      "id": "research_frontdesk_shake_head",
+      "sceneId": "west2_outpost_research_frontdesk",
+      "type": "TIME_SKIP",
+      "text": "摇头",
+      "minutes": 1,
+      "effects": [
+        { "op": "set", "path": "currentSceneId", "value": "west2_outpost_research_frontdesk_refusal" },
+        {
+          "op": "set",
+          "path": "currentScene",
+          "value": {
+            "id": "west2_outpost_research_frontdesk_refusal",
+            "type": "POINT",
+            "name": "前台答复"
+          }
+        }
+      ]
+    },
+    {
+      "id": "return_to_research_lobby_from_frontdesk_refusal",
+      "sceneId": "west2_outpost_research_frontdesk_refusal",
+      "type": "TIME_SKIP",
+      "text": "返回",
+      "minutes": 1,
+      "effects": [
+        { "op": "set", "path": "currentSceneId", "value": "west2_outpost_research_lobby" },
+        {
+          "op": "set",
+          "path": "currentScene",
+          "value": {
+            "id": "west2_outpost_research_lobby",
+            "type": "HUB_LOBBY",
+            "name": "科研主楼一楼"
+          }
+        }
+      ]
+    },
+    {
+      "id": "return_to_research_lobby_from_maintenance",
+      "sceneId": "west2_outpost_research_maintenance_window",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_research_maintenance_to_lobby_edge"
+    },
+    {
+      "id": "return_to_research_lobby_from_access_denied",
+      "sceneId": "west2_outpost_research_access_denied",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_research_access_denied_to_lobby_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_research_lobby_to_maintenance_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toSceneId": "west2_outpost_research_maintenance_window",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_access_denied_from_experiment_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toSceneId": "west2_outpost_research_access_denied",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_experiment_room_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toMapId": "west2_outpost_research_experiment_room",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_access_denied_from_sample_storage_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toSceneId": "west2_outpost_research_access_denied",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_sample_storage_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toMapId": "west2_outpost_research_sample_storage",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_access_denied_from_upstairs_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toSceneId": "west2_outpost_research_access_denied",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_upper_floor_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toMapId": "west2_outpost_research_upper_floor",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_lobby_to_hub_edge",
+      "fromSceneId": "west2_outpost_research_lobby",
+      "toMapId": "west2_outpost_hub",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_maintenance_to_lobby_edge",
+      "fromSceneId": "west2_outpost_research_maintenance_window",
+      "toSceneId": "west2_outpost_research_lobby",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_research_access_denied_to_lobby_edge",
+      "fromSceneId": "west2_outpost_research_access_denied",
+      "toSceneId": "west2_outpost_research_lobby",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

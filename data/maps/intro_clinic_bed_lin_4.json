@@ -1,0 +1,18 @@
+{
+  "id": "intro_clinic_bed_lin_4",
+  "name": "边港诊所 · 病床区",
+  "description": "病房外忽然有人喊了一声：\"琳！\"\n\n她回头应了一句，转回来对你说：\"我得先过去了。\"\n\n随后她把一杯温水放到你床边的小桌上，示意你慢一点喝。病房重新安静下来，只剩暖气和远处推车轮子的轻响。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "intro_continue_to_ward",
+      "text": "继续",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_ward", "minutes": 1 },
+      "effects": [
+        { "op": "set", "path": "world.medical.bills.obsCents", "value": 120000 }
+      ],
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

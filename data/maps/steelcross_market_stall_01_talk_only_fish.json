@@ -1,0 +1,16 @@
+{
+  "id": "steelcross_market_stall_01_talk_only_fish",
+  "legacy": true,
+  "mapType": "link",
+  "name": "捕鱼人哈德",
+  "description": "哈德抬了抬眼皮，像是在看你是不是来找乐子的。\n“你当这地方是谁都能摆摊？”\n“出海要许可，靠岸要登记，冷柜、运货、摊位，哪样不要钱？”\n“我这点配额也是花钱买来的，来这儿卖鱼也不是拎着网就能来。”\n“没门路，没钱，手续再不齐，连边都摸不着。一般人搞不到。”",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "actions": [
+    {
+      "id": "steelcross_market_stall_01_talk_only_fish_return",
+      "text": "返回",
+      "eventId": "ev_steelcross_market_stall_01_talk_return",
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

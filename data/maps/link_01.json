@@ -1,0 +1,29 @@
+{
+  "id": "link_01",
+  "name": "LINK - 过渡节点",
+  "description": "【最小验收地图】mapType=link 仅语义标签；本地图用于验证 TRANSITION 不限制动作数。",
+  "mapType": "link",
+  "actions": [
+    {
+      "id": "to_hub",
+      "text": "前往集散点",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "hub_01", "minutes": 0 }
+    },
+    {
+      "id": "wait_10",
+      "text": "原地休整（10分钟）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 10 }
+    },
+    {
+      "id": "to_missing",
+      "text": "前往 Requires 测试图",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "test_requires", "minutes": 0 }
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "steelcross_port_theseus_work_how_join_crew",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号船员",
+  "description": "“真想上船，也不是今天来一句就能算数。我们一年也就那几个月补人，差不多八月到十月前后。再往后，船期、人手、名册都定得差不多了，不会临时往里塞。”\n\n他顿了顿，把手揣回外套里。\n\n“再说，就算赶上补人，也不是谁来都收。要有人点头，要有人担保，还得有人愿意把你往船上带。”\n\n“除此之外……你要是真想知道门路，去问问里恩吧。前提是你找得到他。”",
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "theseus_work_ask_rien_identity",
+      "text": "里恩是谁？",
+      "eventId": "ev_steelcross_port_theseus_work_ask_rien_identity",
+      "ui": { "type": "button", "priority": "primary" }
+    },
+    {
+      "id": "theseus_work_how_join_return",
+      "text": "返回",
+      "eventId": "ev_steelcross_port_theseus_work_return_intro",
+      "ui": { "type": "button" }
+    }
+  ]
+}

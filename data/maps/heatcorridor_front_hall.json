@@ -1,0 +1,99 @@
+{
+  "id": "heatcorridor_front_hall",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "热廊前廊",
+  "description": "前廊贴着站牌后方收进壳体里，背后是双门斗，墙边依次嵌着告示板、食堂口和小商铺开口。",
+  "entrySceneId": "front_hall_main",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "scenes": [
+    {
+      "id": "front_hall_main",
+      "type": "HUB_LOBBY",
+      "name": "热廊前廊"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "front_hall_to_shop",
+      "sceneId": "front_hall_main",
+      "type": "TRANSITION",
+      "text": "前往商铺",
+      "edgeId": "front_hall_to_shop_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "前往前廊商铺。" }
+      ]
+    },
+    {
+      "id": "front_hall_to_night_kitchen",
+      "sceneId": "front_hall_main",
+      "type": "TRANSITION",
+      "text": "前往24/7夜灶",
+      "edgeId": "front_hall_to_night_kitchen_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "前往24/7夜灶。" }
+      ]
+    },
+    {
+      "id": "front_hall_check_notice_board",
+      "sceneId": "front_hall_main",
+      "type": "OBSERVE",
+      "text": "查看告示板",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "查看前廊告示板。" }
+      ]
+    },
+    {
+      "id": "front_hall_to_rear_section",
+      "sceneId": "front_hall_main",
+      "type": "TRANSITION",
+      "text": "前往深处",
+      "edgeId": "front_hall_to_rear_section_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "走进热廊后区。" }
+      ]
+    },
+    {
+      "id": "front_hall_to_bus_stop_sign",
+      "sceneId": "front_hall_main",
+      "type": "TRANSITION",
+      "text": "前往公交站路牌",
+      "edgeId": "front_hall_to_bus_stop_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "回到公交站路牌。" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "front_hall_to_shop_edge",
+      "fromSceneId": "front_hall_main",
+      "toMapId": "heatcorridor_shop_window",
+      "minutes": 1
+    },
+    {
+      "id": "front_hall_to_night_kitchen_edge",
+      "fromSceneId": "front_hall_main",
+      "toMapId": "heatcorridor_night_kitchen",
+      "minutes": 1
+    },
+    {
+      "id": "front_hall_to_rear_section_edge",
+      "fromSceneId": "front_hall_main",
+      "toMapId": "heatcorridor_rear_section",
+      "minutes": 1
+    },
+    {
+      "id": "front_hall_to_bus_stop_edge",
+      "fromSceneId": "front_hall_main",
+      "toMapId": "heatcorridor_bus_stop",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

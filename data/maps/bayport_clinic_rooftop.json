@@ -1,0 +1,52 @@
+{
+  "id": "bayport_clinic_rooftop",
+  "name": "边港诊所 · 天台",
+  "description": "你站在诊所天台，风从护墙外卷过来，远处灯带在雪幕里忽明忽暗。",
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "clinic_rooftop_view_far",
+      "text": "眺望远方（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "clinic_rooftop_warning_light_test_init",
+      "text": "测试屋顶警示灯（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.clinicRooftopWarningLightTested", "op": "==", "value": false }
+        ]
+      },
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "set", "path": "world.flags.clinicRooftopWarningLightTested", "value": true }
+      ]
+    },
+    {
+      "id": "clinic_rooftop_warning_light_test_repeat",
+      "text": "测试屋顶警示灯（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.clinicRooftopWarningLightTested", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "stairs_down_upstairs_hall",
+      "text": "下楼返回（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_upstairs_hall", "minutes": 1 }
+    }
+  ]
+}

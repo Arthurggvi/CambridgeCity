@@ -1,0 +1,8 @@
+{
+  "id": "w2_spine_0",
+  "name": "W2-Spine-0 港口外缘抵达区",
+  "description": "沿岸主走廊起点，占位地图。",
+  "actions": [
+    { "id": "to_spine_1", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_1" }
+  ]
+}

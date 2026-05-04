@@ -1,0 +1,102 @@
+{
+  "items": [
+    {
+      "id": "cloth_old_knit_cap",
+      "name": "旧毛线帽",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "帽口有点松，戴稳后还能挡住头顶最直接的冷风。",
+        "旧毛线吸了潮气会明显变沉。"
+      ],
+      "tags": ["clothing", "head", "old_goods"],
+      "wearable": { "slot": "head", "thermal": { "insulation": 0.24, "windproof": 0.55, "waterproof": 0 } }
+    },
+    {
+      "id": "cloth_thin_gloves",
+      "name": "薄手套",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "布料很薄，指节活动灵活。",
+        "只能削掉一层手背上的直吹冷风。"
+      ],
+      "tags": ["clothing", "hands", "old_goods"],
+      "wearable": { "slot": "hands", "thermal": { "insulation": 0.16, "windproof": 0.42, "waterproof": 0 } }
+    },
+    {
+      "id": "cloth_old_scarf",
+      "name": "旧围巾",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "旧围巾有点起线，但还能把领口的漏风位堵住。",
+        "被雪水打湿后保暖会很快往下掉。"
+      ],
+      "tags": ["clothing", "neck", "old_goods"],
+      "wearable": { "slot": "neck", "thermal": { "insulation": 0.21, "windproof": 0.60, "waterproof": 0 } }
+    },
+    {
+      "id": "consumable_compressed_biscuits",
+      "name": "压缩饼干",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 2,
+      "description": [
+        "纸封口压得很紧，里面是一整块干硬的小砖。",
+        "便携，顶饿，没有额外持续效果。"
+      ]
+    },
+    {
+      "id": "consumable_chocolate_bar",
+      "name": "巧克力",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 2,
+      "description": [
+        "外包装有点皱，巧克力块本身还没化。",
+        "小块高糖，没有额外持续效果。"
+      ]
+    },
+    {
+      "id": "consumable_warm_patch",
+      "name": "暖贴",
+      "category": "consumable",
+      "stackable": true,
+      "coolingRateMultiplier": {
+        "multiplier": 0.9,
+        "durationMinutes": 60,
+        "source": "consumable_warm_patch"
+      },
+      "warmingRateMultiplier": {
+        "multiplier": 1.1,
+        "durationMinutes": 60,
+        "source": "consumable_warm_patch"
+      },
+      "description": [
+        "薄薄一片，得贴在里层上才会慢慢发热。",
+        "体温衰减速率-10% (01:00)",
+        "回暖速率+10% (01:00)"
+      ]
+    },
+    {
+      "id": "consumable_pain_relief_tablets",
+      "name": "止痛药",
+      "category": "consumable",
+      "stackable": true,
+      "instantDeltas": {
+        "stamina": -2
+      },
+      "hpDecayRateMultiplier": {
+        "multiplier": 0.9,
+        "durationMinutes": 120,
+        "source": "consumable_pain_relief_tablets"
+      },
+      "description": [
+        "药片边缘有点发粉，吞下去后能先把伤处的钝痛压低。",
+        "健康流失速率-10% (02:00)",
+        "体力-2 (即时)"
+      ]
+    }
+  ]
+}

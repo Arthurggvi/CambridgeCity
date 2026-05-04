@@ -1,0 +1,30 @@
+{
+  "id": "menu_main",
+  "name": "寒武城",
+  "description": "Cambrian City",
+  "actions": [
+    {
+      "id": "menu_continue_auto",
+      "text": "继续游戏"
+    },
+    {
+      "id": "menu_new_game",
+      "text": "新建游戏",
+      "ui": {
+        "priority": "primary"
+      }
+    },
+    {
+      "id": "menu_go_load",
+      "text": "读取存档"
+    },
+    {
+      "id": "menu_go_settings",
+      "text": "设置"
+    },
+    {
+      "id": "menu_go_credits",
+      "text": "开发组信息"
+    }
+  ]
+}

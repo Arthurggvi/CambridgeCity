@@ -1,0 +1,302 @@
+/**
+ * Phase 8: wilderness probe service + view model wiring (read-only previews).
+ */
+import { createDefaultGameState, gameState, replaceGameState } from "../src/engine/state.js";
+import { getWildernessAreaSpec } from "../src/engine/wilderness/wilderness_area_registry.js";
+import { getWildernessRegionProfile } from "../src/engine/wilderness/wilderness_region_registry.js";
+import { WILDERNESS_MOVE_DIRECTIONS } from "../src/engine/wilderness/wilderness_movement_cost.js";
+import {
+  buildWildernessProbeResults,
+  buildWildernessProbeResultForDirection,
+  collectLandmarkCuesForCoordinate
+} from "../src/engine/wilderness/wilderness_probe_service.js";
+import { buildWildernessViewModel } from "../src/engine/wilderness/wilderness_view_model.js";
+import { renderWildernessRuntime } from "../src/engine/render/wilderness_runtime_fragments.js";
+
+function assert(c, m) {
+  if (!c) throw new Error(m);
+}
+
+function noFn(v, p = "x") {
+  if (typeof v === "function") throw new Error(`fn at ${p}`);
+  if (v != null && typeof v === "object") {
+    if (Array.isArray(v)) v.forEach((x, i) => noFn(x, `${p}[${i}]`));
+    else for (const k of Object.keys(v)) noFn(v[k], `${p}.${k}`);
+  }
+}
+
+function weatherClear() {
+  return {
+    snowfallRate: 0,
+    snowIntensityLevel: "None",
+    isSnowing: false,
+    windSpeed_local: 2,
+    cloudTrans: 0.2,
+    weatherEventType: "clear"
+  };
+}
+
+function weatherHeavySnow() {
+  return {
+    snowfallRate: 3,
+    snowIntensityLevel: "Heavy",
+    isSnowing: true,
+    windSpeed_local: 4,
+    cloudTrans: 0.4,
+    weatherEventType: "clear"
+  };
+}
+
+function activeWest2(x, y) {
+  return {
+    active: true,
+    regionId: "West2",
+    areaId: "west2_old_marker_patrol_line",
+    originMapId: "x",
+    runtimeMapId: "wilderness_runtime",
+    fallbackMapId: "west2_outpost_hub",
+    x,
+    y,
+    heading: "N",
+    state: "NAVIGATING",
+    trailConfidence: 100,
+    visibilityConfidence: 100,
+    lostness: 0,
+    stepsTaken: 0,
+    lastSafePoint: null,
+    discoveredLandmarks: [],
+    flags: {},
+    sessionStartedAt: 1,
+    lastUpdatedAt: 1,
+    schemaVersion: 1
+  };
+}
+
+function main() {
+  const area = getWildernessAreaSpec("west2_old_marker_patrol_line");
+  const west2 = getWildernessRegionProfile("West2");
+  assert(!!area && !!west2, "fixtures");
+
+  const w = activeWest2(0, 0);
+  const clear = weatherClear();
+  const probes = buildWildernessProbeResults({
+    wilderness: w,
+    areaSpec: area,
+    regionProfile: west2,
+    worldWeather: clear,
+    totalMinutes: 9000
+  });
+  assert(Array.isArray(probes) && probes.length === 8, "eight probes");
+  const dirs = probes.map((p) => p.direction).sort().join(",");
+  assert(
+    dirs === [...WILDERNESS_MOVE_DIRECTIONS].sort().join(","),
+    "direction set"
+  );
+  for (const p of probes) {
+    noFn(p, "probe");
+    assert(typeof p.text === "string" && [...p.text].length <= 36, "text len");
+    assert(["allowed", "slow", "conditional", "blocked", "boundary"].includes(p.passability), "passability enum");
+    assert(Number.isInteger(p.confidence) && p.confidence >= 0 && p.confidence <= 100, "confidence int");
+    assert(typeof p.hardBlock === "boolean", "hardBlock");
+    assert(Array.isArray(p.warningTags), "warningTags");
+    assert(Array.isArray(p.landmarkCues), "landmarkCues");
+    const tc = p.timeCostPreview;
+    const sc = p.staminaCostPreview;
+    assert(tc === Infinity || (typeof tc === "number" && Number.isFinite(tc)), "time preview");
+    assert(sc === Infinity || (typeof sc === "number" && Number.isFinite(sc)), "stamina preview");
+  }
+  console.log("[PASS] buildWildernessProbeResults shape + purity");
+
+  const w9 = activeWest2(9, 0);
+  const boundaryProbes = buildWildernessProbeResults({
+    wilderness: w9,
+    areaSpec: area,
+    regionProfile: west2,
+    worldWeather: clear,
+    totalMinutes: 0
+  }).find((p) => p.direction === "E");
+  assert(boundaryProbes.passability === "boundary", "boundary pass");
+  assert(boundaryProbes.hardBlock === true, "boundary hard");
+  assert(boundaryProbes.timeCostPreview === Infinity && boundaryProbes.staminaCostPreview === Infinity, "boundary costs");
+  assert(boundaryProbes.warningTags.includes("boundary"), "boundary tag");
+  assert(boundaryProbes.text.includes("巡查范围"), "boundary text");
+  console.log("[PASS] bounds-out east probe");
+
+  const iceProbe = buildWildernessProbeResultForDirection({
+    wilderness: activeWest2(6, 0),
+    areaSpec: area,
+    regionProfile: west2,
+    direction: "E",
+    worldWeather: clear,
+    totalMinutes: 5000
+  });
+  assert(iceProbe.terrainId === "ice_shelf_edge", "ice terrain");
+  assert(iceProbe.passability === "blocked" && iceProbe.hardBlock === true, "ice blocked");
+  assert(iceProbe.confidence >= 90, "ice confidence");
+  assert(iceProbe.text.includes("冰面") || iceProbe.text.includes("断开"), "ice text");
+  console.log("[PASS] ice_shelf_edge east from (6,0)");
+
+  const sas = buildWildernessProbeResultForDirection({
+    wilderness: activeWest2(0, 3),
+    areaSpec: area,
+    regionProfile: west2,
+    direction: "N",
+    worldWeather: clear,
+    totalMinutes: 0
+  });
+  assert(sas.terrainId === "sastrugi_field", "sastrugi terrain");
+  assert(sas.warningTags.includes("sastrugi"), "sastrugi tag");
+  assert(sas.text.includes("雪脊") || sas.text.includes("落脚"), "sastrugi text");
+  console.log("[PASS] sastrugi_field north from (0,3)");
+
+  const wProbe = activeWest2(2, -1);
+  const pFlagN = buildWildernessProbeResultForDirection({
+    wilderness: wProbe,
+    areaSpec: area,
+    regionProfile: west2,
+    direction: "N",
+    worldWeather: clear,
+    totalMinutes: 5000
+  });
+  const pWindS = buildWildernessProbeResultForDirection({
+    wilderness: wProbe,
+    areaSpec: area,
+    regionProfile: west2,
+    direction: "S",
+    worldWeather: clear,
+    totalMinutes: 5000
+  });
+  assert(pFlagN.terrainId === "flagged_marker_line" && pWindS.terrainId === "wind_packed_snow", "terrain pair");
+  assert(pFlagN.confidence > pWindS.confidence, "flagged confidence higher than wind");
+  console.log("[PASS] flagged_marker_line vs wind_packed confidence");
+
+  const whiteoutW = { whiteout: true, snowfallRate: 0, snowIntensityLevel: "None", isSnowing: false, windSpeed_local: 0, cloudTrans: 0, weatherEventType: "clear" };
+  const allDirs = WILDERNESS_MOVE_DIRECTIONS.map((direction) =>
+    buildWildernessProbeResultForDirection({
+      wilderness: activeWest2(0, 0),
+      areaSpec: area,
+      regionProfile: west2,
+      direction,
+      worldWeather: weatherClear(),
+      totalMinutes: 5000
+    })
+  );
+  const allWhite = WILDERNESS_MOVE_DIRECTIONS.map((direction) =>
+    buildWildernessProbeResultForDirection({
+      wilderness: activeWest2(0, 0),
+      areaSpec: area,
+      regionProfile: west2,
+      direction,
+      worldWeather: whiteoutW,
+      totalMinutes: 5000
+    })
+  );
+  for (let i = 0; i < 8; i++) {
+    if (allWhite[i].hardBlock) continue;
+    assert(allWhite[i].confidence < allDirs[i].confidence, `whiteout lowers ${allDirs[i].direction}`);
+  }
+  console.log("[PASS] whiteout lowers confidence vs clear (non-hard)");
+
+  const areaLm = JSON.parse(JSON.stringify(area));
+  areaLm.landmarks = [
+    {
+      id: "old_marker_01",
+      label: "旧标记杆甲",
+      x: 5,
+      y: 0,
+      detectRadius: 2,
+      enterRadius: 0.5,
+      gotoMapId: "test_map"
+    }
+  ];
+  const cues = collectLandmarkCuesForCoordinate({ areaSpec: areaLm, x: 6, y: 0 });
+  assert(cues.some((c) => c.id === "old_marker_01"), "landmark cue id");
+  const lmProbe = buildWildernessProbeResultForDirection({
+    wilderness: activeWest2(5, 0),
+    areaSpec: areaLm,
+    regionProfile: west2,
+    direction: "E",
+    worldWeather: clear,
+    totalMinutes: 1
+  });
+  assert(lmProbe.landmarkCues.some((c) => c.id === "old_marker_01"), "probe landmark cue");
+  assert(!lmProbe.text.includes("undefined"), "text sane");
+  console.log("[PASS] landmark detect radius cues");
+
+  const miniArea = {
+    id: "probe_loose_test",
+    label: "t",
+    regionId: "West2",
+    entryMapId: "x",
+    runtimeMapId: "wilderness_runtime",
+    fallbackMapId: "x",
+    bounds: { minX: 0, maxX: 4, maxY: 0, minY: 0 },
+    step: area.step,
+    defaultTerrainId: "loose_snowfield",
+    terrainZones: [],
+    landmarks: []
+  };
+  const wLoose = { ...activeWest2(1, 0), areaId: miniArea.id };
+  const tHeavy = buildWildernessProbeResultForDirection({
+    wilderness: wLoose,
+    areaSpec: miniArea,
+    regionProfile: west2,
+    direction: "E",
+    worldWeather: weatherHeavySnow(),
+    totalMinutes: 100
+  }).timeCostPreview;
+  const tClear = buildWildernessProbeResultForDirection({
+    wilderness: wLoose,
+    areaSpec: miniArea,
+    regionProfile: west2,
+    direction: "E",
+    worldWeather: weatherClear(),
+    totalMinutes: 100
+  }).timeCostPreview;
+  assert(Number.isFinite(tHeavy) && Number.isFinite(tClear) && tHeavy > tClear, "heavy snow preview > clear on loose");
+  console.log("[PASS] loose_snowfield preview cost heavy > clear");
+
+  const wJson = JSON.stringify(w);
+  const wxJson = JSON.stringify(clear);
+  buildWildernessProbeResults({
+    wilderness: w,
+    areaSpec: area,
+    regionProfile: west2,
+    worldWeather: clear,
+    totalMinutes: 50
+  });
+  assert(JSON.stringify(w) === wJson && JSON.stringify(clear) === wxJson, "inputs unchanged");
+  console.log("[PASS] probe inputs immutability");
+
+  replaceGameState(createDefaultGameState());
+  const gs = gameState;
+  gs.world.wilderness = activeWest2(0, 0);
+  gs.time.totalMinutes = 444;
+  const playerSnap = JSON.stringify(gs.player);
+  const wxSnap = JSON.stringify(gs.world.weather);
+  const vm = buildWildernessViewModel(gs);
+  assert(vm.status === "ready", "vm ready");
+  assert(Array.isArray(vm.probes) && vm.probes.length === 8, "vm.probes");
+  const moveActs = vm.actions.filter((a) => String(a.id || "").startsWith("wilderness_move_"));
+  assert(moveActs.length === 8, "eight move actions");
+  for (const a of moveActs) {
+    assert(a.probe && a.probe.direction, "action.probe");
+    assert(a.id === `wilderness_move_${a.probe.direction}`, "probe direction matches id");
+  }
+  assert(JSON.stringify(gs.player) === playerSnap, "player unchanged");
+  assert(JSON.stringify(gs.world.weather) === wxSnap, "weather unchanged");
+  assert(gs.time.totalMinutes === 444, "time unchanged");
+  console.log("[PASS] view model probes on move actions");
+
+  const frag = renderWildernessRuntime(vm);
+  assert(frag && (frag.__wildernessRuntimeHeadlessStub === true || typeof frag.appendChild === "function"), "fragment ok");
+  console.log("[PASS] fragment render with probes");
+
+  const inactive = buildWildernessViewModel({ ...gs, world: { ...gs.world, wilderness: { active: false, schemaVersion: 1 } } });
+  assert(Array.isArray(inactive.probes) && inactive.probes.length === 0, "inactive probes empty");
+  console.log("[PASS] inactive probes empty");
+
+  console.log("[PASS] wilderness_probe_contract_check");
+}
+
+main();

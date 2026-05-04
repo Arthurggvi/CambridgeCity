@@ -1,0 +1,15 @@
+{
+  "id": "ev_steelcross_market_stall_01_talk_only_fish",
+  "name": "问起鱼摊配额",
+  "steps": [
+    {
+      "type": "set_flag",
+      "key": "hard_fish_stall_quota_topic_unlocked",
+      "value": true
+    },
+    {
+      "type": "goto_map",
+      "mapId": "steelcross_market_stall_01_talk_only_fish"
+    }
+  ]
+}

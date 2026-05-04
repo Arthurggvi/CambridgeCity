@@ -1,0 +1,35 @@
+{
+  "id": "tucson_home",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "阳光从窗帘缝隙里落进屋内，外头有几声鸟鸣，轻得像从很远的地方传来。",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "tucson_home_view_window",
+      "text": "查看窗外",
+      "targetMapId": "tucson_home_window",
+      "ui": { "type": "button", "priority": "primary" }
+    },
+    {
+      "id": "tucson_home_view_desk",
+      "text": "查看书桌",
+      "targetMapId": "tucson_home_desk",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "tucson_home_depart",
+      "text": "远行",
+      "targetMapId": "tucson_depart_01",
+      "requires": {
+        "all": [
+          { "path": "world.flags.tucsonHomeViewedNotice", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    }
+  ]
+}

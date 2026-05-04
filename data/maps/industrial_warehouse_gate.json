@@ -1,0 +1,113 @@
+{
+  "id": "industrial_warehouse_gate",
+  "name": "仓储区门口",
+  "description": "仓储区门口。",
+  "descriptionByMinuteOfDay": [
+    {
+      "start": 360,
+      "end": 1079,
+      "text": "白天的仓储区门口更开阔也更忙。堆场外沿的箱体一排排压到围栏边，箱号和贴签在冷白光下很硬。拖车轮印和手推车痕把雪泥划成深浅两层，堆位牌被来回经过的人擦得发亮。"
+    },
+    {
+      "start": 1080,
+      "end": 359,
+      "text": "夜里的仓储区门口空了不少，但堆位轮廓还在。反光边和箱号总先跳出来，拖车轮印在硬雪里像一道道暗槽。围栏外偶尔有人快步经过，几乎没人停下来久看。"
+    }
+  ],
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "ui": {
+    "actionGroups": [
+      {
+        "id": "warehouse_gate_observe_bundle",
+        "title": "观察仓储前场",
+        "childrenActionIds": [
+          "warehouse_scan_stack",
+          "warehouse_check_slot_tags",
+          "warehouse_track_loading_marks",
+          "warehouse_listen_ambient"
+        ],
+        "defaultCollapsed": true,
+        "hint": "4项"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "warehouse_scan_stack",
+      "text": "看堆场与货箱（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿围栏看了一圈堆场，箱体高度和编号段分得很清楚。" }
+      ]
+    },
+    {
+      "id": "warehouse_check_slot_tags",
+      "text": "看堆位编号/贴签（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "堆位牌和贴签被反复改贴，旧胶痕在冷气里发白。" }
+      ]
+    },
+    {
+      "id": "warehouse_track_loading_marks",
+      "text": "观察装卸痕迹（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "拖车轮印和刹停痕在雪泥里交错，能看出这段线一直在转。" }
+      ]
+    },
+    {
+      "id": "warehouse_listen_ambient",
+      "text": "听周围动静（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你听见链条、拖轮和短促口令声，节奏快但不乱。" }
+      ]
+    },
+    {
+      "id": "warehouse_ask_entry",
+      "text": "询问能否进入仓储区（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "门口只给边界回复：未登记、无派工单或非受理时段，均不得入内。" }
+      ]
+    },
+    {
+      "id": "warehouse_subsidy_tag_shift",
+      "text": "补贴标签短工（0:45）",
+      "ui": { "type": "button", "labelTag": "task" },
+      "thermal": { "exposureMultiplier": 0.58, "activity": "light_work" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 45 },
+      "effects": [
+        { "op": "add", "path": "world.money", "value": 16 },
+        { "op": "push", "path": "logLines", "value": "你按派工板给的箱号和堆位单，先把翘边和冻硬的旧标签一张张揭下。" },
+        { "op": "push", "path": "logLines", "value": "胶边在低温里发硬，你戴着手套按签总慢半拍，风一阵一阵把纸单边角吹起。" },
+        { "op": "push", "path": "logLines", "value": "补贴和换签做完后，门口按单核了编号与堆位，短工款按前场记账规则入账。" }
+      ]
+    },
+    {
+      "id": "warehouse_back_split",
+      "text": "返回工区分流口（0:03）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.9, "activity": "transit" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "industrial_split", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿围栏退回分流口，门禁灯和导向牌重新并在一处。" }
+      ]
+    }
+  ]
+}

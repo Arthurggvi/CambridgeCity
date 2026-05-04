@@ -1,0 +1,16 @@
+{
+  "id": "steelcross_market_stall_01_talk_quota",
+  "legacy": true,
+  "mapType": "link",
+  "name": "捕鱼人哈德",
+  "description": "哈德盯着你看了两秒。\n“你不买鱼，问这个干什么？”\n他把手里的鱼翻了个面，声音也冷下来。\n“真想弄，就自己去找管事的问。”\n“没那个本事，就少惦记这行。”",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "actions": [
+    {
+      "id": "steelcross_market_stall_01_talk_quota_return",
+      "text": "返回",
+      "eventId": "ev_steelcross_market_stall_01_talk_return",
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

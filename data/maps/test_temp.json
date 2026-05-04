@@ -1,0 +1,21 @@
+{
+  "id": "test_temp",
+  "name": "TEST - 温度冒烟",
+  "description": "【温度系统测试】点击按钮运行温度冒烟测试，输出将写入日志。",
+  "placeProfileId": "test_temp",
+  "actions": [
+    {
+      "id": "run_temp_smoke_tests",
+      "text": "运行温度冒烟测试"
+    },
+    {
+      "id": "back_to_test_time",
+      "text": "返回时间测试",
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "test_time",
+        "minutes": 0
+      }
+    }
+  ]
+}

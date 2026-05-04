@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_06",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号",
+  "description": "过去的记忆或许对我也不再重要\n\n遥远的未知才更令我恐惧",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_06_continue", "text": "继续", "targetMapId": "theseus_ending_07", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

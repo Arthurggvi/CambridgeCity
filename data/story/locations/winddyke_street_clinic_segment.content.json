@@ -1,0 +1,119 @@
+{
+  "location_id": "winddyke_street_clinic_segment",
+  "SceneList": [
+    { "id": "1.0", "type": "HUB_LOBBY", "text": "风堤街（诊所段）", "default_return": "1.0" }
+  ],
+  "EdgeList": [
+    { "from": "1.0", "to": "1.0" }
+  ],
+  "InteractionList": [
+    { "id": "to_clinic", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:01", "condition": null, "goto": "bayport_clinic", "text": "去诊所" },
+    { "id": "to_corner_notice_day", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:03", "condition": "06:00-17:59", "goto": "winddyke_street_corner_notice", "text": "沿反光杆去转角公告段" },
+    { "id": "to_corner_notice_night", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:04", "condition": "18:00-05:59", "goto": "winddyke_street_corner_notice", "text": "贴着反光杆去转角公告段" },
+    { "id": "check_reflector_number", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "查看反光杆编号" },
+    { "id": "shelter_by_dike", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:02", "condition": null, "goto": "1.0", "text": "靠风堤背侧避风" }
+  ],
+  "BlockerSpec": { "blockers": [] },
+  "SessionSpec": { "sessions": [] },
+  "RuntimeText": {
+    "actionTextByMapId": {
+      "winddyke_street_clinic_segment": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "to_corner_notice_day": {
+            "actionLabel": {
+              "base": "沿反光杆去转角公告段",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "mode": "replace", "text": "贴着反光杆去转角公告段" },
+                { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "紧贴反光杆去转角公告段" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你沿着反光杆往前走，压实雪面和编号序列把线路维持得很稳。",
+                "lightVariants": [
+                  { "when": { "lightPhase": ["twilight", "polar_night"] }, "mode": "replace", "text": "你沿着反光杆往前贴过去，近处编号比远端轮廓更可靠。" }
+                ],
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "low" }, "mode": "replace", "text": "雪雾把远端边线揉散后，你只能贴着最近几根反光杆把方向续上。" },
+                  { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "能见度被压低后，你几乎是靠最近的反光边一点点把路线续到转角。" }
+                ]
+              }
+            }
+          },
+          "to_corner_notice_night": {
+            "actionLabel": {
+              "base": "沿反光杆去转角公告段",
+              "lightVariants": [
+                { "when": { "lightPhase": ["twilight", "polar_night"] }, "mode": "replace", "text": "贴着反光杆去转角公告段" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "low" }, "mode": "replace", "text": "贴着反光杆去转角公告段" },
+                { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "紧贴反光杆去转角公告段" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你沿着反光杆往前贴过去，近处编号比远端轮廓更可靠。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "low" }, "mode": "replace", "text": "雪雾把远端边线揉散后，你只能贴着最近几根反光杆把方向续上。" },
+                  { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "能见度被压低后，你几乎是靠最近的反光边一点点把路线续到转角。" }
+                ],
+                "weatherVariants": [
+                  { "when": { "isSnowing": true }, "text": "风雪从侧面压过来时，你只能把步子收得更短。" }
+                ]
+              }
+            }
+          },
+          "check_reflector_number": {
+            "actionLabel": {
+              "base": "查看反光杆编号"
+            },
+            "actionFeedback": {
+              "base": "你贴近路侧护栏，抬手把雪粒拂开反光杆。杆身编号还清楚，旧喷码和后补的新漆一层压一层，足够让你确认自己还在线路上。\n\n环顾四周：诊所门前脚印被来回踩乱，风把纸屑推成细线，远处转角公告墙偶尔有人停一下又继续走。",
+              "lightVariants": [
+                { "when": { "lightPhase": ["twilight", "polar_night"] }, "mode": "replace", "text": "你俯身把视线压到反光杆近前，编号和补漆边缘先跳出来，远处轮廓反而退成一片灰白。\n\n环顾四周：诊所外墙结了薄霜，风声沿街面回卷，路面只剩断续脚印和车辙硬边还在给方向感。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度再往下压时，这串编号本身就成了你确认线路的最近参照。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你贴近反光杆把编号重新确认了一遍，线路位置还稳稳对得上。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "你几乎是靠最近这截编号把线路重新钉住，远一点的边线已经不再可靠。" }
+                ]
+              }
+            }
+          },
+          "shelter_by_dike": {
+            "actionLabel": {
+              "base": "靠风堤背侧避风",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "贴风堤背侧短暂停风" }
+              ]
+            },
+            "actionFeedback": {
+              "base": "你退到风堤背侧，迎面的风压立刻小了一截。衣摆不再被横向扯住，呼吸也顺了一些。\n\n环顾四周：从这个角度还能看见诊所门口的进出节奏，转角公告墙边偶尔有人停步，堤面结冰处被鞋底磨成一层灰白。",
+              "lightVariants": [
+                { "when": { "lightPhase": ["twilight", "polar_night"] }, "mode": "replace", "text": "你贴着风堤背侧停了一会儿，背后终于不再直灌冷气。手指回暖很慢，但颤抖先停了。\n\n环顾四周：街口灯把雪粉照成斜线，诊所门口只剩零星人影，远处围栏边的警示带一直在拍打作响。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "雪粒还是会从堤顶卷下来，只是打在脸上的力度钝了一层。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你贴着风堤背侧短暂停了片刻，风压小了些，节奏也慢了下来。",
+                "weatherVariants": [
+                  { "when": { "isSnowing": true }, "text": "你借着风堤背侧把风雪挡掉一层，至少能把呼吸和步子重新收稳。" }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

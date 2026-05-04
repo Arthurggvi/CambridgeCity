@@ -1,0 +1,702 @@
+{
+  "items": [
+    {
+      "id": "backpack_worn_travel",
+      "name": "破旧的旅行背包",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": {
+        "slot": "backpack",
+        "thermal": { "insulation": 0.12, "windproof": 0.08 }
+      },
+      "capacityProfile": {
+        "kindLimit": 3,
+        "stackLimit": 5
+      }
+    },
+    {
+      "id": "cloth_thin_jacket",
+      "name": "薄外套",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": {
+        "slot": "upper",
+        "thermal": { "insulation": 0.32, "windproof": 0.18 }
+      }
+    },
+    {
+      "id": "cloth_polar_parka",
+      "name": "极地防寒服",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": {
+        "slot": "upper",
+        "thermal": { "insulation": 0.865, "windproof": 0.988 }
+      }
+    },
+    {
+      "id": "cloth_polar_liner",
+      "name": "保暖内衬",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": {
+        "slot": "lining",
+        "thermal": { "insulation": 0.785, "windproof": 0.37 }
+      }
+    },
+    {
+      "id": "cloth_wind_shell",
+      "name": "防风外壳",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": {
+        "slot": "upper",
+        "thermal": { "insulation": 0.41, "windproof": 0.65 }
+      }
+    },
+    {
+      "id": "starter_lining_wool",
+      "name": "旧羊毛内衬",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "贴身保温层，吸湿后性能下降快。",
+        "挡风能力一般，外层缺失时几乎等于漏风。"
+      ],
+      "wearable": {
+        "slot": "lining",
+        "thermal": { "insulation": 0.45, "windproof": 0.70 }
+      }
+    },
+    {
+      "id": "starter_lower_cotton",
+      "name": "厚棉下装",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "膝部活动方便，但裤脚不密封。",
+        "在强风下保温效果会迅速被稀释。"
+      ],
+      "wearable": {
+        "slot": "lower",
+        "thermal": { "insulation": 0.45, "windproof": 0.70 }
+      }
+    },
+    {
+      "id": "starter_shoes_boots",
+      "name": "旧保暖靴",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "鞋底隔冷，脚踝防风一般。",
+        "长时间静止仍会快速失温。"
+      ],
+      "wearable": {
+        "slot": "shoes",
+        "thermal": { "insulation": 0.40, "windproof": 0.75 }
+      }
+    },
+
+    {
+      "id": "exp_t1_upper",
+      "name": "一类外界暴露套装·上装",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "upper", "thermal": { "insulation": 0.5829, "windproof": 0.8954 } }
+    },
+    {
+      "id": "exp_t1_lining",
+      "name": "一类外界暴露套装·内衬",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "lining", "thermal": { "insulation": 0.48, "windproof": 0.23 } }
+    },
+    {
+      "id": "exp_t1_lower",
+      "name": "一类外界暴露套装·下装",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "lower", "thermal": { "insulation": 0.43, "windproof": 0.80 } }
+    },
+    {
+      "id": "exp_t1_shoes",
+      "name": "一类外界暴露套装·鞋",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "shoes", "thermal": { "insulation": 0.38, "windproof": 0.74 } }
+    },
+    {
+      "id": "exp_t1_goggles",
+      "name": "一类外界暴露套装·护镜",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "goggles", "thermal": { "insulation": 0.11, "windproof": 0.54 } }
+    },
+    {
+      "id": "exp_t1_head",
+      "name": "一类外界暴露套装·头饰",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "head", "thermal": { "insulation": 0.38, "windproof": 0.79 } }
+    },
+    {
+      "id": "exp_t1_hands",
+      "name": "一类外界暴露套装·手部",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "hands", "thermal": { "insulation": 0.33, "windproof": 0.69 } }
+    },
+    {
+      "id": "exp_t1_neck",
+      "name": "一类外界暴露套装·颈部",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "neck", "thermal": { "insulation": 0.33, "windproof": 0.74 } }
+    },
+    {
+      "id": "exp_t1_backpack",
+      "name": "一类外界暴露套装·背包",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "backpack", "thermal": { "insulation": 0.23, "windproof": 0.34 } },
+      "capacityProfile": {
+        "kindLimit": 4,
+        "stackLimit": 5
+      }
+    },
+
+    {
+      "id": "exp_t2_upper",
+      "name": "二类外界暴露套装·上装",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "upper", "thermal": { "insulation": 0.8686, "windproof": 0.9843 } }
+    },
+    {
+      "id": "exp_t2_lining",
+      "name": "二类外界暴露套装·内衬",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "lining", "thermal": { "insulation": 0.785, "windproof": 0.8 } }
+    },
+    {
+      "id": "exp_t2_lower",
+      "name": "二类外界暴露套装·下装",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "lower", "thermal": { "insulation": 0.735, "windproof": 0.967 } }
+    },
+    {
+      "id": "exp_t2_shoes",
+      "name": "二类外界暴露套装·鞋",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "shoes", "thermal": { "insulation": 0.665, "windproof": 0.933 } }
+    },
+    {
+      "id": "exp_t2_goggles",
+      "name": "二类外界暴露套装·护镜",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "goggles", "thermal": { "insulation": 0.22, "windproof": 0.865 } }
+    },
+    {
+      "id": "exp_t2_head",
+      "name": "二类外界暴露套装·头饰",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "head", "thermal": { "insulation": 0.725, "windproof": 0.967 } }
+    },
+    {
+      "id": "exp_t2_hands",
+      "name": "二类外界暴露套装·手部",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "hands", "thermal": { "insulation": 0.635, "windproof": 0.933 } }
+    },
+    {
+      "id": "exp_t2_neck",
+      "name": "二类外界暴露套装·颈部",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "neck", "thermal": { "insulation": 0.685, "windproof": 0.957 } }
+    },
+    {
+      "id": "exp_t2_backpack",
+      "name": "二类外界暴露套装·背包",
+      "category": "clothing",
+      "stackable": false,
+      "wearable": { "slot": "backpack", "thermal": { "insulation": 0.32, "windproof": 0.85 } },
+      "capacityProfile": {
+        "kindLimit": 5,
+        "stackLimit": 6
+      }
+    },
+
+    {
+      "id": "tool_rusty_pliers",
+      "name": "旧钳子",
+      "category": "tool",
+      "stackable": true
+    },
+    {
+      "id": "tool_small_flashlight",
+      "name": "小手电",
+      "category": "tool",
+      "stackable": true,
+      "equipType": "tool",
+      "toolTag": "light"
+    },
+    {
+      "id": "tool_windproof_matches",
+      "name": "防风火柴",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "fire",
+      "durabilityMax": 8,
+      "durability": 8,
+      "description": [
+        "极地环境里最稳妥的生火工具之一。",
+        "火头短，抗风性好，装备后可在部分场景中尝试点燃可燃物。"
+      ]
+    },
+    {
+      "id": "tool_pocket_watch",
+      "name": "怀表",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "time",
+      "timeReadoutLevel": "watch",
+      "description": [
+        "可随身携带的机械怀表。",
+        "提供稳定的精确时刻读数。"
+      ]
+    },
+    {
+      "id": "tool_lighter",
+      "name": "打火机",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "fire",
+      "description": [
+        "常见的小火源工具。",
+        "可作为生火工具携带和装备。"
+      ]
+    },
+    {
+      "id": "tool_satellite_instrument",
+      "name": "卫星仪",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "time",
+      "timeReadoutLevel": "satellite",
+      "description": [
+        "带有卫星校时能力的时间仪表。",
+        "可提供完整的时间与环境读数。"
+      ]
+    },
+    {
+      "id": "tool_thermometer",
+      "name": "便携体温计",
+      "category": "tool",
+      "stackable": true,
+      "equipType": "tool",
+      "toolTag": "temperature",
+      "thermalReadoutLevel": "thermometer",
+      "description": [
+        "可随身挂载的温度监测工具。",
+        "用于快速确认当前环境与体感温差。"
+      ]
+    },
+    {
+      "id": "tool_vitals_monitor",
+      "name": "生命体征监测仪",
+      "category": "tool",
+      "stackable": true,
+      "equipType": "tool",
+      "toolTag": "temperature",
+      "thermalReadoutLevel": "monitor",
+      "description": [
+        "强化版监测模块，可替代基础温度计。",
+        "装备后会在背包界面显示扩展监测提示。"
+      ]
+    },
+    {
+      "id": "material_scrap_fiber",
+      "name": "纤维碎料",
+      "category": "material",
+      "stackable": true
+    },
+    {
+      "id": "material_rough_cloth",
+      "name": "粗布",
+      "category": "material",
+      "stackable": true,
+      "description": [
+        "你用不上这个。"
+      ]
+    },
+    {
+      "id": "consumable_bandage",
+      "name": "简易绷带",
+      "category": "consumable",
+      "stackable": true,
+      "description": [
+        "卷得不算紧，但先把擦伤和裂口压住已经够用。",
+        "当前无额外效果"
+      ]
+    },
+    {
+      "id": "consumable_takeout_braised_pork_rice",
+      "name": "卤肉饭（打包）",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 11,
+      "intakeLoadCost": 8,
+      "description": [
+        "热食窗口打包出来的一盒卤肉饭。",
+        "带走后仍算一份完整热食。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_seaweed_egg_soup",
+      "name": "紫菜蛋花汤（打包）",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 5,
+      "intakeLoadCost": 3,
+      "description": [
+        "热食窗口封口装好的汤。",
+        "分量不重，但能先把胃口和手都稳一下。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_hot_water",
+      "name": "热水（打包）",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 0,
+      "intakeLoadCost": 0,
+      "description": [
+        "热食窗口装好的热水。",
+        "最基础的一种带走补给。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_soy_fried_rice",
+      "name": "酱油炒饭",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 6,
+      "description": [
+        "蛋碎、葱花、酱油炒饭。",
+        "适合快速带走的一盒热主食。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_beef_potato_rice_bowl",
+      "name": "土豆牛肉末拌饭",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 9,
+      "satietyDecayModifier": {
+        "multiplier": 0.95,
+        "durationMinutes": 45,
+        "source": "takeout_beef_potato_rice_bowl"
+      },
+      "description": [
+        "土豆丁、牛肉末、酱汁、米饭。",
+        "45分钟内饱腹下降速率 -5%。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_pork_scallion_buns_4",
+      "name": "猪肉大葱包（4个）",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 9,
+      "satietyDecayModifier": {
+        "multiplier": 0.96,
+        "durationMinutes": 45,
+        "source": "takeout_pork_scallion_buns_4"
+      },
+      "description": [
+        "猪肉大葱包 4 个。",
+        "45分钟内饱腹下降速率 -4%。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_beef_onion_pies_2",
+      "name": "牛肉洋葱馅饼（2张）",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 9,
+      "staminaDecayModifier": {
+        "multiplier": 0.96,
+        "durationMinutes": 45,
+        "source": "takeout_beef_onion_pies_2"
+      },
+      "description": [
+        "牛肉洋葱馅饼 2 张。",
+        "45分钟内体能衰减速率 -4%。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_youtiao_2",
+      "name": "油条（2根）",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 3,
+      "description": [
+        "油条 2 根。",
+        "便宜、轻巧、没有额外持续效果。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_lo_mai_gai",
+      "name": "糯米鸡",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 7,
+      "satietyDecayModifier": {
+        "multiplier": 0.96,
+        "durationMinutes": 45,
+        "source": "takeout_lo_mai_gai"
+      },
+      "description": [
+        "糯米鸡 1 份。",
+        "45分钟内饱腹下降速率 -4%。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_ginger_cola_hot",
+      "name": "姜丝可乐热饮",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 2,
+      "description": [
+        "姜丝可乐，热饮杯装。",
+        "本批热饮不附带体温衰减类效果。"
+      ]
+    },
+    {
+      "id": "consumable_takeout_braised_ribs_rice_box",
+      "name": "酱排骨饭盒",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 14,
+      "bodyTemperatureDecayModifier": {
+        "multiplier": 0.94,
+        "durationMinutes": 60,
+        "source": "takeout_braised_ribs_rice_box"
+      },
+      "description": [
+        "酱排骨、米饭、腌菜。",
+        "60分钟内体温下降速度 -6%。"
+      ]
+    },
+    {
+      "id": "cloth_patterned_wool_scarf",
+      "name": "印花羊毛围脖",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "旧羊毛织得很密，印花已经洗淡了，缠上之后脖颈一圈能稳稳拢住热气。"
+      ],
+      "wearable": {
+        "slot": "neck",
+        "thermal": { "insulation": 0.30, "windproof": 0.68, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "cloth_old_cowhide_gloves",
+      "name": "旧牛皮手套",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "皮面磨出了细纹，掌心却还结实，挡风比一般布手套要实在得多。"
+      ],
+      "wearable": {
+        "slot": "hands",
+        "thermal": { "insulation": 0.30, "windproof": 0.63, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "cloth_knit_cap_patchshop",
+      "name": "针织帽",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "帽身织得厚，边沿收口也紧，压住耳侧以后，冷风不太容易直接灌进去。"
+      ],
+      "wearable": {
+        "slot": "head",
+        "thermal": { "insulation": 0.34, "windproof": 0.72, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "cloth_graygreen_polycotton_workwear",
+      "name": "灰绿涤棉工装",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "涤棉面料耐磨耐脏，颜色洗得发灰，穿在最外层倒还很像回事。"
+      ],
+      "wearable": {
+        "slot": "upper",
+        "thermal": { "insulation": 0.36, "windproof": 0.58, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "cloth_canvas_backpack_patchshop",
+      "name": "帆布背包",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "帆布压得厚，肩带和扣件也都还能用，装点零碎出门不成问题。"
+      ],
+      "wearable": {
+        "slot": "backpack",
+        "thermal": { "insulation": 0.08, "windproof": 0.10, "waterproof": 0 }
+      },
+      "capacityProfile": {
+        "kindLimit": 3,
+        "stackLimit": 5
+      }
+    },
+    {
+      "id": "cloth_thick_fleece_trousers",
+      "name": "厚抓绒裤",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "裤料内侧压着一层厚抓绒，走在风里时，腿上那层冷意会慢很多。"
+      ],
+      "wearable": {
+        "slot": "lower",
+        "thermal": { "insulation": 0.38, "windproof": 0.60, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "cloth_snowfield_boots",
+      "name": "雪地靴",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "靴帮高，鞋底也厚，踩在雪地里不算轻，但脚上能稳稳保住温度。"
+      ],
+      "wearable": {
+        "slot": "shoes",
+        "thermal": { "insulation": 0.35, "windproof": 0.57, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "cloth_quilted_inner_lining",
+      "name": "加厚内衬",
+      "category": "clothing",
+      "stackable": false,
+      "description": [
+        "里层缝得密，贴身那一面压得更厚，穿进去以后整套衣服都会安稳一些。"
+      ],
+      "wearable": {
+        "slot": "lining",
+        "thermal": { "insulation": 0.28, "windproof": 0.22, "waterproof": 0 }
+      }
+    },
+    {
+      "id": "consumable_compressed_biscuits",
+      "name": "压缩饼干",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 8,
+      "intakeLoadCost": 5,
+      "description": [
+        "压得很实的一块口粮。",
+        "便携，耐放。"
+      ]
+    },
+    {
+      "id": "consumable_canned_fish",
+      "name": "鱼罐头",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 12,
+      "intakeLoadCost": 7,
+      "description": [
+        "封在小铁罐里的鱼肉。",
+        "开盖就能吃。"
+      ]
+    },
+    {
+      "id": "consumable_canned_luncheon_meat",
+      "name": "午餐肉罐头",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 14,
+      "intakeLoadCost": 8,
+      "description": [
+        "盐味重，分量足。",
+        "拿来顶一顿很稳。"
+      ]
+    },
+    {
+      "id": "consumable_chocolate_bar",
+      "name": "巧克力条",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 6,
+      "intakeLoadCost": 4,
+      "description": [
+        "一条包得很紧的巧克力。",
+        "甜味来得快。"
+      ]
+    },
+    {
+      "id": "consumable_instant_oat_cup",
+      "name": "速食燕麦杯",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 10,
+      "intakeLoadCost": 6,
+      "description": [
+        "热水一冲就能吃的燕麦杯。",
+        "分量不大，但稳妥。"
+      ]
+    },
+    {
+      "id": "doc_researcher_manuscript",
+      "name": "研究员的手稿",
+      "category": "consumable",
+      "stackable": false,
+      "description": [
+        "一份夹着批注和修订痕迹的手稿。"
+      ]
+    },
+    {
+      "id": "doc_temp_identity",
+      "name": "临时身份证明",
+      "category": "material",
+      "stackable": false
+    },
+    {
+      "id": "doc_citizen_identity",
+      "name": "公民身份证",
+      "category": "tool",
+      "stackable": false
+    },
+    {
+      "id": "ticket_south_america_ship",
+      "name": "忒修斯号船票",
+      "category": "consumable",
+      "description": [
+        "政务大厅签发的忒修斯号船票。",
+        "请于3月13日前前往港口码头登船，逾期作废。"
+      ],
+      "stackable": false
+    }
+  ]
+}

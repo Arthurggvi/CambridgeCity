@@ -1,0 +1,29 @@
+{
+  "id": "test_time",
+  "name": "TEST - 时间系统",
+  "description": "【测试地图】用滑条选择 0–10 小时（10 分钟步进），确认后推进时间。顶部固定栏显示当前 Day 与 HH:MM。",
+  "actions": [
+    {
+      "id": "wait_time",
+      "text": "消磨时间",
+      "ui": {
+        "type": "slider_minutes",
+        "min": 0,
+        "max": 600,
+        "step": 10,
+        "default": 0,
+        "confirmText": "确认"
+      },
+      "kind": "TIME_SKIP"
+    },
+    {
+      "id": "goto_test_temp",
+      "text": "进入温度冒烟测试",
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "test_temp",
+        "minutes": 0
+      }
+    }
+  ]
+}

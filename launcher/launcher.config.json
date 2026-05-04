@@ -1,0 +1,6 @@
+{
+  "port": 5511,
+  "entryPage": "index.html",
+  "preferredBrowser": "auto",
+  "windowMode": "app"
+}

@@ -1,0 +1,147 @@
+{
+  "id": "steelcross_port",
+  "legacy": true,
+  "mapType": "link",
+  "tags": ["port"],
+  "name": "钢十字港口",
+  "description": "门灯一亮，近处的牌杆、泊位边线和那一小截被压平的雪都落在灯下。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "open",
+  "shelter": "none",
+  "environment": {
+    "exposureLevel": "Open"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "Open",
+    "windShelter": 0,
+    "heatSource": 0,
+    "drying": 0.08
+  },
+  "actions": [
+    {
+      "id": "to_steelcross_dock_placeholder",
+      "text": "前往码头（0:02）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "!=", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_dock_placeholder", "minutes": 2 }
+    },
+    {
+      "id": "to_steelcross_market_01",
+      "text": "到港集会（0:03）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "!=", "value": true },
+          { "path": "time.minuteOfDay", "op": ">=", "value": 300 },
+          { "path": "time.minuteOfDay", "op": "<", "value": 780 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_01", "minutes": 3 }
+    },
+    {
+      "id": "to_steelcross_mutual_aid_placeholder",
+      "text": "前往互助堂（0:03）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "!=", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_mutual_aid_placeholder", "minutes": 3 }
+    },
+    {
+      "id": "theseus_luggage_shift",
+      "text": "杂务工作",
+      "ui": { "type": "button", "labelTag": "task" },
+      "thermal": { "exposureMultiplier": 0.52, "activity": "light_work" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "!=", "value": true },
+          { "path": "world.flags.theseusCrewOddJobUnlocked", "op": "==", "value": true },
+          { "path": "time.windows.theseus.open", "op": "==", "value": true }
+        ]
+      },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 60 },
+      "effects": [
+        { "op": "add", "path": "world.money", "value": 63 },
+        { "op": "push", "path": "logLines", "value": "你先替一个抱着两只大包的乘客把行李送到跳板口，转头又去帮人把卡在通道边的硬箱挪开。" },
+        { "op": "push", "path": "logLines", "value": "跳板口、候船线和船边临时通道之间一直有人要你搭把手，你只能来回走、来回搬。" },
+        { "op": "push", "path": "logLines", "value": "值班的人点过数后，这一轮杂务的钱已经给你记上。" }
+      ]
+    },
+    {
+      "id": "open_steelcross_port_bus_choice",
+      "text": "等待接驳车",
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "!=", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "effects": [
+        { "op": "set", "path": "world.flags.steelcrossPortBusChoiceOpen", "value": true }
+      ]
+    },
+    {
+      "id": "board_steelcross_port_to_industrial",
+      "text": "上车（往工业区方向）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_steelcross_port",
+        "lineId": "west2_shuttle_line_01",
+        "direction": -1
+      },
+      "effects": [
+        { "op": "set", "path": "world.flags.steelcrossPortBusChoiceOpen", "value": false }
+      ]
+    },
+    {
+      "id": "board_steelcross_port_to_outpost",
+      "text": "上车（往前哨方向）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_steelcross_port",
+        "lineId": "west2_shuttle_line_01",
+        "direction": 1
+      },
+      "effects": [
+        { "op": "set", "path": "world.flags.steelcrossPortBusChoiceOpen", "value": false }
+      ]
+    },
+    {
+      "id": "return_steelcross_port_from_bus_choice",
+      "text": "返回港口站牌",
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcrossPortBusChoiceOpen", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" },
+      "effects": [
+        { "op": "set", "path": "world.flags.steelcrossPortBusChoiceOpen", "value": false }
+      ]
+    }
+  ]
+}

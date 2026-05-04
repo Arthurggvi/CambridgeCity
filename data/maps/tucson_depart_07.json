@@ -1,0 +1,11 @@
+{
+  "id": "tucson_depart_07",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "可某个夜晚\n\n...",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_depart_07_continue", "text": "继续", "targetMapId": "tucson_depart_08", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

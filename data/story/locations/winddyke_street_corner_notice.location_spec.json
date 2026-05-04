@@ -1,0 +1,13 @@
+{
+  "location_id": "winddyke_street_corner_notice",
+  "location_name": "风堤街-转角公告段",
+  "theme_keywords": ["公告墙叠贴", "导向牌", "围栏分流", "反光杆分叉", "站前灯带"],
+  "function_scope": ["阅读公告", "交通分流", "工区分流", "回流诊所段", "背风停留"],
+  "time_policy": {
+    "rule_segments": [
+      { "id": "day", "range": "06:00-17:59" },
+      { "id": "night", "range": "18:00-05:59" }
+    ],
+    "mood_segments": ["06:00-10:59", "11:00-13:59", "14:00-17:59", "18:00-20:59", "21:00-23:59", "00:00-05:59"]
+  }
+}

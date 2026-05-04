@@ -1,0 +1,9 @@
+{
+  "id": "w2_spine_6",
+  "name": "W2-Spine-6 去寒武城干线闸口",
+  "description": "沿岸主走廊干线闸口，占位地图。",
+  "actions": [
+    { "id": "to_spine_5", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_5" },
+    { "id": "to_spine_7", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_7" }
+  ]
+}

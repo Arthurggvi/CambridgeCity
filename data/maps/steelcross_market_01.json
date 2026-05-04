@@ -1,0 +1,65 @@
+{
+  "id": "steelcross_market_01",
+  "legacy": true,
+  "mapType": "link",
+  "name": "钢十字港集会",
+  "description": "你走进钢十字港集会的第一段通路，摊布和旧木箱沿着护栏压开了一道窄缝。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "actions": [
+    {
+      "id": "steelcross_market_01_forward",
+      "text": "向前探寻（0:02）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_02", "minutes": 2 }
+    },
+    {
+      "id": "steelcross_market_01_return_port",
+      "text": "返回港口（0:03）",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_port", "minutes": 3 }
+    },
+    {
+      "id": "steelcross_market_01_enter_stall",
+      "text": "好食味（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_05_placeholder", "minutes": 1 }
+    },
+    {
+      "id": "steelcross_market_01_claim_researcher_manuscript",
+      "text": "登记研究员手稿归属",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "claim",
+        "businessType": "claim",
+        "idempotencyMode": "target",
+        "allowPartialCommit": false,
+        "claim": {
+          "claimKey": "new_four_misc.researcher_manuscript",
+          "flagPath": "world.flags.newFourMisc.researcherManuscriptClaimed",
+          "targetKey": "world.flags.newFourMisc.researcherManuscriptClaimed",
+          "uiTitle": "研究员手稿",
+          "successMessage": "已记录手稿归属",
+          "dedupedMessage": "手稿归属已存在"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "location_id": "winddyke_street_corner_notice",
+  "SceneList": [
+    { "id": "1.0", "type": "HUB_LOBBY", "text": "风堤街（转角公告段）", "default_return": "1.0" }
+  ],
+  "EdgeList": [
+    { "from": "1.0", "to": "1.0" }
+  ],
+  "InteractionList": [
+    { "id": "read_notice_wall", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:02", "condition": null, "goto": "1.0", "text": "读公告墙" },
+    { "id": "check_signage", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "看导向牌" },
+    { "id": "inspect_ground_grit", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "检查地面（防滑网/撒砂砾）" },
+    { "id": "observe_split_flow", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "观察围栏分流口（人流/车流）" },
+    { "id": "back_to_clinic_segment", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:03", "condition": null, "goto": "winddyke_street_clinic_segment", "text": "回诊所方向" },
+    { "id": "enter_transit_stop_winddyke", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:01", "condition": null, "goto": "winddyke_bus_stop", "text": "前往风堤街站牌" }
+  ],
+  "BlockerSpec": {
+    "blockers": []
+  },
+  "SessionSpec": { "sessions": [] },
+  "RuntimeText": {
+    "mapTextByMapId": {
+      "winddyke_street_corner_notice": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "风堤街分流转角。公告墙、导向牌与围栏在此重排人流：一线去风堤街站牌，一线去仓储/维修工区。",
+          "lightVariants": [
+            {
+              "when": { "lightPhase": "polar_day" },
+              "text": "极昼下没有真正的阴影，整段护栏和牌面都被冷白亮度摊开。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "微光把转角压得更空，远处只剩反光边和牌面轮廓先跳出来。"
+            },
+            {
+              "when": { "lightPhase": "whiteout" },
+              "text": "白障一压下来，转角本身像被擦成了一团发白的边。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "雪粒不断贴着围栏扫过去，公告纸边一层层起卷。"
+            }
+          ],
+          "visibilityVariants": [
+            {
+              "when": { "visibilityBand": "clear" },
+              "text": "围栏、公告墙和导向牌都还能从主通道上直接辨认，分流线切得很清楚。"
+            },
+            {
+              "when": { "visibilityBand": "low" },
+              "text": "雪雾把公告墙的大字揉散了一层，你得更贴近围栏才能重新确认去向。"
+            },
+            {
+              "when": { "visibilityBand": "hazard" },
+              "text": "能见度已经压到危险边缘，分流口主要靠最近的反光杆和围栏轮廓维持方向感。"
+            }
+          ]
+        }
+      }
+    },
+    "actionTextByMapId": {
+      "winddyke_street_corner_notice": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "read_notice_wall_day": {
+            "actionLabel": {
+              "base": "读公告墙"
+            },
+            "actionFeedback": {
+              "base": "近期流感症状多发，请做好防护：\n由于近期站区出现季节性流感病例，诊所提醒各位：\n\n症状：如出现发热、持续性咳嗽或乏力，请立即佩戴N95口罩，并前往诊所进行抗原检测（诊所位于告示栏旁）。\n\n预防：极夜期间易导致情绪低落及免疫力下降。建议保持规律作息，利用室内健身设备进行适度锻炼。\n\n药品储备：诊所现正统计常用药（特别是降压药、维生素D补充剂）的存量。如有特殊用药需求，请于本周五前至护士站登记。",
+              "lightVariants": [
+                { "when": { "lightPhase": ["twilight", "polar_night"] }, "mode": "replace", "text": "近期流感症状多发，请做好防护：\n由于近期站区出现季节性流感病例，诊所提醒各位：\n\n症状：如出现发热、持续性咳嗽或乏力，请立即佩戴N95口罩，并前往诊所进行抗原检测（诊所位于告示栏旁）。\n\n预防：极夜期间易导致情绪低落及免疫力下降。建议保持规律作息，利用室内健身设备进行适度锻炼。\n\n药品储备：诊所现正统计常用药（特别是降压药、维生素D补充剂）的存量。如有特殊用药需求，请于本周五前至护士站登记。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度掉下去后，公告墙本身反而成了最近、最稳定的参照面。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "公告墙更新为近期流感防护提醒，症状处置、预防建议和常用药登记要求都写得很清楚。",
+                "lightVariants": [
+                  { "when": { "lightPhase": ["twilight", "polar_night"] }, "mode": "replace", "text": "夜里先跳出来的是流感防护标题和诊所提醒，症状处置与登记要求仍然清楚。" }
+                ]
+              }
+            }
+          },
+          "read_notice_wall_night": {
+            "actionLabel": {
+              "base": "读公告墙"
+            },
+            "actionFeedback": {
+              "base": "近期流感症状多发，请做好防护：\n由于近期站区出现季节性流感病例，诊所提醒各位：\n\n症状：如出现发热、持续性咳嗽或乏力，请立即佩戴N95口罩，并前往诊所进行抗原检测（诊所位于告示栏旁）。\n\n预防：极夜期间易导致情绪低落及免疫力下降。建议保持规律作息，利用室内健身设备进行适度锻炼。\n\n药品储备：诊所现正统计常用药（特别是降压药、维生素D补充剂）的存量。如有特殊用药需求，请于本周五前至护士站登记。",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度掉下去后，公告墙本身反而成了最近、最稳定的参照面。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "夜里的公告墙换成了流感防护提醒，症状处置、预防建议和药品登记要求都列得很完整。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "hazard" }, "text": "你几乎是把公告墙当成最近的参照面，才把流感症状处置和诊所登记提醒重新确认下来。" }
+                ]
+              }
+            }
+          },
+          "check_signage": {
+            "actionLabel": {
+              "base": "看导向牌"
+            },
+            "actionFeedback": {
+              "base": "你顺着导向牌把路线重新读了一遍：一边去风堤街站牌，一边去仓储/维修分流口，回诊所则沿原路退回。牌面覆着薄霜，但关键字还压得住。\n\n环顾四周：转角视野被围栏切成两段，公告墙前有人停下留档，路边反光标识偶尔在风里闪一下。",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "远处边线一旦被雪雾吃掉，导向牌上这几枚箭头反而成了最近的方向锚点。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "导向牌把去站牌、去工区和回诊所的路线重新分得很清楚。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "hazard" }, "mode": "replace", "text": "当外沿轮廓开始退掉时，导向牌上的箭头就成了你确认分流方向的最近依据。" }
+                ]
+              }
+            }
+          },
+          "inspect_ground_grit": {
+            "actionLabel": {
+              "base": "检查地面（防滑网/撒砂砾）"
+            },
+            "actionFeedback": {
+              "base": "你蹲下看了看地面。雪泥里掺着粗盐和碎砂，靠墙一侧摩擦还够，中央通行线已经被踩出一层发亮的硬冰皮。\n\n环顾四周：鞋印大多朝站前，围栏底部有浅浅拖拽痕，风把细雪重新扫回刚清出的边缘。",
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "新落下来的雪粒正一点点盖回砂砾层，稳脚的带状区明显比刚清理完时更窄。" }
+              ],
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度掉下去后，你更能感觉到脚下这条防滑带本身也是路线参照。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你确认了转角地面哪一段还留着砂砾和摩擦，中央雪面已经更滑了。",
+                "weatherVariants": [
+                  { "when": { "isSnowing": true }, "text": "你看得出新雪正往砂砾层上覆回去，脚下最稳的带状区已经变窄。" }
+                ]
+              }
+            }
+          },
+          "observe_split_flow": {
+            "actionLabel": {
+              "base": "观察围栏分流口（人流/车流）"
+            },
+            "actionFeedback": {
+              "base": "你在围栏旁盯了一会儿分流口。人流被压成两股：一股去风堤街站牌，一股绕向工区外沿；放行节奏并不稳定，偶尔会在围栏口短暂停一下。\n\n环顾四周：警示带和金属围栏不断抖动，有人会在口子前再确认一次方向，地面上能看见明显的回头脚印。",
+              "visibilityVariants": [
+                { "when": { "visibilityBand": "hazard" }, "text": "能见度越低，分流口附近停顿和回头的动作就越明显，大家都更依赖最近的护栏边确认方向。" }
+              ],
+              "weatherVariants": [
+                { "when": { "isSnowing": true }, "text": "风雪一压过来，围栏口的放行节奏会更碎，人群停顿也更频繁。" }
+              ]
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你看清了围栏口的人流节拍：去站牌的人会短暂停一下，去工区更快也更硬。",
+                "visibilityVariants": [
+                  { "when": { "visibilityBand": "hazard" }, "text": "外沿轮廓一退掉，围栏口的人流就更容易在确认方向时短暂停住。" }
+                ]
+              }
+            }
+          },
+          "enter_transit_stop_winddyke": {
+            "actionLabel": {
+              "base": "前往风堤街站牌"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你顺着背风侧的围栏走向风堤街站牌，灯罩里的薄霜把冷光压得更低。"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

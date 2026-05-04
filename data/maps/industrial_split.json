@@ -1,0 +1,145 @@
+{
+  "id": "industrial_split",
+  "name": "工区分流口",
+  "description": "工区分流口。更高的围栏把通道压窄，仓储线和维修线在这里分开。",
+  "descriptionByMinuteOfDay": [
+    {
+      "start": 360,
+      "end": 1079,
+      "text": "白天的工区分流口已经全速运转。新车辙压在旧雪上，签到窗玻璃边结着一圈白霜，派工板上挂着箱单核对、贴签和清雪的短工单。光线很亮，但一点不暖，门禁灯白天也亮着。背工具包的人停下看一眼牌就走，推小车的人贴着围栏绕过去，几乎没人久站。"
+    },
+    {
+      "start": 1080,
+      "end": 359,
+      "text": "夜里的工区分流口灯更稀，阴影更重。派工棚大多停了，只剩门禁灯和几盏工作灯还在亮。反光膜和门禁灯总比字先被看见，值班、夜修和巡检的人从两条线快速穿过。这里几乎没人聊天，也很少有人再等临工。"
+    }
+  ],
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "ui": {
+    "actionGroups": [
+      {
+        "id": "industrial_split_observe_bundle",
+        "title": "观察分流设施",
+        "childrenActionIds": [
+          "check_split_signage",
+          "inspect_access_lights",
+          "read_dispatch_board",
+          "ask_temp_shift_window",
+          "observe_split"
+        ],
+        "defaultCollapsed": true,
+        "hint": "5项"
+      }
+    ]
+  },
+  "actions": [
+    {
+      "id": "check_split_signage",
+      "text": "看导向牌（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.4, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "导向牌把仓储线、维修线和回风堤街分得很硬，停留提示挂在最下方。" }
+      ]
+    },
+    {
+      "id": "inspect_access_lights",
+      "text": "检查门禁灯（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "门禁灯位在风里稳着不闪，先于门和字把通行状态亮出来。" }
+      ]
+    },
+    {
+      "id": "read_dispatch_board",
+      "text": "看派工板（0:02）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.44, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 2 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "派工板上的短工单只写低门槛活：箱单核对、补贴标签、轻件转运和清雪。" }
+      ]
+    },
+    {
+      "id": "ask_temp_shift_window",
+      "text": "靠近签到窗问短工（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.46, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "窗口回话很短：箱单核对和补贴标签都先在这里登记，随后去仓储前场按单做。" }
+      ]
+    },
+    {
+      "id": "to_warehouse_gate",
+      "text": "去仓储区门口（0:03）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.9, "activity": "transit" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "industrial_warehouse_gate", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿着仓储线前进，围栏后是堆垛和低矮设备轮廓。" }
+      ]
+    },
+    {
+      "id": "to_maintenance_gate",
+      "text": "去维修厂门口（0:03）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.9, "activity": "transit" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "industrial_maintenance_gate", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你转向维修线，门禁灯像固定的亮点，金属低鸣更近。" }
+      ]
+    },
+    {
+      "id": "observe_split",
+      "text": "观察人流与车流（0:01）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.42, "activity": "idle" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "分流口前的人和车都只做短停：看牌、领活、被门禁拦一下，再各走各线。" }
+      ]
+    },
+    {
+      "id": "take_temp_manifest_shift",
+      "text": "报名箱单核对短工（1:30）",
+      "ui": { "type": "button" },
+      "thermal": { "exposureMultiplier": 0.46, "activity": "light_work" },
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 1079 }
+        ]
+      },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 90 },
+      "effects": [
+        { "op": "add", "path": "world.money", "value": 36 },
+        { "op": "push", "path": "logLines", "value": "你按箱号一排排核对，错位的贴签当场重贴，模糊的编号重新誊写。" },
+        { "op": "push", "path": "logLines", "value": "纸单受潮发软，手套在风里越戴越硬，翻页和按签都变慢。" },
+        { "op": "push", "path": "logLines", "value": "交回单子后，签到窗在结算栏划单记账，短工钱已入账。" }
+      ]
+    },
+    {
+      "id": "enter_transit_stop_industrial",
+      "text": "前往站牌 / 上接驳车",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_STOP_ENTRY",
+      "payload": { "stopId": "stop_industrial", "intentType": "transit_stop" },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你走到围栏边的站牌前，白天也亮着的门禁灯把雪面切成两段。" }
+      ]
+    }
+  ]
+}

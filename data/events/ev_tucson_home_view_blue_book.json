@@ -1,0 +1,15 @@
+{
+  "id": "ev_tucson_home_view_blue_book",
+  "name": "图森宅屋查看蓝色的书",
+  "steps": [
+    {
+      "type": "set_flag",
+      "key": "tucsonHomeViewedBlueBook",
+      "value": true
+    },
+    {
+      "type": "goto_map",
+      "mapId": "tucson_home_blue_book"
+    }
+  ]
+}

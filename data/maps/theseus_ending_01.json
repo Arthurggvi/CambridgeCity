@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_01",
+  "legacy": true,
+  "mapType": "link",
+  "name": "???",
+  "description": ".",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_01_continue", "text": "继续", "targetMapId": "theseus_ending_02", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

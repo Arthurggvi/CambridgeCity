@@ -1,0 +1,74 @@
+{
+  "id": "winddyke_street_clinic_segment",
+  "name": "风堤街-诊所段",
+  "description": "诊所外的背风通行线起点。压实雪面与碎砾基层构成主通道，反光杆编号沿线北延；风堤背侧可短暂停留避风。",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "actions": [
+    {
+      "id": "to_clinic",
+      "text": "去诊所（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic", "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你推门回到诊所，室内热风短暂顶开了外面的湿冷。" }
+      ]
+    },
+    {
+      "id": "to_corner_notice_day",
+      "text": "沿反光杆前行（白天 0:03）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 1079 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "winddyke_street_corner_notice", "minutes": 3 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿着反光杆往前走，白天的车辙和脚印把路线钉得很死。" }
+      ]
+    },
+    {
+      "id": "to_corner_notice_night",
+      "text": "沿反光杆前行（夜晚 0:04）",
+      "ui": { "type": "button" },
+      "requires": {
+        "any": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 1080 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 359 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "winddyke_street_corner_notice", "minutes": 4 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "夜里你按编号贴着反光杆前行，风从侧面抽过来，脚步更慢。" }
+      ]
+    },
+    {
+      "id": "check_reflector_number",
+      "text": "查看反光杆编号（0:01）",
+      "ui": { "type": "button" },
+      "recordUnlock": { "recordId": "west2_reflective_post_001" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你贴近反光杆看清了编号序列，确认自己仍在线路上。" }
+      ]
+    },
+    {
+      "id": "shelter_by_dike",
+      "text": "靠风堤背侧避风（0:02）",
+      "ui": { "type": "button" },
+      "recordUnlock": { "recordId": "west2_windbreak_001" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 2 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你贴着风堤背侧停了片刻，风压小了些，但潮气更重。" }
+      ]
+    }
+  ]
+}

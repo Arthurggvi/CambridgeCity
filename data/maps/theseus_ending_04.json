@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_04",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号",
+  "description": "我想，\n\n最终我还是站在了这里",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_04_continue", "text": "继续", "targetMapId": "theseus_ending_05", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

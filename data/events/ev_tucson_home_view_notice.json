@@ -1,0 +1,15 @@
+{
+  "id": "ev_tucson_home_view_notice",
+  "name": "图森宅屋查看一张纸",
+  "steps": [
+    {
+      "type": "set_flag",
+      "key": "tucsonHomeViewedNotice",
+      "value": true
+    },
+    {
+      "type": "goto_map",
+      "mapId": "tucson_home_notice"
+    }
+  ]
+}

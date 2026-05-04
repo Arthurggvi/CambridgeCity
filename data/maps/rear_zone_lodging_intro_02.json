@@ -1,0 +1,21 @@
+{
+  "id": "rear_zone_lodging_intro_02",
+  "mapType": "link",
+  "name": "后区柜台",
+  "description": "",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "rear_zone_lodging_intro_acknowledge",
+      "text": "明白了",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_lodging_counter_01", "minutes": 0 },
+      "effects": [
+        { "op": "set", "path": "world.flags.rear_zone_lodging_intro_seen", "value": true }
+      ]
+    }
+  ]
+}

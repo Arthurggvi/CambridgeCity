@@ -1,0 +1,11 @@
+{
+  "id": "tucson_depart_03",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "我忘了很多事",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_depart_03_continue", "text": "继续", "targetMapId": "tucson_depart_04", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

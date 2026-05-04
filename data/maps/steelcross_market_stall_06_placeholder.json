@@ -1,0 +1,48 @@
+{
+  "id": "steelcross_market_stall_06_placeholder",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "单证代办桌",
+  "description": "桌面上平码着登记册、表格和压角的手续单，风一过就会把纸边吹得发响。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "entrySceneId": "steelcross_market_stall_06_service",
+  "scenes": [
+    {
+      "id": "steelcross_market_stall_06_service",
+      "type": "SERVICE_COUNTER",
+      "name": "单证代办桌"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "steelcross_market_stall_06_return_market",
+      "sceneId": "steelcross_market_stall_06_service",
+      "type": "TRANSITION",
+      "text": "返回集市（0:01）",
+      "edgeId": "steelcross_market_stall_06_return_market_edge",
+      "effects": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_market_stall_06_return_market_edge",
+      "fromSceneId": "steelcross_market_stall_06_service",
+      "toMapId": "steelcross_market_05",
+      "minutes": 1
+    }
+  ]
+  ,"blockers": [],
+  "sessions": []
+}

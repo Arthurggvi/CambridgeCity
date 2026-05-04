@@ -1,0 +1,9 @@
+{
+  "id": "w2_spine_5",
+  "name": "W2-Spine-5 科考站/前哨分流口",
+  "description": "沿岸主走廊科考分流节点，占位地图。",
+  "actions": [
+    { "id": "to_spine_4", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_4" },
+    { "id": "to_spine_6", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_6" }
+  ]
+}

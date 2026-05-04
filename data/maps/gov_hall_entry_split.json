@@ -1,0 +1,88 @@
+{
+  "id": "gov_hall_entry_split",
+  "name": "政务大厅 · 入口分流",
+  "description": "入口分流区。",
+  "descriptionByRuntimeState": {
+    "day_open": "风廊是半封闭的，外面的风雪被挡掉了大半，只剩一点雪尘偶尔卷进来。地上铺着粗橡胶垫，表面带着一层已经硬掉的水痕。\n前面是双门气闸，两道门互锁，门上的绿灯亮着。旁边的除霜间还开着，烘干柜正在工作，滴水槽里不断传来细碎的水声。\n分流闸机后的提示屏显示“营业中 09:00–18:00”，护栏把人流分成两条，一边去大厅，一边去一号仓。",
+    "day_closed": "风廊与气闸仍可进，但闸机全红；除霜间只保底照明，烘干柜停用。提示屏显示“非营业”，并滚动下一营业日时间。大厅与一号仓方向的门禁都显示“关闭”，只留下“返回外部”的箭头。",
+    "night_open": "入口外是黑天，风廊灯带把雪尘照成斜线；气闸门开合更慢，提示音更清楚。提示屏显示“临时受理/应急值守”，护栏仍分两线，但大厅入口会多一道人工确认。你能感觉到它在“开门”，但不欢迎你久留。",
+    "night_closed": "常亮灯维持最低可视，闸机全锁，提示屏写“非营业”。除霜间滴水槽边缘结出薄冰痕，烘干柜断电。大厅与一号仓方向无放行，只能原路返回。"
+  },
+  "descriptionByFlags": [
+    {
+      "path": "world.flags.govHallADialogNoId",
+      "equals": true,
+      "text": "保安叫住了你：\n\n“没有身份证明不得入内。想进大厅，先去一号仓办理临时身份证明。”"
+    }
+  ],
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "actions": [
+    {
+      "id": "gov_a_to_c",
+      "text": "前往大厅（0:02）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallADialogNoId", "op": "!=", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_a_dialog_return",
+      "text": "返回（0:00）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallADialogNoId", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_a_to_b",
+      "text": "前往一号仓（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallADialogNoId", "op": "!=", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "gov_hall_window_1", "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你顺着“无证先去一号仓”的箭头走，护栏把路压成一条窄线。" },
+        { "op": "set", "path": "world.flags.govHallADialogNoId", "value": false },
+        { "op": "set", "path": "world.flags.govHallBWindowOpen", "value": false }
+        ,
+        { "op": "set", "path": "world.flags.govHallBDialogAlreadyHasIdentity", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogNeedIdentityForCitizen", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogCitizenGoHall", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogQueueSuccess", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogQueueRejected", "value": false },
+        { "op": "set", "path": "world.flags.govHallCDialogWindowRejected", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogTempIssued", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogNotCitizen", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogAlreadyHasCitizenCard", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogReissuePrompt", "value": false },
+        { "op": "set", "path": "world.flags.govHallBDialogReissueIssued", "value": false }
+      ],
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "gov_a_exit",
+      "text": "返回风堤街-转角公告段（0:01）",
+      "requires": {
+        "all": [
+          { "path": "world.flags.govHallADialogNoId", "op": "!=", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "winddyke_street_corner_notice", "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你退回风廊，冷气立刻顶上来，门后的灯光被关在里面。" },
+        { "op": "set", "path": "world.flags.govHallADialogNoId", "value": false }
+      ],
+      "ui": { "type": "button" }
+    }
+  ]
+}

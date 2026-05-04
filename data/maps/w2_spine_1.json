@@ -1,0 +1,18 @@
+{
+  "id": "w2_spine_1",
+  "name": "W2-Spine-1 风堤街走廊段",
+  "description": "沿岸主走廊关键段，占位地图。",
+  "actions": [
+    { "id": "to_spine_0", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_0" },
+    { "id": "to_spine_2", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_2" },
+    { "id": "enter_bayport_clinic", "text": "进入边港诊所", "ui": { "type": "button" }, "targetMapId": "bayport_clinic" },
+    { "id": "enter_clinic_segment", "text": "进入风堤街-诊所段", "ui": { "type": "button" }, "targetMapId": "winddyke_street_clinic_segment" },
+    {
+      "id": "enter_winddyke_bus_stop",
+      "text": "前往风堤街站牌",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_STOP_ENTRY",
+      "payload": { "stopId": "stop_winddyke", "intentType": "transit_stop" }
+    }
+  ]
+}

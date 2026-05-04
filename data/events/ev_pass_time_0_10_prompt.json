@@ -1,0 +1,16 @@
+{
+  "id": "ev_pass_time_0_10_prompt",
+  "steps": [
+    {
+      "type": "advance_time",
+      "mode": "prompt_int",
+      "minHours": 0,
+      "maxHours": 10,
+      "unit": "hours"
+    },
+    {
+      "type": "alert",
+      "text": "时间流逝：+{deltaHours}h（{deltaMinutes}分钟）\n\n当前时间：Day {day} / {hour}:{minute}（总计 {totalMinutes} 分钟）\n\n环境温度：{tEnv}℃\n核心体温：{tCore}℃\n失温条：{hypo}% ({hypoStage})"
+    }
+  ]
+}

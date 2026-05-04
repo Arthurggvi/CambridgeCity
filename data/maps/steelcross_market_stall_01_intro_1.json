@@ -1,0 +1,24 @@
+{
+  "id": "steelcross_market_stall_01_intro_1",
+  "legacy": true,
+  "mapType": "link",
+  "name": "捕鱼人哈德",
+  "description": "“哈德鱼摊”——一块木牌上用油漆歪歪扭扭写着四个大字。\n你看见摊主正和一名壮汉大声争吵。具体内容听不清，只见他抬手朝外一指，动作粗鲁，像是在赶人。",
+  "onEnterEffects": {
+    "socialEffects": [
+      { "type": "discover_npc", "npcId": "npc_hard", "reason": "map_enter" },
+      { "type": "unlock_dossier_entry", "npcId": "npc_hard", "entryId": "npc_hard_first_meet_001", "reason": "map_enter" },
+      { "type": "set_dossier_flag", "npcId": "npc_hard", "flagId": "nameKnown", "value": true, "reason": "map_enter" }
+    ]
+  },
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "actions": [
+    {
+      "id": "steelcross_market_stall_01_intro_1_continue",
+      "text": "继续",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_01_intro_2", "minutes": 0 },
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

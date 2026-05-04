@@ -1,0 +1,141 @@
+{
+  "id": "west2_outpost_hub",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "前哨区域",
+  "description": "前哨区域的几处主入口沿着外场总导航通路分开，接驳口、搜救站、资料中心和科研总站都从这里进入。",
+  "entrySceneId": "west2_outpost_hub_main",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "open",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "Open"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "Open",
+    "windShelter": 0.08,
+    "heatSource": 0,
+    "drying": 0.08
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_hub_main",
+      "type": "HUB_LOBBY",
+      "name": "前哨区域总导航"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "go_to_transfer_station",
+      "sceneId": "west2_outpost_hub_main",
+      "type": "TRANSITION",
+      "text": "西线联运站",
+      "edgeId": "west2_outpost_hub_to_transfer_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿着接驳线往西线联运站走去。" }
+      ]
+    },
+    {
+      "id": "go_to_rescue_station",
+      "sceneId": "west2_outpost_hub_main",
+      "type": "TRANSITION",
+      "text": "野外支援与搜救站",
+      "edgeId": "west2_outpost_hub_to_rescue_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你转向西部二区野外支援与搜救站。" }
+      ]
+    },
+    {
+      "id": "go_to_library_center",
+      "sceneId": "west2_outpost_hub_main",
+      "type": "TRANSITION",
+      "text": "图书与资料中心",
+      "ui": {
+        "type": "button",
+        "lockedBehavior": "show",
+        "feedback": {
+          "title": "大门已上锁"
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "time.windows.west2_library_center.open", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_hub_to_library_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿着内侧通路走向图书与资料中心。" }
+      ]
+    },
+    {
+      "id": "go_to_research_station",
+      "sceneId": "west2_outpost_hub_main",
+      "type": "TRANSITION",
+      "text": "综合科研总站",
+      "ui": {
+        "type": "button",
+        "lockedBehavior": "show",
+        "feedback": {
+          "title": "大门已上锁"
+        }
+      },
+      "requires": {
+        "all": [
+          { "path": "time.windows.west2_research_station.open", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "west2_outpost_hub_to_research_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你朝西部二区综合科研总站那边走去。" }
+      ]
+    },
+    {
+      "id": "return_to_outpost_bus_stop",
+      "sceneId": "west2_outpost_hub_main",
+      "type": "TRANSITION",
+      "text": "公交车站牌",
+      "edgeId": "west2_outpost_hub_to_bus_stop_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你沿着原路退回前哨站牌。" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_hub_to_transfer_edge",
+      "fromSceneId": "west2_outpost_hub_main",
+      "toMapId": "west2_outpost_transfer_station",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_hub_to_rescue_edge",
+      "fromSceneId": "west2_outpost_hub_main",
+      "toMapId": "west2_outpost_rescue_station",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_hub_to_library_edge",
+      "fromSceneId": "west2_outpost_hub_main",
+      "toMapId": "west2_outpost_library_center",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_hub_to_research_edge",
+      "fromSceneId": "west2_outpost_hub_main",
+      "toMapId": "west2_outpost_research_station",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_hub_to_bus_stop_edge",
+      "fromSceneId": "west2_outpost_hub_main",
+      "toMapId": "outpost_bus_stop",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

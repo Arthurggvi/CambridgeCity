@@ -1,0 +1,13 @@
+{
+  "location_id": "industrial_maintenance_gate",
+  "location_name": "维修厂门口",
+  "theme_keywords": ["工具箱", "零件箱", "门禁灯", "黄黑警示边", "结霜金属门"],
+  "function_scope": ["维修前场观察", "门禁确认", "边界询问", "返回工区分流口"],
+  "time_policy": {
+    "rule_segments": [
+      { "id": "day", "range": "06:00-17:59" },
+      { "id": "night", "range": "18:00-05:59" }
+    ],
+    "mood_segments": ["06:00-10:59", "11:00-13:59", "14:00-17:59", "18:00-20:59", "21:00-23:59", "00:00-05:59"]
+  }
+}

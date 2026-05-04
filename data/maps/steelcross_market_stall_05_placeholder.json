@@ -1,0 +1,56 @@
+{
+  "id": "steelcross_market_stall_05_placeholder",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "好食味",
+  "description": "暖箱边摆着几样能立刻下肚的热食，热气和香味都压得很近。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "entrySceneId": "steelcross_market_stall_05_service",
+  "scenes": [
+    {
+      "id": "steelcross_market_stall_05_service",
+      "type": "SERVICE_COUNTER",
+      "name": "好食味"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "steelcross_market_stall_05_open_goods_panel",
+      "sceneId": "steelcross_market_stall_05_service",
+      "type": "MENU_OPEN",
+      "text": "查看货物",
+      "ui": { "panel": "shop_goods" },
+      "effects": []
+    },
+    {
+      "id": "steelcross_market_stall_05_return_market",
+      "sceneId": "steelcross_market_stall_05_service",
+      "type": "TRANSITION",
+      "text": "返回集市（0:01）",
+      "edgeId": "steelcross_market_stall_05_return_market_edge",
+      "effects": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_market_stall_05_return_market_edge",
+      "fromSceneId": "steelcross_market_stall_05_service",
+      "toMapId": "steelcross_market_01",
+      "minutes": 1
+    }
+  ]
+  ,"blockers": [],
+  "sessions": []
+}

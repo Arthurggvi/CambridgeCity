@@ -1,0 +1,56 @@
+{
+  "id": "steelcross_market_stall_07_placeholder",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "修复件与电池",
+  "description": "几盒旧电池和拆下来的修复件平码着压在桌面上，表壳和接片都带着旧划痕。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "entrySceneId": "steelcross_market_stall_07_service",
+  "scenes": [
+    {
+      "id": "steelcross_market_stall_07_service",
+      "type": "SERVICE_COUNTER",
+      "name": "修复件与电池"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "steelcross_market_stall_07_open_goods_panel",
+      "sceneId": "steelcross_market_stall_07_service",
+      "type": "MENU_OPEN",
+      "text": "查看货物",
+      "ui": { "panel": "shop_goods" },
+      "effects": []
+    },
+    {
+      "id": "steelcross_market_stall_07_return_market",
+      "sceneId": "steelcross_market_stall_07_service",
+      "type": "TRANSITION",
+      "text": "返回集市（0:01）",
+      "edgeId": "steelcross_market_stall_07_return_market_edge",
+      "effects": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_market_stall_07_return_market_edge",
+      "fromSceneId": "steelcross_market_stall_07_service",
+      "toMapId": "steelcross_market_07",
+      "minutes": 1
+    }
+  ]
+  ,"blockers": [],
+  "sessions": []
+}

@@ -1,0 +1,18 @@
+{
+  "id": "rear_zone_lodging_intro_01",
+  "mapType": "link",
+  "name": "后区柜台",
+  "description": "",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "rear_zone_lodging_intro_no_order",
+      "text": "没有",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_lodging_intro_02", "minutes": 0 }
+    }
+  ]
+}

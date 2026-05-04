@@ -1,0 +1,73 @@
+# --- Node ---
+node_modules/
+
+# --- Build & release artifacts ---
+dist/
+*.zip
+
+# --- Environment & secrets ---
+.env
+.env.*
+!.env.example
+
+# --- Logs & transient files ---
+*.log
+*.tmp
+*.err
+*_dom.html
+*_dump.html
+.server_port
+
+# --- Internal ops, debug docs, audits (not shipped on GitHub) ---
+/运维/
+/debug/
+/docs/debug/
+/docs/internal/
+IMPLEMENTATION_REPORT.md
+.edge-live-audit/
+
+# --- temp: local audit / validation / phase outputs (not garbage; git + Release isolated) ---
+temp/
+temp/**
+temp_*/
+
+# --- Launcher / browser local profile (sessions, caches, logs) ---
+.launcher_runtime/
+
+# --- Embedded Node for Windows launcher (seed locally; do not commit binary) ---
+launcher/runtime/node/
+
+# --- QA, regression reports, scripted dumps ---
+qa/
+reports/generated/**
+
+# --- Typical local test / audit outputs (repo root & misc) ---
+browser_logs.json
+test_output.txt
+temp_scene_walker_report.json
+verification_report.json
+research_station.json
+**/*_dump.json
+**/*_dump.txt
+**/*dom_dump*
+**/*.har
+
+# --- Screenshots / evidence captures (keep tracked assets under picture/ etc.) ---
+/*_screenshot*.png
+/*_evidence*.png
+/capture_*.png
+/scene_*.png
+
+# --- Optional local save / export drops (if copied into repo root) ---
+/saves/
+/local_saves/
+*.ccsave.json
+**/profile_store/**
+**/browser-profile/**
+
+# --- OS & editor (optional noise) ---
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+*.bak

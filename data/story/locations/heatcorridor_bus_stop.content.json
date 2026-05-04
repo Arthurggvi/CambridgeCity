@@ -1,0 +1,861 @@
+{
+  "location_id": "heatcorridor_bus_stop",
+  "RuntimeText": {
+    "mapTextByMapId": {
+      "heatcorridor_bus_stop": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "站牌贴在热廊外沿，挡风板、牌框和一截窄候车带被一起收进壳体边上，脚下还留着化雪踩脏后的暗水痕。",
+          "visibilityVariants": {
+            "low": "微光里，牌面边角和挡风板上的旧水痕还贴在眼前，门帘后的暖气从缝里一阵阵压出来，远处轮廓退得更散。"
+          }
+        }
+      },
+      "heatcorridor_front_hall": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "玻璃上结着一层半干的雾，墙边几道小窗亮着，热气混着汤味和湿衣味停在头顶。黑湿的鞋印从门斗一路拖进里面，在地上踩出一条发亮的路。",
+          "moodVariants": {
+            "morning": "\n窗下已经摆出几只热碗，白气贴着玻璃往上爬。有人站在墙边搓手，靴底带进来的水顺着鞋印慢慢往里拖。",
+            "noon": "\n端着碗的人挨着墙站开，肩膀和袖口不时碰到一起。小窗里递碗收钱都很快，汤气一阵阵扑出来。",
+            "afternoon": "\n告示纸边卷着一点潮，有人低头看着，手指在纸角上按一下。地上的水痕没有干，鞋印一层叠一层，亮面一直拖到里面。",
+            "evening": "\n几道小窗下面都站着人，碗沿碰在一起，带出一串碎响。热气挂在灯下，墙上的雾印一片连着一片。",
+            "midnight": "\n窗台边并着几只空碗，勺子搁在里面，偶尔轻轻碰一下。白雾垂在灯下，墙边的人缩着肩，话声贴着耳边过去。",
+            "dawn": "\n门斗口漏进一层灰白，碗里的白气和袖口的潮气贴在一起。有人捧着碗站在窗下，手指压着碗沿不动。"
+          }
+        }
+      },
+      "heatcorridor_shop_window": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "商铺缩在热廊侧墙里，只开一道玻璃小窗。玻璃后挤着杯面、电池、烟、止痛药和零散日用品，价签贴得歪斜，边角被潮气顶起。窗台很窄，找零盘、塑料袋和一支拴绳圆珠笔挤在一起，底下那片地被雪水和鞋底磨得发黑。",
+          "scheduleVariants": [
+            {
+              "when": "06:00-10:59",
+              "mode": "append",
+              "text": "卷帘刚推起一截，窗后还靠着没拆干净的纸箱，保温杯和罐头从箱口露出来。"
+            },
+            {
+              "when": "11:00-17:59",
+              "mode": "append",
+              "text": "窗前总贴着人，玻璃上一层层哈气印，指尖划开一道，很快又糊回去。"
+            },
+            {
+              "when": "18:00-23:59",
+              "mode": "append",
+              "text": "窗后的灯顶得更亮，最外层货架被照得发白，递出来的塑料袋在玻璃前一晃一晃。"
+            },
+            {
+              "when": "00:00-05:59",
+              "mode": "append",
+              "text": "卷帘没全开，只剩够递货的一条缝。小灯贴着窗边亮着，只照住最常拿的几样货。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": "lightPhase in [low_sun, twilight]",
+              "mode": "append",
+              "text": "斜进来的冷光贴在玻璃边上，把价签和塑料包装照得一层层发亮。"
+            },
+            {
+              "when": "lightPhase in [polar_day]",
+              "mode": "append",
+              "text": "外头一亮，玻璃上的划痕和水迹全浮出来，里面的货像压在一层白雾后头。"
+            },
+            {
+              "when": "isDarkLike == true",
+              "mode": "append",
+              "text": "到了靠灯的时候，先看清的是窗台和最外沿那排货，后面的东西都沉下去。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": "snowfallRate >= light || windSpeed_local >= moderate",
+              "mode": "append",
+              "text": "门斗那边一响，细雪和冷风就顺着热廊灌过来，窗前融开的水被吹出一道道乱纹。"
+            },
+            {
+              "when": "snowfallRate >= heavy || visibilityBand in [low, whiteout]",
+              "mode": "append",
+              "text": "外面雪压得更白时，来买东西的人只把手套褪到指节，指一下货就把手缩回去。"
+            }
+          ]
+        }
+      },
+      "heatcorridor_night_kitchen": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "白雾与你一同挤进了这片屋子，酱油味爬上了你的衣角。",
+          "moodVariants": {
+            "morning": "\n窄台上坐着几个人，碗沿碰出一点轻响，话声压得很低。",
+            "noon": "\n热气和油香混在一处，端着碗的人挤在窄台边，后面还有人在等位子。",
+            "afternoon": "\n后厨的响动隔着白雾传过来，窄台边坐着几个人，谁都吃得很慢。",
+            "evening": "\n灯把这片屋子照得更暖，窄台边挤满了人，汤气、油香和谈话声一起浮上来。",
+            "midnight": "\n白雾还在灯下慢慢翻，窄台边只坐着几个人，碗筷轻轻碰着，偶尔带出一句低话。",
+            "dawn": "\n窄台上坐着零星几个人，谈话声被棚顶压得很低。"
+          }
+        }
+      },
+      "heatcorridor_night_kitchen_window": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "半截窗口后面是保温桶和配餐盘，挡板边贴着几张价目纸。金属台面被热气和油手磨得发亮，窗口前的人停得很短，拿到东西就会立刻让开。",
+          "scheduleVariants": [
+            {
+              "when": { "timePhase": "morning" },
+              "text": "上午先被翻到的是最便宜、最省事的那几样，窗口前问话也短，更多是在确认今天还能拿到什么热的。"
+            },
+            {
+              "when": { "timePhase": "noon" },
+              "text": "正午时段，配餐盘和保温桶之间切换得更频，窗口里外都带着一种不想把动作拖慢的劲。"
+            },
+            {
+              "when": { "timePhase": "evening" },
+              "text": "傍晚以后，窗口这一小块亮面会比别处更抓眼，排到前面的人总会先低头看一遍价目纸和桶口冒出来的热气。"
+            },
+            {
+              "when": { "timePhase": "midnight" },
+              "text": "到了深夜，窗口前的人少一些，留得更久的反而是金属勺碰桶沿的声音和保温桶没断掉的白汽。"
+            }
+          ],
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "白班时段的窗口更像一条快速发放线，能停下来犹豫的空间很少。"
+            },
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "夜里保留下来的品项和动作都更收缩，窗口像是在用最低限度的热食和热水把班次接过去。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "暗下来之后，最先跳出来的是价目纸的浅边、桶口白汽和台面那层被反复擦亮的油光。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "外头在下雪时，排到窗口前的人肩上和袖口常还挂着没化开的白点，热气一顶上去就化成更深的湿痕。"
+            }
+          ]
+        }
+      },
+      "heatcorridor_night_kitchen_counter": {
+        "sceneId": "night_kitchen_counter_seating",
+        "description": {
+          "base": "靠墙窄台贴得很紧，桌面留着水印和汤滴，凳子也不多。端着热饭的人大多低头吃完就走，很少有人真在这里久坐。",
+          "scheduleVariants": [
+            {
+              "when": { "timePhase": "morning" },
+              "text": "上午坐到这里的人更像是在给自己补一口热的，吃得快，连把手套和杯子摊开都显得嫌占地方。"
+            },
+            {
+              "when": { "timePhase": "noon" },
+              "text": "正午前后，窄台边的人换得最快，刚腾出来的空位常还带着余温和没擦净的水痕。"
+            },
+            {
+              "when": { "timePhase": "evening" },
+              "text": "傍晚这会儿，靠墙这排位置会被外头回来的人短暂停住，大家更多是借着墙和热气把身体缓一下。"
+            },
+            {
+              "when": { "timePhase": "midnight" },
+              "text": "深夜里这排窄台更安静，能留下来的只有咀嚼声、一次次放下碗杯的轻响，还有偶尔挪动凳脚的摩擦。"
+            }
+          ],
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "白班时段这里承担的是最直接的周转功能，吃完就走几乎成了默认规矩。"
+            },
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "夜里留下来坐这一会儿的人更少，窄台的存在更像是给热食配的一段临时缓冲，而不是给人安顿下来的地方。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "光线往下掉以后，桌面上的水印和汤滴会先反起来，墙面和凳脚反而更快沉进暗里。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "门外风雪重的时候，坐在靠门那一头的人会把湿气和冷味一起带进来，靠墙这排位置也就显得更紧更潮。"
+            }
+          ]
+        }
+      },
+      "heatcorridor_rear_section": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "前廊拐进后区，地上融雪比外面厚出一层。旧防滑垫泡得发黑发硬，水印一直拖到里头那道门前。墙边长椅挨得紧，椅脚边堆着磨损的包和塑料桶。隔板挡着，只看得见门边的编号、半截门帘、贴墙走的铁管。",
+          "scheduleVariants": [
+            {
+              "when": { "timePhase": "morning" },
+              "text": "门边有一圈刚带进来的碎雪。旧地垫表面的水印发浅，像是刚被人踩开。墙边长椅空着大半，椅脚边零星放着几只包。隔板后有人拉了一下门帘，跟着有挪东西的声响。"
+            },
+            {
+              "when": { "timePhase": "noon" },
+              "text": "地上的水痕被来回踩乱。黑色地垫中间那一段最脏。长椅前堆着包和水桶。靠里那道门附近站着人。门帘边有人侧身进出。有人坐在长椅上。挡板前这一小块地方，站着的人没断过。"
+            },
+            {
+              "when": { "timePhase": "evening" },
+              "text": "从前廊带进来的雪水一路拖到后区。门口到长椅边全是新踩出来的湿印。墙边每张长椅都坐着人，包、手套和外衣压在椅边和脚下。靠里那道门半开着，有人停了一下，朝里面问话。"
+            },
+            {
+              "when": { "timePhase": "midnight" },
+              "text": "地上的水迹干了一部分，只在地垫边和墙根留着深色潮痕。长椅上坐垫被压出印子，包还搁在上面。门帘后有人影过去。内门半开着，贴墙那排铁管在顶灯下看得比白天清楚。"
+            }
+          ]
+        }
+      },
+      "rear_zone_lodging_intro_01": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "后区里侧嵌着一段窄柜台，台面压着几张表单和床号纸，后面那人一直低头翻着册子。你刚靠近，她就抬眼扫了你一下。\n\n“工单。出示一下。”"
+        }
+      },
+      "rear_zone_lodging_intro_02": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "她把手里的纸往下一压，语气没变，像是在重复一套早就说熟的话。\n\n“第一次来这儿？没有工单的话，你只能先申请。等你有了工单，我才能给你安排固定位置，懂了吗？”"
+        }
+      },
+      "rear_zone_lodging_counter_01": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "柜台后头那人把册子翻过一页，抬眼看了看你，像是在等你自己开口。\n\n“要做什么？”"
+        }
+      },
+      "rear_zone_lodging_quote_01": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "她低头看了一眼手边的登记纸，像是顺手核了一下今天还能往下排多少人。\n\n“今天临时铺位一晚 {rear_zone_room_price_today}。住不住？”"
+        }
+      },
+      "rear_zone_lodging_insufficient_01": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "她看了你一眼，手里的笔没动，像是连往下记都懒得记。\n\n“钱不够。你凑够了再来问。”"
+        }
+      },
+      "rear_zone_lodging_confirm_01": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "她拉开抽屉，从里面抽出一张薄塑封房卡，在背面夹了一张写着床号的小纸片，递到你这边。\n\n“每早九点退房，拿好你的房卡。”"
+        }
+      },
+      "rear_zone_lodging_checkout_0900": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "柜台那边有人敲了敲隔板：“九点了，退房。床位要腾给后面的人。”\n\n你把东西收了一下，没再多说什么，只能回到后区。"
+        }
+      },
+      "rear_zone_dorm_placeholder": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "床位被隔板和窄柜切成一格一格，床架边夹着写号码的小卡，底下塞着旧箱和卷毯。过道收得很窄，人只能贴着床沿和柜角错身，这里看着更像被后区临时切出来的一排过夜位。",
+          "moodVariants": {
+            "midnight": "夜里说话声会自觉压低，翻身和拉开卷毯的摩擦声反而更清楚。"
+          },
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "顶灯只把近处几张床照出来，隔板后面的边角很快就沉进暗里。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "刚进门的人会把雪水和冷气一起带进来，靠门那几格总要更潮一点。"
+            }
+          ]
+        }
+      }
+    },
+    "actionTextByMapId": {
+      "heatcorridor_bus_stop": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "board_heatcorridor_to_winddyke": {
+            "actionLabel": {
+              "base": "上车（往风堤街方向）"
+            },
+            "actionFeedback": {
+              "base": "你贴近车门等它开合，冷气顺着踏板回灌一下，脚边那层潮湿雪水也被一起拖进车里。门后的黄光落到挡风板外沿，壳体边那截窄候车带立刻退到侧后。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "登上前往风堤街的车。"
+              }
+            }
+          },
+          "board_heatcorridor_to_industrial": {
+            "actionLabel": {
+              "base": "上车（往工业区方向）"
+            },
+            "actionFeedback": {
+              "base": "工业区方向这辆更脏一点，门边留着旧盐斑和黑灰，踏板也磨得发亮。你一踩上去，站牌边那点勉强能停人的缓冲就立刻被车门后的硬光和旧热气顶替了。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "登上前往工业区的车。"
+              }
+            }
+          },
+          "leave_heatcorridor_bus_stop": {
+            "actionLabel": {
+              "base": "进入前廊"
+            },
+            "actionFeedback": {
+              "base": "你离开站牌边那一小截挡风位置，顺着门斗和壳体边收进去，前廊里的半暖空气立刻把外面的直接暴露截断了一层。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "进入前廊。"
+              }
+            }
+          }
+        }
+      },
+      "heatcorridor_front_hall": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "front_hall_to_shop": {
+            "actionLabel": {
+              "base": "前往商铺"
+            },
+            "actionFeedback": {
+              "base": "商铺这边更像嵌在前廊里的小补给口，货架影子和零散包件把墙边压得更窄，灯下能看清的东西也只够维持最基本的日用补给。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "前往前廊商铺。"
+              }
+            }
+          },
+          "front_hall_to_night_kitchen": {
+            "actionLabel": {
+              "base": "前往24/7夜灶"
+            },
+            "actionFeedback": {
+              "base": "你沿着前廊另一侧那股更明显的热气和油味走过去，旧发光招牌在门外先亮出来，门里的人影和湿脚印随后才跟着显形。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "前往24/7夜灶。"
+              }
+            }
+          },
+          "front_hall_check_notice_board": {
+            "actionLabel": {
+              "base": "查看告示板"
+            },
+            "actionFeedback": {
+              "base": "告示板被钉在前廊最容易被看见的位置，旧胶带印、纸边和钉孔一层压一层，像是在替这个地方勉强维持秩序。",
+              "dailyNoticeBoard": {
+                "sticky": "【前廊通行】\n请勿在门斗内停留闲谈\n湿衣、湿手套、工具袋不得挂靠墙面\n——值守处",
+                "formalNoticePool": [
+                  "【墙板更换通知】\n前廊告示板后侧墙板已重新加固。\n近两日如发现松动、渗水或异响，\n请直接写条留在板上，不必四处找人。\n——维修组",
+                  "【商铺窗前提醒】\n请勿将未结算物品随手放在窗台。\n遗失、错拿一概不认。\n——商铺",
+                  "【食堂口附近】\n不要把空杯、空袋留在门边。\n每天都有人踩翻。",
+                  "【失物集中】\n近三日捡到：\n黑手套一只\n金属保温杯一个\n旧围巾一条\n认领前先说清样式。\n——值守处",
+                  "【前廊地垫】\n门边地垫已更换。\n谁再把它踢到门缝里，谁自己摆正。\n——后勤"
+                ],
+                "handwrittenNotePool": [
+                  "谁把 3 号挂钩上的灰围巾拿走了？\n不是没人要，是我去食堂吃了一趟饭。\n看见了送回商铺边那排钩子。",
+                  "别再把热水杯放在告示板下面。\n昨天已经倒过一次。",
+                  "门边真的冷，别站那儿装硬汉。\n往里挪一步。",
+                  "谁再把湿手套压在纸上，\n下次我直接给你扔门外。",
+                  "食堂口那块地不是黑，\n是被来回踩成这样的。\n别问了。",
+                  "有人看见一双旧工靴没有？\n鞋帮有白漆点。\n不是新的，别顺走。"
+                ],
+                "oldNoticeFragmentPool": [
+                  "【旧通知残页】\n……前廊外侧原临时板面不再拆除，\n继续并入现用通道。\n加固完成前请勿靠压……",
+                  "【旧纸，边角卷起】\n……门斗封条连续三次更换后仍有漏风，\n先维持使用。\n后续等内侧板件到位再处理。",
+                  "【压在下面的旧单】\n……小商铺原只保留取物窗，\n后续是否扩成整面柜台，\n暂不处理。",
+                  "【褪色通知】\n……前廊告示板位置保持不变，\n不要往食堂口那边挪。\n那边热气重，纸挂不住。",
+                  "【旧维修单】\n……门边压条重新钉固。\n如果再次起翘，不要用脚踩平。"
+                ]
+              }
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "查看前廊告示板。"
+              }
+            }
+          },
+          "front_hall_to_bus_stop_sign": {
+            "actionLabel": {
+              "base": "前往公交站路牌"
+            },
+            "actionFeedback": {
+              "base": "你回到门斗边，外侧那股冷气顺着缝重新贴上来，站牌边角、挡风板上的水痕和门外那段硬雪面一起贴到眼前。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "回到公交站路牌。"
+              }
+            }
+          }
+        }
+      },
+      "heatcorridor_night_kitchen": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "night_kitchen_check_sign": {
+            "actionLabel": {
+              "base": "看一眼门外招牌"
+            },
+            "actionFeedback": {
+              "base": "旧招牌的灯管亮得不太均匀，外面看着比里面更像个能让人顶一口热饭的地方。"
+            }
+          },
+          "night_kitchen_to_window": {
+            "actionLabel": {
+              "base": "前往热食窗口"
+            },
+            "actionFeedback": {
+              "base": "你顺着热气更重的那一边挪过去，挡板和价目纸很快就到了眼前。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "朝热食窗口那边挪过去。"
+              }
+            }
+          },
+          "night_kitchen_to_counter": {
+            "actionLabel": {
+              "base": "去堂食窄台"
+            },
+            "actionFeedback": {
+              "base": "你从门里这段通道让开一点，往靠墙那排堂食窄台那边靠过去。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "朝堂食窄台那边走过去。"
+              }
+            }
+          },
+          "night_kitchen_to_front_hall": {
+            "actionLabel": {
+              "base": "返回前廊"
+            },
+            "actionFeedback": {
+              "base": "你从热气和油味最重的这一小段里退出来，重新回到前廊那条更通风也更冷一点的过道。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "从24/7夜灶退回前廊。"
+              }
+            }
+          }
+        }
+      },
+      "heatcorridor_night_kitchen_window": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "night_kitchen_open_dine_menu": {
+            "actionLabel": {
+              "base": "查看堂食菜单"
+            },
+            "actionFeedback": {
+              "base": "挡板边贴着几张价目纸，堂食这边的热饭、热汤和热水被压成一列短名，像是只保留最必要那几样。"
+            }
+          },
+          "night_kitchen_open_takeout_menu": {
+            "actionLabel": {
+              "base": "打包食物"
+            },
+            "actionFeedback": {
+              "base": "打包这边留的是更扛放也更好带走的几样，名字短，价签也写得干脆，像是专给赶路和赶班次的人准备的。"
+            }
+          },
+          "night_kitchen_submit_dine_purchase": {
+            "actionLabel": {
+              "base": "购买堂食"
+            },
+            "actionFeedback": {
+              "base": "你把目光停在选中的堂食上，先把这一单在窗口前确认下来。真实结算链后续再接，这里先走菜单内提交入口。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你在热食窗口确认了一份堂食。"
+              }
+            }
+          },
+          "night_kitchen_submit_takeout_purchase": {
+            "actionLabel": {
+              "base": "购买打包食物"
+            },
+            "actionFeedback": {
+              "base": "你把选中的打包项在窗口前确认下来，等于先把本地菜单内的购买提交路径钉住。真实打包和结算逻辑后续再接。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你在热食窗口确认了一份打包食物。"
+              }
+            }
+          },
+          "night_kitchen_window_glance_outside_sign": {
+            "actionLabel": {
+              "base": "看一眼门外招牌"
+            },
+            "actionFeedback": {
+              "base": "你朝门外的招牌看了一眼。玻璃外那块牌子被霜和风压得有些发白，近处还能认清字样，离远一点就容易被门外的亮白吞掉。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你看了一眼门外招牌。"
+              }
+            }
+          },
+          "night_kitchen_window_observe_people_nearby": {
+            "actionLabel": {
+              "base": "看周围的人"
+            },
+            "actionFeedback": {
+              "base": "你扫了一眼窗口周围的人。有人端着餐盒等位置，有人靠着边上等打包，停留都不久，说话声也压得不高，谁都更像是在赶着把手里的东西拿稳。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你看了看周围的人。"
+              }
+            }
+          },
+          "night_kitchen_window_rest_at_narrow_counter": {
+            "actionLabel": {
+              "base": "坐在窄台边歇一会儿"
+            },
+            "actionFeedback": {
+              "base": "你在窄台边坐了一会儿。热气贴着手背往上爬，门外的风雪被玻璃和门缝压成一层闷响，整个人总算慢下来一点。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你在窄台边坐下歇了一会儿。"
+              }
+            }
+          },
+          "night_kitchen_window_to_counter": {
+            "actionLabel": {
+              "base": "去堂食窄台"
+            },
+            "actionFeedback": {
+              "base": "你从窗口前让开一点，朝靠墙那段堂食窄台走过去。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你从窗口前让开，往堂食窄台那边走。"
+              }
+            }
+          },
+          "night_kitchen_window_to_hub": {
+            "actionLabel": {
+              "base": "返回24/7夜灶"
+            },
+            "actionFeedback": {
+              "base": "你从窗口边稍微退开，重新回到门里那段能分流人的小通道。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你从窗口边退回夜灶里侧那段更宽一点的位置。"
+              }
+            }
+          }
+        }
+      },
+      "heatcorridor_night_kitchen_counter": {
+        "sceneId": "night_kitchen_counter_seating",
+        "actionTextByActionId": {
+          "night_kitchen_counter_watch_people": {
+            "actionLabel": {
+              "base": "看周围的人"
+            },
+            "actionFeedback": {
+              "base": "你扫了一眼窄台周围的人。端着餐盘的人大多只把最后几口赶完就起身，真正坐下慢慢吃的人很少，墙边和桌沿更像是临时借出来的一点热气和落脚处。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你看了看堂食窄台周围的人。"
+              }
+            }
+          },
+          "night_kitchen_counter_rest_briefly": {
+            "actionLabel": {
+              "base": "坐在窄台边歇一会儿"
+            },
+            "actionFeedback": {
+              "base": "你在窄台边坐了一会儿。靠墙这一侧能挡掉一点穿堂风，桌面上的水印和汤滴还没完全干透，周围的人换得很快，真正能安稳坐住的时间并不长。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你在堂食窄台边坐下歇了一会儿。"
+              }
+            }
+          },
+          "night_kitchen_counter_to_window": {
+            "actionLabel": {
+              "base": "去热食窗口"
+            },
+            "actionFeedback": {
+              "base": "你从窄台边起身，让过身后的人，重新朝热食窗口那边挪回去。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你从窄台边起身，往窗口那边走过去。"
+              }
+            }
+          },
+          "night_kitchen_counter_to_hub": {
+            "actionLabel": {
+              "base": "返回24/7夜灶"
+            },
+            "actionFeedback": {
+              "base": "你从靠墙那排窄台边退出来，重新回到夜灶里头那段能转身和分流的小通道。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你从堂食窄台边退回夜灶中间那段通道。"
+              }
+            }
+          }
+        }
+      },
+      "heatcorridor_rear_section": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "rear_section_ask_lodging_intro": {
+            "actionLabel": {
+              "base": "询问住宿"
+            },
+            "actionFeedback": {
+              "base": "你朝柜台那边靠过去，对方已经先把册子压住了。"
+            }
+          },
+          "rear_section_ask_lodging_counter": {
+            "actionLabel": {
+              "base": "询问住宿"
+            },
+            "actionFeedback": {
+              "base": "你又走到柜台前，对方抬眼看了你一下，像是在等你自己说。"
+            }
+          },
+          "rear_section_to_own_room": {
+            "actionLabel": {
+              "base": "前往自己的房间"
+            },
+            "actionFeedback": {
+              "base": "你照着房卡上的床号往里走，里面的光比柜台外还暗一点。"
+            },
+            "logLinesByIndex": {
+              "0": {
+                "base": "你顺着床号往自己的房间走去。"
+              }
+            }
+          }
+        }
+      },
+      "rear_zone_dorm_placeholder": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "rear_zone_dorm_sleep": {
+            "actionLabel": {
+              "base": "睡多久"
+            },
+            "actionFeedback": {
+              "base": "你把卷毯和外衣重新拢好，侧身躺进这格窄床位里。时间长短由你自己定，但这地方给你的仍只是普通睡眠，不是医疗照护。"
+            }
+          },
+          "rear_zone_dorm_return": {
+            "actionLabel": {
+              "base": "返回后区"
+            },
+            "actionFeedback": {
+              "base": "你从狭窄床位间退出来，重新回到柜台外那段更亮一点的后区。"
+            }
+          }
+        }
+      },
+      "rear_zone_lodging_checkout_0900": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "rear_zone_lodging_checkout_return": {
+            "actionLabel": {
+              "base": "回到后区"
+            },
+            "actionFeedback": {
+              "base": "你把那点能带走的东西拢好，从隔板间退出来，重新回到柜台外的后区。"
+            }
+          }
+        }
+      }
+    },
+    "menuCatalogByMapId": {
+      "heatcorridor_night_kitchen_window": {
+        "title": "热食窗口菜单",
+        "categories": [
+          {
+            "id": "dine",
+            "label": "堂食",
+            "mode": "dine",
+            "defaultPurchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "takeout",
+            "label": "打包",
+            "mode": "takeout",
+            "defaultPurchaseActionId": "night_kitchen_submit_takeout_purchase"
+          }
+        ],
+        "items": [
+          {
+            "id": "nk_dine_braised_pork_rice",
+            "categoryId": "dine",
+            "label": "卤肉饭",
+            "icon": "rice_bowl",
+            "priceLabel": "18",
+            "description": "咸香重，米饭压得实，最像窗口常年不撤的一份热饭。",
+            "tags": ["热", "咸", "顶饿", "夜间常备"],
+            "serving": ["堂食"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "nk_dine_beef_potato_rice",
+            "categoryId": "dine",
+            "label": "土豆烧牛肉饭",
+            "icon": "rice_bowl",
+            "priceLabel": "22",
+            "description": "酱汁厚，土豆和肉都炖得软，吃完身上会慢一点才散热。",
+            "tags": ["热", "咸", "顶饿"],
+            "serving": ["堂食"],
+            "nightRetained": false,
+            "serviceBands": ["day_service"],
+            "purchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "nk_dine_tomato_egg_rice",
+            "categoryId": "dine",
+            "label": "番茄鸡蛋饭",
+            "icon": "rice_bowl",
+            "priceLabel": "16",
+            "description": "汤汁亮，口味更轻一点，适合想要热食但不想吃太重的人。",
+            "tags": ["热", "软口"],
+            "serving": ["堂食"],
+            "nightRetained": false,
+            "serviceBands": ["day_service"],
+            "purchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "nk_dine_seaweed_egg_soup",
+            "categoryId": "dine",
+            "label": "紫菜蛋花汤",
+            "icon": "soup_bowl",
+            "priceLabel": "8",
+            "description": "分量轻，入口快暖，通常是搭着饭或单独垫一口的东西。",
+            "tags": ["热", "汤水", "夜间常备"],
+            "serving": ["堂食"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "nk_dine_hot_water",
+            "categoryId": "dine",
+            "label": "热水",
+            "icon": "water_cup",
+            "priceLabel": "2",
+            "description": "一直备着，拿来暖手暖喉都行，是最不需要解释的一项。",
+            "tags": ["热", "夜间常备"],
+            "serving": ["堂食", "可打包"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "nk_dine_strong_tea",
+            "categoryId": "dine",
+            "label": "浓茶",
+            "icon": "tea_cup",
+            "priceLabel": "5",
+            "description": "茶色深，带点苦味，像专门留给还得继续扛夜班的人。",
+            "tags": ["热", "提神", "夜间常备"],
+            "serving": ["堂食", "可打包"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_dine_purchase"
+          },
+          {
+            "id": "nk_takeout_braised_pork_rice",
+            "categoryId": "takeout",
+            "label": "卤肉饭（打包）",
+            "icon": "takeout_box",
+            "priceLabel": "19",
+            "description": "最稳妥的一份打包热饭，提走后也不容易一下子散掉味和热。",
+            "tags": ["热", "咸", "顶饿", "可打包", "夜间常备"],
+            "serving": ["可打包"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_takeout_purchase"
+          },
+          {
+            "id": "nk_takeout_curry_chicken_rice",
+            "categoryId": "takeout",
+            "label": "咖喱鸡丁饭（打包）",
+            "icon": "takeout_box",
+            "priceLabel": "20",
+            "description": "味道更冲一点，打包盒一开就能闻出来，适合带走后快点吃完。",
+            "tags": ["热", "咸", "可打包"],
+            "serving": ["可打包"],
+            "nightRetained": false,
+            "serviceBands": ["day_service"],
+            "purchaseActionId": "night_kitchen_submit_takeout_purchase"
+          },
+          {
+            "id": "nk_takeout_hot_soup",
+            "categoryId": "takeout",
+            "label": "热汤（打包）",
+            "icon": "soup_bowl",
+            "priceLabel": "9",
+            "description": "杯装封口，主要是让人离开窗口以后还能把手和肚子都先稳住。",
+            "tags": ["热", "汤水", "可打包", "夜间常备"],
+            "serving": ["可打包"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_takeout_purchase"
+          },
+          {
+            "id": "nk_takeout_hot_water",
+            "categoryId": "takeout",
+            "label": "热水",
+            "icon": "water_cup",
+            "priceLabel": "2",
+            "description": "最基础的一项，拿了就能走，常和别的打包项一起带出去。",
+            "tags": ["热", "可打包", "夜间常备"],
+            "serving": ["可打包"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_takeout_purchase"
+          },
+          {
+            "id": "nk_takeout_tea_egg",
+            "categoryId": "takeout",
+            "label": "茶叶蛋",
+            "icon": "egg",
+            "priceLabel": "4",
+            "description": "小而顶用，最像窗口边顺手就能拿走的一样夜间常备。",
+            "tags": ["咸", "顶饿", "可打包", "夜间常备"],
+            "serving": ["可打包"],
+            "nightRetained": true,
+            "serviceBands": ["day_service", "night_service"],
+            "purchaseActionId": "night_kitchen_submit_takeout_purchase"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "hub_01",
+  "name": "HUB - 集散点",
+  "description": "【最小验收地图】用于验证切图成功后，仍可执行已有动作（如 TIME_SKIP）。",
+  "actions": [
+    {
+      "id": "wait_10",
+      "text": "休整（10分钟）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 10 }
+    },
+    {
+      "id": "back_to_start",
+      "text": "返回起点",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "intro_clinic_bed", "minutes": 0 }
+    }
+  ]
+}

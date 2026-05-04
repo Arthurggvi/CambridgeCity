@@ -1,0 +1,51 @@
+{
+  "id": "heatcorridor_shop_window",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "热廊商铺",
+  "description": "商铺只开着一道窄窗，玻璃后堆着零散货盒和几排日用品。窗口前的立足处不大，地上湿印叠着盐渍，人在这里多半只是停一下，拿了东西就退回前廊。",
+  "entrySceneId": "shop_window_service",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "scenes": [
+    {
+      "id": "shop_window_service",
+      "type": "SERVICE_COUNTER",
+      "name": "热廊商铺窗口"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "shop_window_open_goods_panel",
+      "sceneId": "shop_window_service",
+      "type": "MENU_OPEN",
+      "text": "查看货物",
+      "ui": {
+        "panel": "shop_goods"
+      },
+      "effects": []
+    },
+    {
+      "id": "shop_window_to_front_hall",
+      "sceneId": "shop_window_service",
+      "type": "TRANSITION",
+      "text": "返回前廊",
+      "edgeId": "shop_window_to_front_hall_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "回到前廊。" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "shop_window_to_front_hall_edge",
+      "fromSceneId": "shop_window_service",
+      "toMapId": "heatcorridor_front_hall",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

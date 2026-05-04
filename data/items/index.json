@@ -1,0 +1,10 @@
+{
+  "sources": [
+    "items.json",
+    "modules/clinic_shop_items.json",
+    "modules/heatcorridor_shop_items.json",
+    "modules/steelcross_market_stall_01_items.json",
+    "modules/steelcross_market_stall_05_items.json",
+    "modules/west2_rescue_supply_items.json"
+  ]
+}

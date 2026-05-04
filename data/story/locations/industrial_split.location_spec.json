@@ -1,0 +1,13 @@
+{
+  "location_id": "industrial_split",
+  "location_name": "工区分流口",
+  "theme_keywords": ["围栏高位分流", "深车辙", "工区门禁灯", "设备低鸣"],
+  "function_scope": ["仓储入口", "维修入口", "回流风堤街", "工区观察"],
+  "time_policy": {
+    "rule_segments": [
+      { "id": "day", "range": "06:00-17:59" },
+      { "id": "night", "range": "18:00-05:59" }
+    ],
+    "mood_segments": ["06:00-10:59", "11:00-13:59", "14:00-17:59", "18:00-20:59", "21:00-23:59", "00:00-05:59"]
+  }
+}

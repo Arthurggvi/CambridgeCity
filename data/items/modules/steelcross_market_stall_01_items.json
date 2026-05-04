@@ -1,0 +1,140 @@
+{
+  "items": [
+    {
+      "id": "consumable_dried_small_fish",
+      "name": "风干小鱼",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 10,
+      "intakeLoadCost": 6,
+      "satietyDecayModifier": {
+        "multiplier": 0.9,
+        "durationMinutes": 90,
+        "source": "consumable_dried_small_fish"
+      },
+      "description": [
+        "干、咸、耐放，拿回去嚼不算亏。",
+        "便携鱼货，90分钟内饱腹下降速率 -10%。"
+      ]
+    },
+    {
+      "id": "consumable_salted_fish_slices",
+      "name": "盐渍鱼片",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 14,
+      "intakeLoadCost": 8,
+      "staminaDecayModifier": {
+        "multiplier": 0.88,
+        "durationMinutes": 120,
+        "source": "consumable_salted_fish_slices"
+      },
+      "description": [
+        "处理过的鱼肉片，咸味压得住寒气。",
+        "主力常见货，120分钟内体能衰减速率 -12%。"
+      ]
+    },
+    {
+      "id": "consumable_frozen_silverside_bundle",
+      "name": "冻银鱼包",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 15,
+      "intakeLoadCost": 8,
+      "bodyTemperatureDecayModifier": {
+        "multiplier": 0.88,
+        "durationMinutes": 120,
+        "source": "consumable_frozen_silverside_bundle"
+      },
+      "description": [
+        "一小包码好的银鱼，边缘还结着霜。",
+        "哈德摊上常见的一包，120分钟内体温下降速度 -12%。"
+      ]
+    },
+    {
+      "id": "consumable_iced_whole_fish",
+      "name": "冰鲜整鱼",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 20,
+      "intakeLoadCost": 11,
+      "bodyTemperatureDecayModifier": {
+        "multiplier": 0.8,
+        "durationMinutes": 120,
+        "source": "consumable_iced_whole_fish"
+      },
+      "description": [
+        "今天刚上岸的整鱼，摊面上只摆了一条。",
+        "稀有生鲜，120分钟内体温下降速度 -20%。"
+      ]
+    },
+    {
+      "id": "consumable_fresh_cut_fish_fillets",
+      "name": "现剖鱼片",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 17,
+      "intakeLoadCost": 9,
+      "staminaDecayModifier": {
+        "multiplier": 0.8,
+        "durationMinutes": 120,
+        "source": "consumable_fresh_cut_fish_fillets"
+      },
+      "description": [
+        "现剖出来的鱼片，刀口还新。",
+        "不是天天都有，120分钟内体能衰减速率 -20%。"
+      ]
+    },
+    {
+      "id": "consumable_iced_silverside_bundle",
+      "name": "冰鲜银鱼包",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 14,
+      "intakeLoadCost": 7,
+      "satietyDecayModifier": {
+        "multiplier": 0.8,
+        "durationMinutes": 90,
+        "source": "consumable_iced_silverside_bundle"
+      },
+      "description": [
+        "比常见那包更鲜，也更少。",
+        "稀有版银鱼包，90分钟内饱腹下降速率 -20%。"
+      ]
+    },
+    {
+      "id": "consumable_roe_small_box",
+      "name": "小盒鱼卵",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 12,
+      "intakeLoadCost": 6,
+      "staminaDecayModifier": {
+        "multiplier": 0.76,
+        "durationMinutes": 120,
+        "source": "consumable_roe_small_box"
+      },
+      "description": [
+        "小盒装着，量不多，懂行的才会多看两眼。",
+        "极低概率的稀货，120分钟内体能衰减速率 -24%。"
+      ]
+    },
+    {
+      "id": "consumable_fish_liver_pack",
+      "name": "鱼肝小包",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 10,
+      "intakeLoadCost": 7,
+      "bodyTemperatureDecayModifier": {
+        "multiplier": 0.74,
+        "durationMinutes": 120,
+        "source": "consumable_fish_liver_pack"
+      },
+      "description": [
+        "腥味重，但热量也实在。",
+        "偏怪但很实用，120分钟内体温下降速度 -26%。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "id": "winddyke_bus_stop",
+  "mapType": "link",
+  "name": "风堤街站牌",
+  "description": "站牌钉在背风侧，灯罩里积着一层薄霜。避风棚不大，等车的人通常不说话，只看线路牌和远处更亮的那一段走廊。",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "actions": [
+    {
+      "id": "board_to_heatcorridor",
+      "text": "上车（往热廊方向）",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_winddyke",
+        "lineId": "west2_shuttle_line_01",
+        "direction": 1
+      }
+    },
+    {
+      "id": "leave_stop",
+      "text": "离开站牌",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "winddyke_street_corner_notice",
+        "minutes": 1
+      }
+    }
+  ]
+}

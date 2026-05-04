@@ -1,0 +1,13 @@
+{
+  "location_id": "industrial_warehouse_gate",
+  "location_name": "仓储区门口",
+  "theme_keywords": ["货箱堆场", "堆位编号", "贴签", "拖车轮印", "围栏边界"],
+  "function_scope": ["仓储前场观察", "边界询问", "短工补签", "返回工区分流口"],
+  "time_policy": {
+    "rule_segments": [
+      { "id": "day", "range": "06:00-17:59" },
+      { "id": "night", "range": "18:00-05:59" }
+    ],
+    "mood_segments": ["06:00-10:59", "11:00-13:59", "14:00-17:59", "18:00-20:59", "21:00-23:59", "00:00-05:59"]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "id": "test_acceptance_legacy_root_actions_block",
+  "name": "Legacy Root Actions Block",
+  "description": "acceptance negative case",
+  "actions": [
+    {
+      "id": "legacy_only_action",
+      "text": "Legacy action"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "west2_bus_onboard",
+  "mapType": "link",
+  "name": "车上",
+  "description": "车门合上后，外面的风声立刻闷了一层。暖风不强，玻璃边缘还是会结雾；车身压过接缝时，会传来一记很短的震动。",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "west2_bus_get_off",
+      "text": "到站下车",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_GET_OFF"
+    },
+    {
+      "id": "west2_bus_continue",
+      "text": "留在车上",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_CONTINUE"
+    }
+  ]
+}

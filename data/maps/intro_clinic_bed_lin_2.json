@@ -1,0 +1,15 @@
+{
+  "id": "intro_clinic_bed_lin_2",
+  "name": "边港诊所 · 病床区（引导）",
+  "description": "琳把手背贴在你额头上，确认你没有再发抖。\n\n\"先别紧张，慢慢来。\"她看着你，语气放缓，\"你还记得自己的名字吗？或者你是怎么到这来的？\"",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "intro_reply_forget",
+      "text": "……不记得了",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "intro_clinic_bed_lin_3", "minutes": 0 },
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

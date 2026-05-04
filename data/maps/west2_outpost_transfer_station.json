@@ -1,0 +1,202 @@
+{
+  "id": "west2_outpost_transfer_station",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "西线联运站",
+  "description": "西线联运站把候车大厅、值班窗口和发车口收在同一座封闭大厅里，运行时段和停运月份都管得很死。",
+  "entrySceneId": "west2_outpost_transfer_hall",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "sheltered",
+  "shelter": "full",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "Sheltered",
+    "windShelter": 0.86,
+    "heatSource": 0.1,
+    "drying": 0.16
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_transfer_hall",
+      "type": "HUB_LOBBY",
+      "name": "候车大厅"
+    },
+    {
+      "id": "west2_outpost_transfer_window",
+      "type": "SERVICE_COUNTER",
+      "name": "值班窗口"
+    },
+    {
+      "id": "west2_outpost_transfer_board_notice",
+      "type": "POINT",
+      "name": "电子告示牌"
+    },
+    {
+      "id": "west2_outpost_transfer_schedule_notice",
+      "type": "POINT",
+      "name": "窗口答复"
+    },
+    {
+      "id": "west2_outpost_transfer_gate",
+      "type": "EXIT_TO_WORLD",
+      "name": "发车口"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect_transfer_electronic_board",
+      "sceneId": "west2_outpost_transfer_hall",
+      "type": "TRANSITION",
+      "text": "看电子告示牌",
+      "edgeId": "west2_outpost_transfer_hall_to_board_notice_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你抬头看了看西线联运站的电子告示牌。" }
+      ]
+    },
+    {
+      "id": "go_to_transfer_window",
+      "sceneId": "west2_outpost_transfer_hall",
+      "type": "TRANSITION",
+      "text": "去值班窗口",
+      "edgeId": "west2_outpost_transfer_hall_to_window_edge"
+    },
+    {
+      "id": "return_to_outpost_hub_from_transfer",
+      "sceneId": "west2_outpost_transfer_hall",
+      "type": "TRANSITION",
+      "text": "返回前哨导航",
+      "edgeId": "west2_outpost_transfer_hall_to_hub_edge"
+    },
+    {
+      "id": "ask_transfer_schedule_info",
+      "sceneId": "west2_outpost_transfer_window",
+      "type": "TRANSITION",
+      "text": "询问班次",
+      "serviceBands": ["day_service"],
+      "requires": {
+        "all": [
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 1079 }
+        ]
+      },
+      "edgeId": "west2_outpost_transfer_window_to_schedule_notice_edge"
+    },
+    {
+      "id": "return_to_transfer_hall_from_window",
+      "sceneId": "west2_outpost_transfer_window",
+      "type": "TRANSITION",
+      "text": "返回大厅",
+      "edgeId": "west2_outpost_transfer_window_to_hall_edge"
+    },
+    {
+      "id": "return_to_transfer_hall_from_board_notice",
+      "sceneId": "west2_outpost_transfer_board_notice",
+      "type": "TRANSITION",
+      "text": "返回大厅",
+      "edgeId": "west2_outpost_transfer_board_notice_to_hall_edge"
+    },
+    {
+      "id": "return_to_transfer_window_from_schedule_notice",
+      "sceneId": "west2_outpost_transfer_schedule_notice",
+      "type": "TRANSITION",
+      "text": "返回值班窗口",
+      "edgeId": "west2_outpost_transfer_schedule_notice_to_window_edge"
+    },
+    {
+      "id": "attempt_transfer_boarding",
+      "sceneId": "west2_outpost_transfer_gate",
+      "type": "TIME_SKIP",
+      "text": "尝试登车",
+      "ui": { "type": "button", "lockedBehavior": "show" },
+      "minutes": 1,
+      "requires": {
+        "all": [
+          { "path": "time.calendar.month", "op": "!=", "value": 4 },
+          { "path": "time.calendar.month", "op": "!=", "value": 5 },
+          { "path": "time.calendar.month", "op": "!=", "value": 6 },
+          { "path": "time.calendar.month", "op": "!=", "value": 7 },
+          { "path": "time.calendar.month", "op": "!=", "value": 8 },
+          { "path": "time.calendar.month", "op": "!=", "value": 9 }
+        ],
+        "any": [
+          { "path": "time.minuteOfDay", "op": "==", "value": 540 },
+          { "path": "time.minuteOfDay", "op": "==", "value": 900 }
+        ]
+      },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你在发车口按当前放行口径确认了登车队列。" }
+      ]
+    },
+    {
+      "id": "return_to_transfer_hall_from_gate",
+      "sceneId": "west2_outpost_transfer_gate",
+      "type": "TRANSITION",
+      "text": "返回大厅",
+      "edgeId": "west2_outpost_transfer_gate_to_hall_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_transfer_hall_to_window_edge",
+      "fromSceneId": "west2_outpost_transfer_hall",
+      "toSceneId": "west2_outpost_transfer_window",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_hall_to_board_notice_edge",
+      "fromSceneId": "west2_outpost_transfer_hall",
+      "toSceneId": "west2_outpost_transfer_board_notice",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_hall_to_gate_edge",
+      "fromSceneId": "west2_outpost_transfer_hall",
+      "toSceneId": "west2_outpost_transfer_gate",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_hall_to_hub_edge",
+      "fromSceneId": "west2_outpost_transfer_hall",
+      "toMapId": "west2_outpost_hub",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_window_to_hall_edge",
+      "fromSceneId": "west2_outpost_transfer_window",
+      "toSceneId": "west2_outpost_transfer_hall",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_board_notice_to_hall_edge",
+      "fromSceneId": "west2_outpost_transfer_board_notice",
+      "toSceneId": "west2_outpost_transfer_hall",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_window_to_schedule_notice_edge",
+      "fromSceneId": "west2_outpost_transfer_window",
+      "toSceneId": "west2_outpost_transfer_schedule_notice",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_schedule_notice_to_window_edge",
+      "fromSceneId": "west2_outpost_transfer_schedule_notice",
+      "toSceneId": "west2_outpost_transfer_window",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_transfer_gate_to_hall_edge",
+      "fromSceneId": "west2_outpost_transfer_gate",
+      "toSceneId": "west2_outpost_transfer_hall",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

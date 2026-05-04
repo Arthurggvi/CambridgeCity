@@ -1,0 +1,159 @@
+{
+  "id": "heatcorridor_night_kitchen_window",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "热食窗口",
+  "description": "半截窗口后头压着保温桶和配餐盘，金属台面被热气和油手磨得发亮。前头的人来得快，走得也快。",
+  "entrySceneId": "night_kitchen_window_service",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "scenes": [
+    {
+      "id": "night_kitchen_window_service",
+      "type": "SERVICE_COUNTER",
+      "name": "热食窗口"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "night_kitchen_open_dine_menu",
+      "sceneId": "night_kitchen_window_service",
+      "type": "MENU_OPEN",
+      "text": "查看堂食菜单",
+      "menuMode": "dine",
+      "effects": []
+    },
+    {
+      "id": "night_kitchen_open_takeout_menu",
+      "sceneId": "night_kitchen_window_service",
+      "type": "MENU_OPEN",
+      "text": "打包食物",
+      "menuMode": "takeout",
+      "effects": []
+    },
+    {
+      "id": "night_kitchen_submit_dine_purchase",
+      "sceneId": "night_kitchen_window_service",
+      "type": "PURCHASE",
+      "text": "购买堂食",
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "shop_purchase",
+        "businessType": "purchase",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "purchase": {
+          "channel": "night_kitchen",
+          "menuMode": "dine"
+        }
+      },
+      "purchase": {
+        "menuMode": "dine"
+      },
+      "ui": {
+        "surface": "menu",
+        "hiddenFromActionList": true
+      },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你在窗口前确认了一份堂食热食。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_submit_takeout_purchase",
+      "sceneId": "night_kitchen_window_service",
+      "type": "PURCHASE",
+      "text": "购买打包食物",
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "shop_purchase",
+        "businessType": "purchase",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "purchase": {
+          "channel": "night_kitchen",
+          "menuMode": "takeout"
+        }
+      },
+      "purchase": {
+        "menuMode": "takeout"
+      },
+      "ui": {
+        "surface": "menu",
+        "hiddenFromActionList": true
+      },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你在窗口前确认了一份打包热食。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_window_glance_outside_sign",
+      "sceneId": "night_kitchen_window_service",
+      "type": "OBSERVE",
+      "text": "看一眼门外招牌",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你看了一眼门外招牌。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_window_observe_people_nearby",
+      "sceneId": "night_kitchen_window_service",
+      "type": "OBSERVE",
+      "text": "看周围的人",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你看了看周围的人。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_window_rest_at_narrow_counter",
+      "sceneId": "night_kitchen_window_service",
+      "type": "REST",
+      "text": "坐在窄台边歇一会儿",
+      "minutes": 10,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你在窄台边坐下歇了一会儿。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_window_to_counter",
+      "sceneId": "night_kitchen_window_service",
+      "type": "TRANSITION",
+      "text": "去堂食窄台",
+      "edgeId": "night_kitchen_window_to_counter_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你从窗口前让开，往堂食窄台那边走。" }
+      ]
+    },
+    {
+      "id": "night_kitchen_window_to_hub",
+      "sceneId": "night_kitchen_window_service",
+      "type": "TRANSITION",
+      "text": "返回24/7夜灶",
+      "edgeId": "night_kitchen_window_to_hub_edge",
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你从窗口边退回夜灶里侧那段更宽一点的位置。" }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "night_kitchen_window_to_counter_edge",
+      "fromSceneId": "night_kitchen_window_service",
+      "toMapId": "heatcorridor_night_kitchen_counter",
+      "minutes": 1
+    },
+    {
+      "id": "night_kitchen_window_to_hub_edge",
+      "fromSceneId": "night_kitchen_window_service",
+      "toMapId": "heatcorridor_night_kitchen",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

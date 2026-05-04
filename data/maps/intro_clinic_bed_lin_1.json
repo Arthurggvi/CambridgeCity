@@ -1,0 +1,29 @@
+{
+  "id": "intro_clinic_bed_lin_1",
+  "name": "边港诊所 · 病床区（引导）",
+  "description": "你刚撑起身，配药台前的人立刻回头，快步走到床边。\n\n\"你醒了？感觉还好吗？头晕不晕？\"她语速很快，却尽量压低声音。\n\n你这才看清她胸前的名牌：琳。",
+  "onEnterEffects": {
+    "socialEffects": [
+      { "type": "discover_npc", "npcId": "npc_lin", "reason": "map_enter" },
+      { "type": "unlock_dossier_entry", "npcId": "npc_lin", "entryId": "npc_lin_first_meet_001", "reason": "map_enter" },
+      { "type": "set_dossier_flag", "npcId": "npc_lin", "flagId": "nameKnown", "value": true, "reason": "map_enter" }
+    ]
+  },
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "intro_reply_good",
+      "text": "我很好",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "intro_clinic_bed_lin_2", "minutes": 0 },
+      "ui": { "type": "button", "priority": "primary" }
+    },
+    {
+      "id": "intro_reply_unwell",
+      "text": "感觉不太舒服",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "intro_clinic_bed_lin_2", "minutes": 0 },
+      "ui": { "type": "button" }
+    }
+  ]
+}

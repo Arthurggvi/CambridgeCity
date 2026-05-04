@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_10",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号",
+  "description": "或许我会去一个总是阳光明媚的地方吧",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_10_continue", "text": "继续", "targetMapId": "theseus_ending_11", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

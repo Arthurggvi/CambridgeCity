@@ -1,0 +1,9 @@
+{
+  "id": "w2_spine_4",
+  "name": "W2-Spine-4 民用村镇核心",
+  "description": "沿岸主走廊民用核心，占位地图。",
+  "actions": [
+    { "id": "to_spine_3", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_3" },
+    { "id": "to_spine_5", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_5" }
+  ]
+}

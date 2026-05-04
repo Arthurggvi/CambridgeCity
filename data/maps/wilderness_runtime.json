@@ -1,0 +1,61 @@
+{
+  "id": "wilderness_runtime",
+  "name": "野外",
+  "mapType": "wilderness_runtime",
+  "description": "野外运行时页面。",
+  "actions": [
+    {
+      "id": "wilderness_move_N",
+      "text": "向北",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "N" }
+    },
+    {
+      "id": "wilderness_move_NE",
+      "text": "向东北",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "NE" }
+    },
+    {
+      "id": "wilderness_move_E",
+      "text": "向东",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "E" }
+    },
+    {
+      "id": "wilderness_move_SE",
+      "text": "向东南",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "SE" }
+    },
+    {
+      "id": "wilderness_move_S",
+      "text": "向南",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "S" }
+    },
+    {
+      "id": "wilderness_move_SW",
+      "text": "向西南",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "SW" }
+    },
+    {
+      "id": "wilderness_move_W",
+      "text": "向西",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "W" }
+    },
+    {
+      "id": "wilderness_move_NW",
+      "text": "向西北",
+      "kind": "WILDERNESS_MOVE",
+      "wilderness": { "direction": "NW" }
+    },
+    {
+      "id": "wilderness_end_return_fallback",
+      "text": "返回前哨",
+      "kind": "WILDERNESS_END_SESSION"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "rear_zone_dorm_placeholder",
+  "placeProfileId": "gov_hall_side_corridor",
+  "mapType": "link",
+  "name": "临时宿舍",
+  "description": "",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "rear_zone_dorm_sleep",
+      "text": "睡多久",
+      "ui": {
+        "type": "slider_minutes",
+        "priority": "primary",
+        "min": 30,
+        "max": 600,
+        "step": 30,
+        "default": 480,
+        "confirmText": "开始睡觉"
+      },
+      "requires": {
+        "all": [
+          { "path": "world.flags.rear_zone_room_card_owned", "op": "==", "value": true }
+        ]
+      },
+      "kind": "SLEEP",
+      "payload": { "minutes": 480, "sleepRateMul": 0.8 }
+    },
+    {
+      "id": "rear_zone_dorm_return",
+      "text": "返回后区",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "heatcorridor_rear_section", "minutes": 0 }
+    }
+  ]
+}

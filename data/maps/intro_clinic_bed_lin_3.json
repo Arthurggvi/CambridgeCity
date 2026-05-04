@@ -1,0 +1,18 @@
+{
+  "id": "intro_clinic_bed_lin_3",
+  "name": "边港诊所 · 病床区（引导）",
+  "description": "琳沉默了两秒，皱起眉又很快松开。\n\n\"这就有些奇怪了……\"她轻声说，\"是路人叫了急救把你送来的。发现你的时候，你几乎被冻到失去心跳。\"\n\n她替你把被角往上拉了拉：\"先休息一下吧，说不定你会想起更多。等你感觉好些了，随时可以叫我办理出院和缴费。\"",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "intro_nod",
+      "text": "点头",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "intro_clinic_bed_lin_4", "minutes": 0 },
+      "effects": [
+        { "op": "set", "path": "world.flags.metNurseLin", "value": true }
+      ],
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

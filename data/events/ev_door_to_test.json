@@ -1,0 +1,10 @@
+{
+  "id": "ev_door_to_test",
+  "name": "推开门",
+  "steps": [
+    {
+      "type": "goto_map",
+      "mapId": "test_time"
+    }
+  ]
+}

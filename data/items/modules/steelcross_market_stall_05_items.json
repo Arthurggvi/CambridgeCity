@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "id": "good_food_hard_card",
+      "name": "好食硬卡",
+      "category": "consumable",
+      "stackable": true,
+      "satietyGain": 2,
+      "bodyTemperatureDeltaC": 0.4,
+      "bodyTemperatureDecayModifier": {
+        "multiplier": 0.92,
+        "durationMinutes": 60,
+        "source": "good_food_hard_card"
+      },
+      "description": [
+        "纸杯里装着一杯说不清来路的深色热饮，热可可的香气顺着白雾往外散。码头上不少人都认这个味，手里捧一会儿，连胸口都跟着暖起来。"
+      ]
+    }
+  ]
+}

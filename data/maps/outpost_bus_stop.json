@@ -1,0 +1,34 @@
+{
+  "id": "outpost_bus_stop",
+  "legacy": true,
+  "mapType": "link",
+  "placeProfileId": "outpost_bus_stop",
+  "name": "前哨",
+  "description": "站牌被收在前哨入口内侧的候车点里，墙边的长椅和告示框挨得很近，进出的人都会在这里短暂停步等车。",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "board_outpost_to_industrial",
+      "text": "等待接驳车",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_BOARD",
+      "payload": {
+        "stopId": "stop_outpost",
+        "lineId": "west2_shuttle_line_01",
+        "direction": -1
+      }
+    },
+    {
+      "id": "leave_outpost_bus_stop",
+      "text": "进入前哨区域",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "west2_outpost_hub",
+        "minutes": 1
+      }
+    }
+  ]
+}

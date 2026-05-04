@@ -1,0 +1,61 @@
+{
+  "id": "steelcross_market_02",
+  "legacy": true,
+  "mapType": "link",
+  "name": "钢十字港集会",
+  "description": "你沿着钢十字港集会继续往里走，脚边的旧帆布和箱角把路压得更窄。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "actions": [
+    {
+      "id": "steelcross_market_02_forward",
+      "text": "向前探寻（0:02）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_03", "minutes": 2 }
+    },
+    {
+      "id": "steelcross_market_02_return_port",
+      "text": "返回港口（0:03）",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_port", "minutes": 3 }
+    },
+    {
+      "id": "steelcross_market_02_enter_stall_intro",
+      "text": "捕鱼人哈德（0:01）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcross_market_stall_01_met", "op": "!=", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_01_intro_1", "minutes": 1 }
+    },
+    {
+      "id": "steelcross_market_02_enter_stall",
+      "text": "捕鱼人哈德（0:01）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.steelcross_market_stall_01_met", "op": "==", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_01_placeholder", "minutes": 1 }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "id": "west2_outpost_research_upper_floor",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "科研主楼二楼",
+  "description": "二楼走廊沿着墙面向里收，门牌和门禁灯排成一线，暂时看不出更多可进入的区域。",
+  "entrySceneId": "west2_outpost_research_upper_floor_main",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "sheltered",
+  "shelter": "full",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "Sheltered",
+    "windShelter": 0.9,
+    "heatSource": 0.08,
+    "drying": 0.14
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_research_upper_floor_main",
+      "type": "POINT",
+      "name": "科研主楼二楼"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect_research_upper_floor_doorplates",
+      "sceneId": "west2_outpost_research_upper_floor_main",
+      "type": "OBSERVE",
+      "text": "看门牌",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你看了看二楼走廊上的门牌和门禁灯。" }
+      ]
+    },
+    {
+      "id": "return_to_research_station_from_upper_floor",
+      "sceneId": "west2_outpost_research_upper_floor_main",
+      "type": "TRANSITION",
+      "text": "返回综合科研总站",
+      "edgeId": "west2_outpost_research_upper_floor_to_station_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_research_upper_floor_to_station_edge",
+      "fromSceneId": "west2_outpost_research_upper_floor_main",
+      "toMapId": "west2_outpost_research_station",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

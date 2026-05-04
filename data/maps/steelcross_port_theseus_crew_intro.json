@@ -1,0 +1,86 @@
+{
+  "id": "steelcross_port_theseus_crew_intro",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号船员",
+  "description": "船员站在跳板边，只抬了一下眼。\n“说事。”",
+  "onEnterEffects": {
+    "socialEffects": [
+      { "type": "discover_npc", "npcId": "npc_rien", "reason": "map_enter" },
+      { "type": "unlock_dossier_entry", "npcId": "npc_rien", "entryId": "npc_rien_first_meet_001", "reason": "map_enter" },
+      { "type": "set_dossier_flag", "npcId": "npc_rien", "flagId": "nameKnown", "value": true, "reason": "map_enter" }
+    ]
+  },
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "theseus_crew_ask_boarding",
+      "text": "询问登船",
+      "eventId": "ev_steelcross_port_theseus_crew_denied",
+      "ui": { "type": "button", "priority": "primary" }
+    },
+    {
+      "id": "theseus_crew_ask_work_intro",
+      "text": "询问工作",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewWorkAskRienUnlocked", "op": "!=", "value": true }
+        ]
+      },
+      "eventId": "ev_steelcross_port_theseus_work_intro_entry",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "theseus_crew_ask_work_how_join",
+      "text": "询问工作",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewWorkAskRienUnlocked", "op": "==", "value": true },
+          { "path": "world.flags.theseusCrewWorkAskRienLocationUnlocked", "op": "!=", "value": true }
+        ]
+      },
+      "eventId": "ev_steelcross_port_theseus_work_resume_how_join_crew",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "theseus_crew_ask_work_rien_identity",
+      "text": "询问工作",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewWorkAskRienLocationUnlocked", "op": "==", "value": true },
+          { "path": "world.flags.theseusCrewWorkAskedRienLocation", "op": "!=", "value": true }
+        ]
+      },
+      "eventId": "ev_steelcross_port_theseus_work_resume_rien_identity",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "theseus_crew_ask_work_rien_where",
+      "text": "询问工作",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewWorkAskedRienLocation", "op": "==", "value": true }
+        ]
+      },
+      "eventId": "ev_steelcross_port_theseus_work_resume_rien_where",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "theseus_crew_odd_job_placeholder",
+      "text": "杂务工作",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewOddJobUnlocked", "op": "==", "value": true },
+          { "path": "time.windows.theseus.open", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "theseus_crew_return_ship",
+      "text": "返回",
+      "eventId": "ev_steelcross_port_theseus_crew_return_ship",
+      "ui": { "type": "button" }
+    }
+  ]
+}

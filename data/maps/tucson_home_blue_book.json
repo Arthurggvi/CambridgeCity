@@ -1,0 +1,11 @@
+{
+  "id": "tucson_home_blue_book",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "一本蓝色封皮的书，《极地168小时》。\n\n你对这个名字有些模糊的印象。\n扉页，你记得作者签名上是你自己的字迹",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_home_blue_book_return", "text": "返回", "targetMapId": "tucson_home_desk", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

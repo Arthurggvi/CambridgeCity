@@ -1,0 +1,22 @@
+{
+  "id": "intro_clinic_bed",
+  "name": "边港诊所 · 病床区（引导）",
+  "description": "你从一片朦胧中睁眼，呼吸的声音先于视线浮现，像潮水一下一下把你推回现实。\n\n天花板的白光刺得眼眶发酸，喉咙发干，指尖还残留着发麻的冷意。你躺在边港诊所的病床上，帘子外有人背对你在配药台前忙碌。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "npcs": [
+    {
+      "id": "nurse_lin",
+      "name": "护士：琳",
+      "role": "值班护士"
+    }
+  ],
+  "actions": [
+    {
+      "id": "intro_rise",
+      "text": "起身",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "intro_clinic_bed_lin_1", "minutes": 0 },
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

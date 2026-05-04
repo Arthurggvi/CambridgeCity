@@ -1,0 +1,50 @@
+{
+  "items": [
+    {
+      "id": "consumable_oral_rehydration_salts",
+      "name": "口服补液盐",
+      "category": "consumable",
+      "stackable": true,
+      "useCooldownMinutes": 60,
+      "useCooldownRejectMessage": "刚补过一次，现在再喝也只会让胃更难受。",
+      "staminaRecoveryPerHour": {
+        "deltaPerHour": 60,
+        "durationMinutes": 10,
+        "source": "consumable_oral_rehydration_salts",
+        "effectText": "10分钟内体力持续恢复",
+        "inlineEffectText": "体力恢复 +10 / 10分钟"
+      },
+      "description": [
+        "小包粉末冲成淡淡的咸甜水，喝下去不会立刻见效，但人会慢慢缓回来。",
+        "体力恢复+10 (00:10)",
+        "使用冷却 (01:00)"
+      ]
+    },
+    {
+      "id": "consumable_dimenhydrinate",
+      "name": "茶苯海明",
+      "category": "consumable",
+      "stackable": true,
+      "usable": false,
+      "useRejectMessage": "或许未来我会用上它。",
+      "description": [
+        "常见的防晕药片，现在还没有真正需要它的场合。",
+        "当前无额外效果",
+        "或许未来我会用上它。"
+      ]
+    },
+    {
+      "id": "consumable_cetirizine",
+      "name": "西替利嗪",
+      "category": "consumable",
+      "stackable": true,
+      "usable": false,
+      "useRejectMessage": "或许未来我会用上它。",
+      "description": [
+        "薄薄一板抗过敏药，更多像是替未来留的一点余地。",
+        "当前无额外效果",
+        "或许未来我会用上它。"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "id": "bayport_clinic_counter_night",
+  "name": "边港诊所 · 夜班窗口",
+  "description": "你走到窗口前。护士抬头看了你一眼：夜里只看急诊。",
+  "descriptionByMinuteOfDay": [
+    { "start": 1080, "end": 1439, "text": "你走到窗口前。夜班护士抬眼看你一秒，又低头在表格上划了一笔：夜里只看急诊，能自己走的别占位置。" },
+    { "start": 0, "end": 359, "text": "你站到窗口前，护士把手里的记录翻到下一页。她语气很短：夜里只受理急诊，其他等白班。" }
+  ],
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "night_emergency_reject",
+      "text": "急诊",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": ">", "value": 50 }] },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic", "minutes": 1 }
+    },
+    {
+      "id": "night_emergency_accept",
+      "text": "急诊",
+      "ui": { "type": "button" },
+      "requires": { "all": [{ "path": "player.hp", "op": "<=", "value": 50 }] },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_obs", "minutes": 1 }
+    },
+    {
+      "id": "night_im_fine",
+      "text": "我没事（0:00）",
+      "ui": { "type": "button" },
+      "targetMapId": "bayport_clinic"
+    }
+  ]
+}

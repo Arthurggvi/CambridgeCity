@@ -1,0 +1,54 @@
+{
+  "id": "test_requires",
+  "name": "TEST - Requires 门禁",
+  "description": "【P0-3 验收】\n- A: requires 不满足，默认 hide → 看不到\n- B: requires 不满足，但 lockedBehavior=show → 看得到，点了 resolve 拒绝并输出 reasons\n- C: requires 满足 → 正常执行（TIME_SKIP）",
+  "actions": [
+    {
+      "id": "a_hidden",
+      "text": "A（应隐藏）需要 hp <= 0",
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 10 },
+      "requires": {
+        "all": [
+          { "path": "player.hp", "op": "<=", "value": 0 }
+        ]
+      }
+    },
+    {
+      "id": "b_show_locked",
+      "text": "B（可见但会被拒绝）需要 hp <= 0",
+      "ui": { "type": "button", "lockedBehavior": "show" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 10 },
+      "requires": {
+        "all": [
+          { "path": "player.hp", "op": "<=", "value": 0 }
+        ]
+      }
+    },
+    {
+      "id": "c_ok",
+      "text": "C（可执行）休整 10 分钟",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 10 },
+      "requires": {
+        "all": [
+          { "path": "player.hp", "op": ">=", "value": 0 }
+        ]
+      }
+    },
+    {
+      "id": "d_flag_locked",
+      "text": "D（flag 门禁 show）需要 permit_gate_pass=true",
+      "ui": { "type": "button", "lockedBehavior": "show" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "hub_01", "minutes": 0 },
+      "requires": {
+        "any": [
+          { "path": "world.flags.permit_gate_pass", "op": "==", "value": true }
+        ]
+      }
+    }
+  ]
+}

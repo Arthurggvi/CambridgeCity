@@ -1,0 +1,22 @@
+{
+  "id": "west2_link_corridor_01",
+  "name": "风雪走廊",
+  "description": "海风沿着码头廊道灌进来。",
+  "mapType": "link",
+  "actions": [
+    {
+      "id": "t_continue",
+      "text": "继续探索",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "west2_gate", "minutes": 60 }
+    },
+    {
+      "id": "wait_10",
+      "text": "原地休整（10分钟）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "payload": { "minutes": 10 }
+    }
+  ]
+}

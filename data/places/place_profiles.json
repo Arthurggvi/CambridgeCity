@@ -1,0 +1,424 @@
+{
+  "schema": "PlaceProfile/v1",
+  "defaults": {
+    "space": "outdoor",
+    "exposureLevel": "Open",
+    "windShelter": 0,
+    "heatSource": 0,
+    "drying": 0
+  },
+  "profiles": {
+    "test_temp_outdoor_open": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0,
+      "heatSource": 0,
+      "drying": 0.1
+    },
+    "test_temp_outdoor_sheltered": {
+      "space": "outdoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.7,
+      "heatSource": 0,
+      "drying": 0.15
+    },
+    "test_temp_indoor": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.6,
+      "drying": 0.4
+    },
+    "test_time": {
+      "space": "indoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.4,
+      "heatSource": 0.2,
+      "drying": 0.2
+    },
+    "test_temp": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.9,
+      "heatSource": 0.4,
+      "drying": 0.3
+    },
+    "bayport_clinic": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.9,
+      "heatSource": 0.5,
+      "drying": 0.35
+    },
+    "bayport_clinic_upstairs_hall": {
+      "space": "indoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.75,
+      "heatSource": 0.3,
+      "drying": 0.25
+    },
+    "bayport_clinic_rooftop": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.05,
+      "heatSource": 0,
+      "drying": 0.08
+    },
+    "winddyke_street_clinic_segment": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.1,
+      "heatSource": 0,
+      "drying": 0.1
+    },
+    "bayport_clinic_counter_day": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.55,
+      "drying": 0.4
+    },
+    "bayport_clinic_counter_night": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.5,
+      "drying": 0.38
+    },
+    "bayport_clinic_queue_intro_1": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.55,
+      "drying": 0.4
+    },
+    "bayport_clinic_queue_intro_2": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.55,
+      "drying": 0.4
+    },
+    "bayport_clinic_obs": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.58,
+      "drying": 0.42
+    },
+    "bayport_clinic_ward": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.62,
+      "drying": 0.45
+    },
+    "intro_clinic_bed": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.62,
+      "drying": 0.45
+    },
+    "intro_clinic_bed_lin_1": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.62,
+      "drying": 0.45
+    },
+    "intro_clinic_bed_lin_2": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.62,
+      "drying": 0.45
+    },
+    "intro_clinic_bed_lin_3": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.62,
+      "drying": 0.45
+    },
+    "intro_clinic_bed_lin_4": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.62,
+      "drying": 0.45
+    },
+    "gov_hall_entry_split": {
+      "space": "indoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.85,
+      "heatSource": 0.45,
+      "drying": 0.45
+    },
+    "gov_hall_main_hall": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.55,
+      "drying": 0.4
+    },
+    "gov_hall_side_corridor": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.95,
+      "heatSource": 0.4,
+      "drying": 0.35
+    },
+    "gov_hall_window_1": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.5,
+      "drying": 0.35
+    },
+    "winddyke_street_corner_notice": {
+      "space": "outdoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.25,
+      "heatSource": 0,
+      "drying": 0.12
+    },
+    "industrial_split": {
+      "space": "semi",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.7,
+      "heatSource": 0.8,
+      "drying": 0.18,
+      "exposureRateMultiplier": 0.66,
+      "exposureProfileTag": "partial_shelter"
+    },
+    "industrial_warehouse_gate": {
+      "space": "semi",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.7,
+      "heatSource": 0.8,
+      "drying": 0.18,
+      "exposureRateMultiplier": 0.62,
+      "exposureProfileTag": "wall_shelter"
+    },
+    "industrial_maintenance_gate": {
+      "space": "semi",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.72,
+      "heatSource": 0.78,
+      "drying": 0.18,
+      "exposureRateMultiplier": 0.58,
+      "exposureProfileTag": "doorway_shelter"
+    },
+    "west2_link_corridor_01": {
+      "space": "outdoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.2,
+      "heatSource": 0,
+      "drying": 0.08
+    },
+    "outpost_bus_stop": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.78,
+      "heatSource": 0.03,
+      "drying": 0.12
+    },
+    "west2_outpost_hub": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.08,
+      "heatSource": 0,
+      "drying": 0.08
+    },
+    "west2_outpost_transfer_station": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.86,
+      "heatSource": 0.1,
+      "drying": 0.16
+    },
+    "west2_outpost_rescue_station": {
+      "space": "indoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.58,
+      "heatSource": 0.09,
+      "drying": 0.14
+    },
+    "west2_outpost_library_center": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.84,
+      "heatSource": 0.1,
+      "drying": 0.16
+    },
+    "west2_outpost_research_station": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.86,
+      "heatSource": 0.08,
+      "drying": 0.14
+    },
+    "west2_outpost_research_experiment_room": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.82,
+      "heatSource": 0.09,
+      "drying": 0.15
+    },
+    "west2_outpost_research_sample_storage": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.84,
+      "heatSource": 0.06,
+      "drying": 0.12
+    },
+    "west2_outpost_research_upper_floor": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 0.9,
+      "heatSource": 0.08,
+      "drying": 0.14
+    },
+    "west2_gate": {
+      "space": "outdoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.35,
+      "heatSource": 0,
+      "drying": 0.08
+    },
+    "w2_spine_0": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.05,
+      "heatSource": 0,
+      "drying": 0.06
+    },
+    "w2_spine_1": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.1,
+      "heatSource": 0,
+      "drying": 0.08
+    },
+    "w2_spine_2": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.08,
+      "heatSource": 0,
+      "drying": 0.07
+    },
+    "w2_spine_3": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.08,
+      "heatSource": 0,
+      "drying": 0.07
+    },
+    "w2_spine_4": {
+      "space": "outdoor",
+      "exposureLevel": "SemiSheltered",
+      "windShelter": 0.2,
+      "heatSource": 0,
+      "drying": 0.1
+    },
+    "w2_spine_5": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.1,
+      "heatSource": 0,
+      "drying": 0.07
+    },
+    "w2_spine_6": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.05,
+      "heatSource": 0,
+      "drying": 0.06
+    },
+    "w2_spine_7": {
+      "space": "outdoor",
+      "exposureLevel": "Open",
+      "windShelter": 0.05,
+      "heatSource": 0,
+      "drying": 0.06
+    },
+    "hub_01": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    },
+    "link_01": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.25,
+      "drying": 0.15
+    },
+    "start_minimal_p02": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.25,
+      "drying": 0.15
+    },
+    "test_requires": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.25,
+      "drying": 0.15
+    },
+    "test_broken_ref": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.25,
+      "drying": 0.15
+    },
+    "menu": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    },
+    "menu_main": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    },
+    "menu_load": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    },
+    "menu_settings": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    },
+    "menu_credits": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    },
+    "menu_more": {
+      "space": "indoor",
+      "exposureLevel": "Sheltered",
+      "windShelter": 1,
+      "heatSource": 0.3,
+      "drying": 0.2
+    }
+  }
+}

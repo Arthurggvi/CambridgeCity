@@ -1,0 +1,44 @@
+{
+  "id": "steelcross_market_04",
+  "legacy": true,
+  "mapType": "link",
+  "name": "钢十字港集会",
+  "description": "你顺着集会的主通路再往前一段，脚印和箱轮印已经在雪壳上叠了几层。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "actions": [
+    {
+      "id": "steelcross_market_04_forward",
+      "text": "向前探寻（0:02）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_05", "minutes": 2 }
+    },
+    {
+      "id": "steelcross_market_04_return_port",
+      "text": "返回港口（0:03）",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_port", "minutes": 3 }
+    },
+    {
+      "id": "steelcross_market_04_enter_stall",
+      "text": "旧海补丁铺（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_03_placeholder", "minutes": 1 }
+    }
+  ]
+}

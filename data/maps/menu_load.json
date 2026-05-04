@@ -1,0 +1,11 @@
+{
+  "id": "menu_load",
+  "name": "读取存档",
+  "description": "选择 Auto 或手动槽位读取进度。\n\n支持加载 / 删除 / 导出 / 导入。",
+  "actions": [
+    {
+      "id": "menu_back_main",
+      "text": "返回"
+    }
+  ]
+}

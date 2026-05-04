@@ -1,0 +1,37 @@
+{
+  "id": "steelcross_market_05",
+  "legacy": true,
+  "mapType": "link",
+  "name": "钢十字港集会",
+  "description": "你来到集会更深处的一段，堆着货的旧箱子把摊位和水边的风隔开了一层。",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": {
+    "exposureLevel": "SemiSheltered"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "actions": [
+    {
+      "id": "steelcross_market_05_return_port",
+      "text": "返回港口（0:03）",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_port", "minutes": 3 }
+    },
+    {
+      "id": "steelcross_market_05_enter_stall",
+      "text": "单证代办桌（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_06_placeholder", "minutes": 1 }
+    }
+  ]
+}

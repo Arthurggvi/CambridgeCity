@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_11",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号",
+  "description": "我听见浪。\n\n向我道别",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_midpoint", "text": "继续", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

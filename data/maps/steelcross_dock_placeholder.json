@@ -1,0 +1,81 @@
+{
+  "id": "steelcross_dock_placeholder",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "钢十字码头",
+  "description": "这里暂时还是占位场景，只有码头通路先接进来了。",
+  "entrySceneId": "steelcross_dock_main",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "open",
+  "shelter": "none",
+  "environment": {
+    "exposureLevel": "Open"
+  },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "Open",
+    "windShelter": 0,
+    "heatSource": 0,
+    "drying": 0.08
+  },
+  "scenes": [
+    {
+      "id": "steelcross_dock_main",
+      "type": "POINT",
+      "name": "钢十字码头"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect_port_notice_board",
+      "sceneId": "steelcross_dock_main",
+      "type": "OBSERVE",
+      "text": "查看告示牌",
+      "minutes": 1,
+      "supportsIgnition": true,
+      "ignition": {
+        "successText": "你借着防风火柴点起了火。"
+      },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你查看了码头的告示牌。" }
+      ]
+    },
+    {
+      "id": "steelcross_dock_to_theseus_view",
+      "sceneId": "steelcross_dock_main",
+      "type": "TRANSITION",
+      "text": "前往忒修斯号",
+      "requires": {
+        "all": [
+          { "path": "time.windows.theseus.open", "op": "==", "value": true }
+        ]
+      },
+      "edgeId": "steelcross_dock_to_theseus_view_edge"
+    },
+    {
+      "id": "steelcross_dock_return_port",
+      "sceneId": "steelcross_dock_main",
+      "type": "TRANSITION",
+      "text": "返回钢十字港口",
+      "edgeId": "steelcross_dock_return_port_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_dock_to_theseus_view_edge",
+      "fromSceneId": "steelcross_dock_main",
+      "toMapId": "steelcross_port_theseus_docked",
+      "minutes": 2
+    },
+    {
+      "id": "steelcross_dock_return_port_edge",
+      "fromSceneId": "steelcross_dock_main",
+      "toMapId": "steelcross_port",
+      "minutes": 2
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

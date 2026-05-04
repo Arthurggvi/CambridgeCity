@@ -1,0 +1,11 @@
+{
+  "id": "tucson_depart_01",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "...",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_depart_01_continue", "text": "继续", "targetMapId": "tucson_depart_02", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "test_one_shot_authoring_minimal",
+  "legacy": true,
+  "mapType": "link",
+  "name": "One Shot Authoring Minimal Samples",
+  "description": "Minimal authoring validation samples for one_shot_business.",
+  "actions": [
+    {
+      "id": "sample_purchase_minimal",
+      "text": "Sample Purchase",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "shop_purchase",
+        "businessType": "purchase",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "purchase": {
+          "channel": "shop_goods",
+          "goodsId": "clinic_portable_thermometer"
+        }
+      }
+    },
+    {
+      "id": "sample_payment_minimal",
+      "text": "Sample Payment",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "bill_payment",
+        "businessType": "payment",
+        "idempotencyMode": "request",
+        "allowPartialCommit": false,
+        "payment": {
+          "channel": "gov_fine"
+        }
+      }
+    },
+    {
+      "id": "sample_claim_minimal",
+      "text": "Sample Claim",
+      "ui": { "type": "button" },
+      "semantic": {
+        "schemaVersion": 1,
+        "type": "one_shot_business",
+        "executorId": "claim",
+        "businessType": "claim",
+        "idempotencyMode": "target",
+        "allowPartialCommit": false,
+        "claim": {
+          "flagPath": "world.flags.testOneShotAuthoringClaimed"
+        }
+      }
+    }
+  ]
+}

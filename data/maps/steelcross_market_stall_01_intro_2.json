@@ -1,0 +1,20 @@
+{
+  "id": "steelcross_market_stall_01_intro_2",
+  "legacy": true,
+  "mapType": "link",
+  "name": "捕鱼人哈德",
+  "description": "你有些迟疑地走上前，看清他穿着一件油腻的军绿色棉服，袖子挽到小臂，露出的全是细小的疤痕和冻疮留下的暗色斑块。\n他正在用手上一把短刀处理一条鱼，每刮几下就把刀在牛仔裤上蹭一蹭，鱼鳞碎屑粘在裤腿上，亮晶晶的。\n他抬头看了你一眼，又低下了头去。他头顶那顶毛线帽褪了色，挪威国旗的图案只剩一个模糊的蓝十字。",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "actions": [
+    {
+      "id": "steelcross_market_stall_01_intro_2_continue",
+      "text": "继续",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "steelcross_market_stall_01_placeholder", "minutes": 0 },
+      "effects": [
+        { "op": "set", "path": "world.flags.steelcross_market_stall_01_met", "value": true }
+      ],
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

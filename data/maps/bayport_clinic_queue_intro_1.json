@@ -1,0 +1,15 @@
+{
+  "id": "bayport_clinic_queue_intro_1",
+  "name": "边港诊所 · 窗口",
+  "description": "你刚排到窗口前，护士把一张打印账单推到玻璃下的小槽口。\n\n她抬眼打量你，语气利落却不算生硬：\"12号病人，是你吧？先报一下姓名，再把身份证给我。\"\n\n窗口后的键盘声停住了，几秒安静里，你只听见自己有些发干的呼吸。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    {
+      "id": "queue_intro_shake_head",
+      "text": "摇头",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_queue_intro_2", "minutes": 0 },
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

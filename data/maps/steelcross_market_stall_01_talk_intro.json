@@ -1,0 +1,33 @@
+{
+  "id": "steelcross_market_stall_01_talk_intro",
+  "legacy": true,
+  "mapType": "link",
+  "name": "捕鱼人哈德",
+  "description": "“买什么？”\n他胡茬上的冰闪闪发光。",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "actions": [
+    {
+      "id": "steelcross_market_stall_01_talk_nothing",
+      "text": "没什么",
+      "eventId": "ev_steelcross_market_stall_01_talk_return",
+      "ui": { "type": "button", "priority": "primary" }
+    },
+    {
+      "id": "steelcross_market_stall_01_talk_only_fish_topic",
+      "text": "为什么这里只有你卖鱼？",
+      "eventId": "ev_steelcross_market_stall_01_talk_only_fish",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "steelcross_market_stall_01_talk_quota_topic",
+      "text": "我怎么获得配额",
+      "eventId": "ev_steelcross_market_stall_01_talk_quota",
+      "requires": {
+        "all": [
+          { "path": "world.flags.hard_fish_stall_quota_topic_unlocked", "op": "==", "value": true }
+        ]
+      },
+      "ui": { "type": "button" }
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "id": "test_acceptance_v2_minimal",
+  "name": "V2 Minimal",
+  "description": "acceptance positive case",
+  "contentVersion": 2,
+  "entrySceneId": "entry",
+  "scenes": [
+    {
+      "id": "entry",
+      "type": "POINT"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "look_once",
+      "sceneId": "entry",
+      "type": "OBSERVE",
+      "text": "Look once",
+      "minutes": 1
+    }
+  ],
+  "edges": [],
+  "blockers": [],
+  "sessions": []
+}

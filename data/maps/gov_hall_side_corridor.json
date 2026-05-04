@@ -1,0 +1,27 @@
+{
+  "id": "gov_hall_side_corridor",
+  "name": "政务大厅 · 侧廊",
+  "description": "侧廊。",
+  "descriptionByRuntimeState": {
+    "day_open": "你走进侧廊，温度明显更低，灯光也压了一截。墙上只有几块指示牌：档案间、安保室、设备机房。这里的门禁更严，摄像头也比外面更多。",
+    "day_closed": "你走进侧廊，温度明显更低，灯光也压了一截。墙上只有几块指示牌：档案间、安保室、设备机房。这里的门禁更严，摄像头也比外面更多。",
+    "night_open": "你走进侧廊，温度明显更低，灯光也压了一截。墙上只有几块指示牌：档案间、安保室、设备机房。这里的门禁更严，摄像头也比外面更多。",
+    "night_closed": "你走进侧廊，温度明显更低，灯光也压了一截。墙上只有几块指示牌：档案间、安保室、设备机房。这里的门禁更严，摄像头也比外面更多。"
+  },
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "gov_d_blocked_back_c",
+      "text": "尝试进入（0:00）",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "gov_hall_main_hall", "minutes": 0 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你刚越过门线，一只手从侧面伸出来，按住你的肩。" },
+        { "op": "push", "path": "logLines", "value": "安保（拦截，语气短）：\"内部通道。回去。\"" }
+      ],
+      "ui": { "type": "button" }
+    }
+  ]
+}

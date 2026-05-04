@@ -1,0 +1,61 @@
+{
+  "id": "heatcorridor_rear_section",
+  "placeProfileId": "gov_hall_side_corridor",
+  "mapType": "link",
+  "name": "热廊后区",
+  "description": "前廊再往里是一段更闷更暖的缓冲带，靠墙有长椅和隔断，尽头那道内门还没把更里面的住宿区直接露出来。",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "rear_section_ask_lodging_intro",
+      "text": "询问住宿",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.rear_zone_lodging_intro_seen", "op": "!=", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_lodging_intro_01", "minutes": 0 }
+    },
+    {
+      "id": "rear_section_ask_lodging_counter",
+      "text": "询问住宿",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.rear_zone_lodging_intro_seen", "op": "==", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_lodging_counter_01", "minutes": 0 }
+    },
+    {
+      "id": "rear_section_to_own_room",
+      "text": "前往自己的房间",
+      "ui": { "type": "button", "priority": "primary" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.rear_zone_room_card_owned", "op": "==", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "rear_zone_dorm_placeholder", "minutes": 0 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你顺着床号往自己的房间走去。" }
+      ]
+    },
+    {
+      "id": "rear_section_to_front_hall",
+      "text": "返回前廊",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "heatcorridor_front_hall", "minutes": 1 },
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "回到前廊。" }
+      ]
+    }
+  ]
+}

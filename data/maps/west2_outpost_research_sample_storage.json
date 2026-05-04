@@ -1,0 +1,60 @@
+{
+  "id": "west2_outpost_research_sample_storage",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "样品暂存区",
+  "description": "暂存架和封条箱沿墙摆开，房间不大，规整得近乎冷硬。",
+  "entrySceneId": "west2_outpost_research_sample_storage_main",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "sheltered",
+  "shelter": "full",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "Sheltered",
+    "windShelter": 0.84,
+    "heatSource": 0.06,
+    "drying": 0.12
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_research_sample_storage_main",
+      "type": "POINT",
+      "name": "样品暂存区"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect_research_sample_storage_rack",
+      "sceneId": "west2_outpost_research_sample_storage_main",
+      "type": "OBSERVE",
+      "text": "看暂存架",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你看了看样品暂存区里贴满编号的暂存架。" }
+      ]
+    },
+    {
+      "id": "return_to_research_station_from_sample_storage",
+      "sceneId": "west2_outpost_research_sample_storage_main",
+      "type": "TRANSITION",
+      "text": "返回综合科研总站",
+      "edgeId": "west2_outpost_research_sample_storage_to_station_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_research_sample_storage_to_station_edge",
+      "fromSceneId": "west2_outpost_research_sample_storage_main",
+      "toMapId": "west2_outpost_research_station",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

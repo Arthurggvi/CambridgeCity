@@ -1,0 +1,9 @@
+{
+  "id": "menu_achievements",
+  "legacy": true,
+  "mapType": "link",
+  "name": "成就",
+  "description": "收集你抵达过的节点。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": []
+}

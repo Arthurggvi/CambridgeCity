@@ -1,0 +1,60 @@
+{
+  "id": "west2_outpost_research_experiment_room",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "region": "West2",
+  "name": "综合实验间",
+  "description": "实验台和记录板排得很整，房间里只留着最低限度的作业痕迹。",
+  "entrySceneId": "west2_outpost_research_experiment_room_main",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "sheltered",
+  "shelter": "full",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "Sheltered",
+    "windShelter": 0.82,
+    "heatSource": 0.09,
+    "drying": 0.15
+  },
+  "scenes": [
+    {
+      "id": "west2_outpost_research_experiment_room_main",
+      "type": "POINT",
+      "name": "综合实验间"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "inspect_research_experiment_bench",
+      "sceneId": "west2_outpost_research_experiment_room_main",
+      "type": "OBSERVE",
+      "text": "看实验台",
+      "minutes": 1,
+      "effects": [
+        { "op": "push", "path": "logLines", "value": "你看了看综合实验间里收拾整齐的实验台。" }
+      ]
+    },
+    {
+      "id": "return_to_research_station_from_experiment_room",
+      "sceneId": "west2_outpost_research_experiment_room_main",
+      "type": "TRANSITION",
+      "text": "返回综合科研总站",
+      "edgeId": "west2_outpost_research_experiment_room_to_station_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "west2_outpost_research_experiment_room_to_station_edge",
+      "fromSceneId": "west2_outpost_research_experiment_room_main",
+      "toMapId": "west2_outpost_research_station",
+      "minutes": 1
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

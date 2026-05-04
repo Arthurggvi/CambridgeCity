@@ -1,0 +1,64 @@
+{
+  "id": "steelcross_market_stall_01_placeholder",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "捕鱼人哈德",
+  "description": "哈德坐在一张钓鱼凳上，周围的雪被粗暴地铲去一旁\n你依稀辨认出摊位上有几只你认识的银鱼",
+  "indoor": false,
+  "outdoor": true,
+  "exposure": "semi_sheltered",
+  "shelter": "partial",
+  "environment": { "exposureLevel": "SemiSheltered" },
+  "placeProfile": {
+    "space": "outdoor",
+    "exposureLevel": "SemiSheltered",
+    "windShelter": 0.35,
+    "heatSource": 0,
+    "drying": 0.1
+  },
+  "entrySceneId": "steelcross_market_stall_01_service",
+  "scenes": [
+    {
+      "id": "steelcross_market_stall_01_service",
+      "type": "SERVICE_COUNTER",
+      "name": "捕鱼人哈德"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "steelcross_market_stall_01_open_goods_panel",
+      "sceneId": "steelcross_market_stall_01_service",
+      "type": "MENU_OPEN",
+      "text": "查看货物",
+      "ui": { "panel": "shop_goods" },
+      "effects": []
+    },
+    {
+      "id": "steelcross_market_stall_01_talk",
+      "sceneId": "steelcross_market_stall_01_service",
+      "type": "OBSERVE",
+      "text": "交谈",
+      "eventId": "ev_steelcross_market_stall_01_talk_intro",
+      "effects": []
+    },
+    {
+      "id": "steelcross_market_stall_01_return_market",
+      "sceneId": "steelcross_market_stall_01_service",
+      "type": "TRANSITION",
+      "text": "返回集市（0:01）",
+      "edgeId": "steelcross_market_stall_01_return_market_edge",
+      "effects": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_market_stall_01_return_market_edge",
+      "fromSceneId": "steelcross_market_stall_01_service",
+      "toMapId": "steelcross_market_02",
+      "minutes": 1
+    }
+  ]
+  ,"blockers": [],
+  "sessions": []
+}

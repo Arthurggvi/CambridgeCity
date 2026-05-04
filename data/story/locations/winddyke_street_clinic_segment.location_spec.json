@@ -1,0 +1,13 @@
+{
+  "location_id": "winddyke_street_clinic_segment",
+  "location_name": "风堤街-诊所段",
+  "theme_keywords": ["压实雪面", "反光杆编号", "风堤背风侧", "管线桥", "公告牌远光"],
+  "function_scope": ["诊所出入口", "走廊导向", "背风短停", "路由前往转角"],
+  "time_policy": {
+    "rule_segments": [
+      { "id": "day", "range": "06:00-17:59" },
+      { "id": "night", "range": "18:00-05:59" }
+    ],
+    "mood_segments": ["06:00-10:59", "11:00-13:59", "14:00-17:59", "18:00-20:59", "21:00-23:59", "00:00-05:59"]
+  }
+}

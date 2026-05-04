@@ -1,0 +1,11 @@
+{
+  "id": "tucson_home_photo",
+  "legacy": true,
+  "mapType": "link",
+  "name": "图森 · 宅屋",
+  "description": "那是一张合照。你很快就在后排认出了自己，神情罕见地松弛。\n站在前面的金发少年笑得很亮，你知道自己该记得他的名字，可无论怎样回想，都只剩一阵空白。\n其余的人更像被水浸过的影子，再也拼不出轮廓。",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "tucson_home_photo_return", "text": "返回", "targetMapId": "tucson_home_desk", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

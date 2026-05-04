@@ -1,0 +1,16 @@
+{
+  "id": "steelcross_port_theseus_work_followup_unlock",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号船员",
+  "description": "你刚转身，背后那人又把你叫住了。\n\n“等等。”\n\n你回头时，他已经把视线从你身上挪开，像是这句话本来也没打算说得多郑重。\n\n“船上的正式活你别想了。不过我们这边，偶尔也有些别的船员不愿意碰的杂活。脏，累，来钱倒快。”\n\n“你要是真缺钱，又不介意出力气，可以先干着。现金结，不拖。”",
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "theseus_work_followup_return",
+      "text": "返回",
+      "eventId": "ev_steelcross_port_theseus_work_return_intro",
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

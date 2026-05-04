@@ -1,0 +1,32 @@
+{
+  "id": "steelcross_port_theseus_work_rien_where",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号船员",
+  "description": "“现在？你在这种地方找不到他。”\n\n船员扯了下嘴角，像是觉得你这个问题问得有点天真。\n\n“他现在给政府那边做海事保险顾问。坐办公室，签字，开会，听人汇报风险。真要找他，你得去能见得到公文和章的人堆里找，不是在这种穷地方沿着码头乱转。”",
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "theseus_work_rien_where_return_followup",
+      "text": "返回",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewWorkReturnFollowupTriggered", "op": "!=", "value": true }
+        ]
+      },
+      "eventId": "ev_steelcross_port_theseus_work_followup_unlock",
+      "ui": { "type": "button" }
+    },
+    {
+      "id": "theseus_work_rien_where_return_plain",
+      "text": "返回",
+      "requires": {
+        "all": [
+          { "path": "world.flags.theseusCrewWorkReturnFollowupTriggered", "op": "==", "value": true }
+        ]
+      },
+      "eventId": "ev_steelcross_port_theseus_work_return_intro",
+      "ui": { "type": "button" }
+    }
+  ]
+}

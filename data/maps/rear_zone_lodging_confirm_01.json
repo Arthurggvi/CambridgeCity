@@ -1,0 +1,18 @@
+{
+  "id": "rear_zone_lodging_confirm_01",
+  "mapType": "link",
+  "name": "后区柜台",
+  "description": "",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "rear_zone_lodging_confirm_return",
+      "text": "返回",
+      "ui": { "type": "button", "priority": "primary" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "heatcorridor_rear_section", "minutes": 0 }
+    }
+  ]
+}

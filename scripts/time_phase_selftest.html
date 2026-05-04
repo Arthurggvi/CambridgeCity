@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <title>Time Phase Selftest</title>
+  <style>
+    body { font-family: monospace; padding: 16px; }
+    .ok { color: #0a0; }
+    .fail { color: #a00; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <div id="out">Running…</div>
+  <script type="module">
+    import {
+      GetTimePhase,
+      GetDayNightPhase,
+      GetTimePhaseLabel,
+      GetDayNightLabel,
+      GetNextPhaseChangeMinute,
+      GetNextDayNightChangeMinute
+    } from "../src/engine/time_phases.js";
+
+    const out = document.getElementById('out');
+
+    function assertEqual(name, actual, expected) {
+      if (actual !== expected) {
+        throw new Error(`${name} FAILED: expected ${expected}, got ${actual}`);
+      }
+    }
+
+    function labelAt(minuteOfDay) {
+      const phase = GetTimePhase(minuteOfDay);
+      const dn = GetDayNightPhase(minuteOfDay);
+      return {
+        phase: GetTimePhaseLabel(phase),
+        dn: GetDayNightLabel(dn)
+      };
+    }
+
+    try {
+      const cases = [
+        { m: 359, phase: "凌晨", dn: "夜晚" }, // 05:59
+        { m: 360, phase: "上午", dn: "白天" }, // 06:00
+        { m: 659, phase: "上午", dn: "白天" }, // 10:59
+        { m: 660, phase: "正午", dn: "白天" }, // 11:00
+        { m: 1079, phase: "下午", dn: "白天" }, // 17:59
+        { m: 1080, phase: "傍晚", dn: "夜晚" }, // 18:00
+        { m: 1260, phase: "午夜", dn: "夜晚" }, // 21:00
+        { m: 0, phase: "凌晨", dn: "夜晚" }     // 00:00
+      ];
+
+      for (const c of cases) {
+        const got = labelAt(c.m);
+        assertEqual(`minute ${c.m} phase`, got.phase, c.phase);
+        assertEqual(`minute ${c.m} dayNight`, got.dn, c.dn);
+      }
+
+      // helper sanity
+      assertEqual("NextPhaseChange @ 05:59", GetNextPhaseChangeMinute(359), 360);
+      assertEqual("NextDayNightChange @ 05:59", GetNextDayNightChangeMinute(359), 360);
+      assertEqual("NextPhaseChange @ 23:59", GetNextPhaseChangeMinute(1439), 1440);
+      assertEqual("NextDayNightChange @ 23:59", GetNextDayNightChangeMinute(1439), 1440);
+
+      out.className = 'ok';
+      out.textContent = 'ALL PASSED';
+    } catch (e) {
+      out.className = 'fail';
+      out.textContent = String(e && e.stack ? e.stack : e);
+    }
+  </script>
+</body>
+</html>

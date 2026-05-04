@@ -1,0 +1,11 @@
+{
+  "id": "menu_settings",
+  "name": "设置",
+  "description": "设置保存到本机 LocalStorage，不进入存档快照。\n\n自动存档关闭时仅影响 auto 槽位，不影响手动存档。",
+  "actions": [
+    {
+      "id": "menu_back_main",
+      "text": "返回"
+    }
+  ]
+}

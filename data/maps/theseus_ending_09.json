@@ -1,0 +1,11 @@
+{
+  "id": "theseus_ending_09",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号",
+  "description": "我讨厌下雪\n\n就那样期待太阳的日子......",
+  "environment": { "exposureLevel": "Sheltered" },
+  "actions": [
+    { "id": "theseus_ending_09_continue", "text": "继续", "targetMapId": "theseus_ending_10", "ui": { "type": "button", "priority": "primary" } }
+  ]
+}

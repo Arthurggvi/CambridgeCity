@@ -1,0 +1,16 @@
+{
+  "id": "steelcross_port_theseus_crew_denied",
+  "legacy": true,
+  "mapType": "link",
+  "name": "忒修斯号船员",
+  "description": "船员把你拦在跳板外。\n“不好意思，我们只允许持票乘客上船。”",
+  "environment": { "exposureLevel": "Open" },
+  "actions": [
+    {
+      "id": "theseus_crew_denied_return",
+      "text": "返回",
+      "eventId": "ev_steelcross_port_theseus_crew_intro",
+      "ui": { "type": "button", "priority": "primary" }
+    }
+  ]
+}

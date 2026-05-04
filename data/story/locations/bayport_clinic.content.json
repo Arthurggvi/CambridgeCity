@@ -1,0 +1,474 @@
+{
+  "location_id": "bayport_clinic",
+  "SceneList": [
+    { "id": "1.0", "type": "HUB_LOBBY", "text": "前厅", "default_return": "1.0" },
+    { "id": "1.1", "type": "COUNTER_DAY", "text": "白班窗口", "default_return": "1.0" },
+    { "id": "1.2", "type": "COUNTER_NIGHT", "text": "夜班窗口", "default_return": "1.0" },
+    { "id": "2.1", "type": "UPSTAIRS_HALL", "text": "二楼大厅", "default_return": "1.0" },
+    { "id": "2.2", "type": "WARD_SESSION", "text": "二楼病房区", "default_return": "2.2" },
+    { "id": "2.4", "type": "ROOFTOP", "text": "诊所天台", "default_return": "2.4" },
+    { "id": "2.3", "type": "OBS_SESSION", "text": "急诊观察位", "default_return": "2.3" },
+    { "id": "9.0", "type": "EXIT_TO_WORLD", "text": "离开到风堤街", "default_return": "winddyke_street_clinic_segment" }
+  ],
+  "EdgeList": [
+    { "from": "1.0", "to": "1.1", "when": "day" },
+    { "from": "1.0", "to": "1.2", "when": "night" },
+    { "from": "1.0", "to": "2.1" },
+    { "from": "1.0", "to": "9.0" },
+    { "from": "1.1", "to": "1.0" },
+    { "from": "1.2", "to": "1.0" },
+    { "from": "2.1", "to": "1.0" },
+    { "from": "2.1", "to": "2.4" },
+    { "from": "2.4", "to": "2.1" },
+    { "from": "2.2", "to": "2.2" },
+    { "from": "2.3", "to": "2.3" },
+    { "from": "2.3", "to": "2.2", "when": "06:00_handover_accept" },
+    { "from": "2.3", "to": "2.1", "when": "06:00_handover_decline" }
+  ],
+  "InteractionList": [
+    { "id": "queue_counter_day", "scene": "1.0", "type": "QUEUE_SERVICE", "time_cost": "0:05", "condition": "06:00-17:59", "goto": "1.1", "text": "常规受理窗口排队" },
+    { "id": "queue_counter_night", "scene": "1.0", "type": "QUEUE_SERVICE", "time_cost": "0:02", "condition": "18:00-05:59", "goto": "1.2", "text": "必要受理窗口说明情况" },
+    { "id": "stairs_up", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:02", "condition": null, "goto": "2.1", "text": "上楼" },
+    { "id": "bench_observe", "scene": "1.0", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "前厅长椅" },
+    { "id": "exit_door", "scene": "1.0", "type": "TRAVEL", "time_cost": "0:01", "condition": null, "goto": "9.0", "text": "出门到风堤街" },
+    { "id": "apply_treatment", "scene": "1.1", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "hp<80", "goto": "2.2_or_1.1", "text": "申请治疗（接受/拒绝）" },
+    { "id": "buy_meds", "scene": "1.1", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": null, "goto": "1.1", "text": "购买药品" },
+    { "id": "bill_query_pay", "scene": "1.1", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": null, "goto": "1.1", "text": "查询账单" },
+    { "id": "bill_pay_all", "scene": "1.1", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "bill>0 and money>0", "goto": "1.1", "text": "缴费（全部）" },
+    { "id": "bill_pay_200", "scene": "1.1", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "bill>0 and money>0", "goto": "1.1", "text": "缴费（200）" },
+    { "id": "leave_queue", "scene": "1.1", "type": "TRAVEL", "time_cost": "0:00", "condition": null, "goto": "1.0", "text": "退出排队" },
+    { "id": "night_emergency", "scene": "1.2", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "hp<=50", "goto": "2.3", "text": "说明伤情，申请急诊受理" },
+    { "id": "night_im_fine", "scene": "1.2", "type": "TRAVEL", "time_cost": "0:00", "condition": null, "goto": "1.0", "text": "先回前厅" },
+    { "id": "upstairs_bench", "scene": "2.1", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "2.1", "text": "候诊区长椅" },
+    { "id": "clinic_door", "scene": "2.1", "type": "BLOCKED_ENTRY", "time_cost": "0:01", "condition": "has_referral", "goto": "2.1", "text": "诊室门禁" },
+    { "id": "stairs_up_rooftop", "scene": "2.1", "type": "TRAVEL", "time_cost": "0:01", "condition": null, "goto": "2.4", "text": "上天台" },
+    { "id": "stairs_down", "scene": "2.1", "type": "TRAVEL", "time_cost": "0:01", "condition": null, "goto": "1.0", "text": "下楼" },
+    { "id": "clinic_rooftop_view_far", "scene": "2.4", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "2.4", "text": "眺望远方" },
+    { "id": "clinic_rooftop_warning_light_test_init", "scene": "2.4", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": "warning_light_not_tested", "goto": "2.4", "text": "测试屋顶警示灯" },
+    { "id": "clinic_rooftop_warning_light_test_repeat", "scene": "2.4", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": "warning_light_tested", "goto": "2.4", "text": "测试屋顶警示灯" },
+    { "id": "stairs_down_upstairs_hall", "scene": "2.4", "type": "TRAVEL", "time_cost": "0:01", "condition": null, "goto": "2.1", "text": "下楼返回" },
+    { "id": "bed_rest_session", "scene": "2.2", "type": "SESSION_REST", "time_cost": "24:00", "condition": "in_ward_bed", "goto": "2.2", "text": "病床住院推进" },
+    { "id": "ward_query_status", "scene": "2.2", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": null, "goto": "2.2", "text": "护士站：查询住院状态" },
+    { "id": "ward_pay_all", "scene": "2.2", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "bill>0 and money>0", "goto": "2.2", "text": "护士站：缴费（全部）" },
+    { "id": "ward_pay_200", "scene": "2.2", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "bill>0 and money>0", "goto": "2.2", "text": "护士站：缴费（200）" },
+    { "id": "ward_corridor_bench", "scene": "2.2", "type": "IDLE_OBSERVE", "time_cost": "0:01", "condition": null, "goto": "2.2", "text": "病区走廊长椅" },
+    { "id": "ward_discharge_ready", "scene": "2.2", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "hp>=80", "goto": "2.2", "text": "办理出院（已达标准）" },
+    { "id": "ward_discharge_denied", "scene": "2.2", "type": "COUNTER_MENU", "time_cost": "0:01", "condition": "hp<80", "goto": "2.2", "text": "办理出院（未达标准）" },
+    { "id": "ward_try_leave", "scene": "2.2", "type": "TRAVEL", "time_cost": "0:01", "condition": "discharged", "goto": "2.1", "text": "离开病房区" },
+    { "id": "stay_observe_tick", "scene": "2.3", "type": "SESSION_OBSERVE", "time_cost": "0:30", "condition": "in_obs", "goto": "2.3", "text": "继续观察" },
+    { "id": "try_leave_obs", "scene": "2.3", "type": "TRAVEL", "time_cost": "0:00", "condition": "morning_release", "goto": "2.1", "text": "尝试离开" }
+  ],
+  "BlockerSpec": {
+    "blockers": [
+      {
+        "id": "obs_handover_0600",
+        "scope": { "scene": "2.3" },
+        "kind": "TIMEPOINT",
+        "at": "06:00",
+        "event": "handover_dialogue",
+        "hard_stop": true
+      },
+      {
+        "id": "ward_no_discharge_no_exit",
+        "scope": { "scene": "2.2" },
+        "kind": "STATE",
+        "condition": "not discharged",
+        "on_attempt": { "text": "先办出院。", "goto": "2.2" }
+      },
+      {
+        "id": "night_non_emergency_reject",
+        "scope": { "scene": "1.2" },
+        "kind": "STATE",
+        "condition": "night and hp > 50",
+        "on_attempt": { "text": "夜里只受理急诊。", "goto": "1.2" }
+      },
+      {
+        "id": "long_jump_cross_handover_forbidden",
+        "scope": { "scene": "2.3" },
+        "kind": "TIMEPOINT",
+        "at": "06:00",
+        "event": "slice_stop",
+        "hard_stop": true
+      }
+    ]
+  },
+  "SessionSpec": {
+    "sessions": [
+      {
+        "id": "obs_session",
+        "session_type": "OBS",
+        "scene": "2.3",
+        "cap": { "hp_max": 50 },
+        "tick": { "minutes": 30, "effect": { "hp": 1 } },
+        "billing": { "cents_per_hour": 2500 },
+        "handover_time": "06:00",
+        "blockers": ["obs_handover_0600"]
+      },
+      {
+        "id": "inpatient_session",
+        "session_type": "WARD",
+        "scene": "2.2",
+        "discharge_threshold_health": 80,
+        "heal": { "minutes_per_day": 1440, "health_per_day": 20 },
+        "billing": { "per_day_cents": 20000, "rounding": "CEIL_BY_DAY" },
+        "effective_coverage": "bed_rest_only"
+      }
+    ]
+  },
+  "RuntimeText": {
+    "mapTextByMapId": {
+      "bayport_clinic": {
+        "sceneId": "1.0",
+        "description": {
+          "base": "你站在前厅中央。长椅贴墙排开，接待台后文件堆叠，窗口在缓慢运转。",
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "白班窗口仍在受理，队伍不算长，但推进得很慢。"
+            },
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "当前只留必要受理，前厅人更少，窗口更多是在维持夜班流程。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": { "lightPhase": "polar_day" },
+              "text": "窗外的亮度被长时间摊平，玻璃上没有真正的暗面，只有一层冷白反光。"
+            },
+            {
+              "when": { "lightPhase": "low_sun" },
+              "text": "低角日照压在玻璃外侧，亮度能照进来，但始终偏冷。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "窗外更多只剩冷光反雪，室内照明把前厅往里收紧。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "消毒水味里仍混着一点被门缝带进来的潮湿雪气。"
+            }
+          ],
+          "visibilityVariants": [
+            {
+              "when": { "visibilityBand": "low" },
+              "text": "玻璃外的路面边线被雪雾压淡，外部轮廓开始往一层灰白里缩。"
+            },
+            {
+              "when": { "visibilityBand": "hazard" },
+              "text": "窗外几乎只剩贴近建筑的最近轮廓，远一点的分流杆和脚印都被吃掉了。"
+            }
+          ]
+        }
+      },
+      "bayport_clinic_counter_night": {
+        "sceneId": "1.2",
+        "description": {
+          "base": "你走到窗口前。护士抬头看了你一眼。",
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "当前是夜班受理窗口，制度上只收急诊，其余一律等白班。"
+            },
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "这处窗口在制度上应由白班接手，夜班限制语气会在交班后撤掉。"
+            }
+          ]
+        }
+      },
+      "bayport_clinic_upstairs_hall": {
+        "sceneId": "2.1",
+        "description": {
+          "base": "灯光更冷，走廊两侧是诊室门与门牌编号，候诊区铁长椅贴墙排开。",
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "白班时二楼的门牌和分诊流转更活，诊室门后的出入与纸张声都更密。"
+            },
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "夜班时这里只保留必要通行和必要问答，大部分诊室门都维持关闭。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": { "lightPhase": "polar_day" },
+              "text": "尽头窗面的反光更平，连门牌边缘都被照得发白。"
+            },
+            {
+              "when": { "lightPhase": "low_sun" },
+              "text": "窗外冷光斜斜打进来，走廊亮一段、冷一段。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "自然光退下去后，走廊主要靠人工照明撑住层次，门牌反光更硬。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "空气里仍有一点从楼梯口带上来的湿冷气。"
+            }
+          ],
+          "visibilityVariants": [
+            {
+              "when": { "visibilityBand": "low" },
+              "text": "尽头窗外的外部轮廓被雪雾揉散，只剩近处屋檐和玻璃上的水痕先显出来。"
+            },
+            {
+              "when": { "visibilityBand": "hazard" },
+              "text": "窗外几乎只剩一片被风雪压平的亮白，外部方向感完全交给室内标识。"
+            }
+          ]
+        }
+      },
+      "bayport_clinic_rooftop": {
+        "sceneId": "2.4",
+        "description": {
+          "base": "诊所天台。护墙被雪粒打得发白，风把远处灯带压成断续的线。",
+          "lightVariants": [
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "光线更低时，远处只剩模糊轮廓，方向主要靠灯和风声判断。"
+            }
+          ],
+          "visibilityVariants": [
+            {
+              "when": { "visibilityBand": "hazard" },
+              "text": "能见度压到最低时，护墙外侧几乎只剩一层被风雪抹开的亮白。"
+            }
+          ]
+        }
+      },
+      "bayport_clinic_obs": {
+        "sceneId": "2.3",
+        "description": {
+          "base": "观察位床位更密、帘子更紧，流程以短促指令和记录为主。",
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "白班接手后，记录、交接和问询都会更密，流程声也更连续。"
+            },
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "夜班只维持必要观察，护士脚步和说话都压得更短。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": { "lightPhase": "polar_day" },
+              "text": "帘子边缘能接到一点持续的冷白亮度，但这里仍以床头灯和走廊灯为主。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "自然光退下去后，观察位几乎完全缩进帘子、床头灯和走廊灯构成的局部亮区里。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "偶尔开合的门会把一点更冷的空气带进来。"
+            }
+          ],
+          "visibilityVariants": [
+            {
+              "when": { "visibilityBand": "hazard" },
+              "text": "外部视野被压缩后，病区边缘的窗面也只剩一层模糊亮白，不再提供任何外界参照。"
+            }
+          ]
+        }
+      },
+      "bayport_clinic_ward": {
+        "sceneId": "2.2",
+        "description": {
+          "base": "病房区贴着床位号与注意事项，护士站在转角，空气干冷，消毒水味更重。",
+          "serviceVariants": [
+            {
+              "when": { "serviceBand": "day_service" },
+              "text": "白班时查房、问询和出院办理会把护士站周围的流程拉得更满。"
+            },
+            {
+              "when": { "serviceBand": "night_service" },
+              "text": "夜班时这里只保留必要照护和值守，动作更慢，说话更短。"
+            }
+          ],
+          "lightVariants": [
+            {
+              "when": { "lightPhase": "polar_day" },
+              "text": "窗边帘布会被外面的长亮度透出一层发白的边。"
+            },
+            {
+              "when": { "lightPhase": "low_sun" },
+              "text": "窗外冷光偶尔能蹭到床位边缘，但病房主体仍由床头灯和走廊灯维持。"
+            },
+            {
+              "when": { "lightPhase": ["twilight", "polar_night"] },
+              "text": "自然光几乎退净后，病房区会更明显地缩回床头灯和护士站附近的照明里。"
+            }
+          ],
+          "weatherVariants": [
+            {
+              "when": { "isSnowing": true },
+              "text": "偶尔仍能感觉到外部风雪把整栋楼的冷意往里推了一层。"
+            }
+          ],
+          "visibilityVariants": [
+            {
+              "when": { "visibilityBand": "low" },
+              "text": "窗外能见度一下滑，玻璃外的建筑边线就只剩断续轮廓。"
+            },
+            {
+              "when": { "visibilityBand": "hazard" },
+              "text": "风雪把窗外视野压成一片空白后，病房里的一切参照都回到床位号、帘布和护士站灯上。"
+            }
+          ]
+        }
+      }
+    },
+    "actionTextByMapId": {
+      "bayport_clinic": {
+        "sceneId": "1.0",
+        "actionTextByActionId": {
+          "queue_counter_first_day": {
+            "actionLabel": {
+              "base": "去接待台排队",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "mode": "replace", "text": "去常规受理窗口排队" },
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "去必要受理窗口说明情况" }
+              ]
+            }
+          },
+          "queue_counter_first_night": {
+            "actionLabel": {
+              "base": "去必要受理窗口说明情况",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "mode": "replace", "text": "去常规受理窗口排队" },
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "去必要受理窗口说明情况" }
+              ]
+            }
+          },
+          "queue_counter_first_night_late": {
+            "actionLabel": {
+              "base": "去必要受理窗口说明情况",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "mode": "replace", "text": "去常规受理窗口排队" },
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "去必要受理窗口说明情况" }
+              ]
+            }
+          },
+          "queue_counter_day": {
+            "actionLabel": {
+              "base": "排接待台队列",
+              "serviceVariants": [
+                { "when": { "serviceBand": "day_service" }, "mode": "replace", "text": "排常规受理队列" }
+              ]
+            }
+          },
+          "queue_counter_night": {
+            "actionLabel": {
+              "base": "排接待台队列",
+              "serviceVariants": [
+                { "when": { "serviceBand": "night_service" }, "mode": "replace", "text": "排必要受理队列" }
+              ]
+            }
+          }
+        }
+      },
+      "bayport_clinic_counter_night": {
+        "sceneId": "1.2",
+        "actionTextByActionId": {
+          "night_emergency_reject": {
+            "actionLabel": {
+              "base": "说明情况，申请急诊受理"
+            },
+            "actionFeedback": {
+              "base": "当前只保留必要急诊受理。你还能自行行动，护士示意你回前厅，等常规受理时段再办住院流程。"
+            }
+          },
+          "night_emergency_accept": {
+            "actionLabel": {
+              "base": "说明情况，申请急诊受理"
+            }
+          },
+          "night_im_fine": {
+            "actionLabel": {
+              "base": "先回前厅"
+            }
+          }
+        }
+      },
+      "bayport_clinic_counter_day": {
+        "sceneId": "1.1",
+        "actionTextByActionId": {
+          "apply_treatment_not_needed": {
+            "actionLabel": {
+              "base": "说明情况，确认是否需要住院"
+            },
+            "actionFeedback": {
+              "base": "护士翻了一眼记录，又看了看你的状态，示意你当前不需要住院治疗，先把床位留给更重的病例。"
+            }
+          },
+          "clinic_open_goods_panel_day": {
+            "actionLabel": {
+              "base": "查看售卖货物"
+            },
+            "actionFeedback": {
+              "base": "护士把当前可售的常备药品和包扎用品推到你面前。"
+            }
+          },
+          "bill_query_day": {
+            "actionLabel": {
+              "base": "查询当前账单"
+            },
+            "actionFeedback": {
+              "base": "护士把当前急诊与住院账目调出来，按项目给你核对了一遍。"
+            }
+          },
+          "leave_queue_day": {
+            "actionLabel": {
+              "base": "回前厅"
+            }
+          }
+        }
+      },
+      "bayport_clinic_rooftop": {
+        "sceneId": "2.4",
+        "actionTextByActionId": {
+          "clinic_rooftop_view_far": {
+            "actionLabel": {
+              "base": "眺望远方"
+            },
+            "actionFeedback": {
+              "base": "风堤街沿着海湾向前铺开，尽头的灯落在雪里，像几枚钝掉的针。\n更远处，港区和交换站只剩模糊的轮廓，这座城仍在风里运转。"
+            },
+            "actionIllustrationKey": "clinic_rooftop_far_view"
+          },
+          "clinic_rooftop_warning_light_test_init": {
+            "actionLabel": {
+              "base": "测试屋顶警示灯"
+            },
+            "actionFeedback": {
+              "base": "你掀开防冻罩，按下开关。\n屋顶边缘那盏警示灯迟疑了片刻，终于在风雪里亮起一圈发钝的红光。"
+            }
+          },
+          "clinic_rooftop_warning_light_test_repeat": {
+            "actionLabel": {
+              "base": "测试屋顶警示灯"
+            },
+            "actionFeedback": {
+              "base": "警示灯仍在运行。\n红光被雪幕削得很薄，但这栋楼至少还在向外发出位置。"
+            }
+          },
+          "stairs_down_upstairs_hall": {
+            "actionLabel": {
+              "base": "下楼返回"
+            }
+          }
+        }
+      }
+    }
+  }
+}

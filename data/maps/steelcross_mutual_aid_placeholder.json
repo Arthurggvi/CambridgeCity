@@ -1,0 +1,49 @@
+{
+  "id": "steelcross_mutual_aid_placeholder",
+  "contentVersion": 2,
+  "legacy": false,
+  "mapType": "link",
+  "name": "互助堂",
+  "description": "门口压着卷绳、湿木箱和半截铁钩，门板边上全是手套蹭出来的暗亮。",
+  "entrySceneId": "steelcross_mutual_aid_main",
+  "indoor": true,
+  "outdoor": false,
+  "exposure": "sheltered",
+  "shelter": "full",
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "placeProfile": {
+    "space": "indoor",
+    "exposureLevel": "Sheltered",
+    "windShelter": 0.9,
+    "heatSource": 0.05,
+    "drying": 0.18
+  },
+  "scenes": [
+    {
+      "id": "steelcross_mutual_aid_main",
+      "type": "POINT",
+      "name": "互助堂"
+    }
+  ],
+  "interactions": [
+    {
+      "id": "steelcross_mutual_aid_return_port",
+      "sceneId": "steelcross_mutual_aid_main",
+      "type": "TRANSITION",
+      "text": "返回钢十字港口",
+      "edgeId": "steelcross_mutual_aid_return_port_edge"
+    }
+  ],
+  "edges": [
+    {
+      "id": "steelcross_mutual_aid_return_port_edge",
+      "fromSceneId": "steelcross_mutual_aid_main",
+      "toMapId": "steelcross_port",
+      "minutes": 3
+    }
+  ],
+  "blockers": [],
+  "sessions": []
+}

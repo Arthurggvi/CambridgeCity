@@ -1,0 +1,16 @@
+{
+  "id": "w2_spine_2",
+  "name": "W2-Spine-2 热廊站牌入口",
+  "description": "沿岸主走廊热廊站牌入口，占位地图。",
+  "actions": [
+    { "id": "to_spine_1", "text": "前往上一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_1" },
+    { "id": "to_spine_3", "text": "前往下一节点", "ui": { "type": "button" }, "targetMapId": "w2_spine_3" },
+    {
+      "id": "enter_heatcorridor_bus_stop",
+      "text": "前往热廊站牌",
+      "ui": { "type": "button" },
+      "kind": "TRANSIT_STOP_ENTRY",
+      "payload": { "stopId": "stop_heatcorridor", "intentType": "transit_stop" }
+    }
+  ]
+}

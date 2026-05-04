@@ -1,0 +1,147 @@
+{
+  "id": "bayport_clinic",
+  "name": "边港诊所 · 一楼前厅",
+  "description": "你站在前厅中央。窗外光线发白，消毒水味混着潮湿海风。长椅贴墙排开，接待台后文件堆叠，窗口在缓慢运转。",
+  "descriptionByMinuteOfDay": [
+    { "start": 360, "end": 659, "text": "你站在前厅中央。窗外的光被云层压低，只剩一层发白的亮度铺在地面上。消毒水味很重，混着海风潮气。长椅贴墙排开，接待台后堆着文件，没人抬头看你。" },
+    { "start": 660, "end": 839, "text": "前厅比早上亮一些，窗外的光能照进来，但依旧冷淡。窗口前的人变多了，队伍不算长，却推进得很慢。有人站着等，有人低头翻手里的纸。" },
+    { "start": 840, "end": 1079, "text": "光线开始下滑，前厅里的声音更少。窗口仍在运转，但工作人员动作明显慢下来。长椅上坐着的人比中午更多，空气里多了潮湿味。" },
+    { "start": 1080, "end": 1259, "text": "灯光被调暗，只留一排冷白灯。前厅空了不少，长椅上零星坐着几个人。接待窗口还开着，但夜班只做必要处理。" },
+    { "start": 1260, "end": 1439, "text": "前厅只剩必要照明。窗口亮着灯，却很少有人靠近。文件摊在台面上没收，空气显得更冷。" },
+    { "start": 0, "end": 359, "text": "前厅几乎空无一人。长椅空着，地面反着灯光，显得格外冷清。窗口还在，但更多时候只是亮着灯。" }
+  ],
+  "environment": {
+    "exposureLevel": "Sheltered"
+  },
+  "actions": [
+    {
+      "id": "queue_counter_first_day",
+      "text": "窗口排队",
+      "ui": { "type": "button", "priority": "primary", "labelTag": "task" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "!=", "value": true },
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 1079 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_queue_intro_1", "minutes": 0 },
+      "effects": [
+        { "op": "set", "path": "world.flags.windowQueueVisited", "value": true }
+      ]
+    },
+    {
+      "id": "queue_counter_first_night",
+      "text": "窗口排队",
+      "ui": { "type": "button", "priority": "primary", "labelTag": "task" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "!=", "value": true },
+          {
+            "path": "time.minuteOfDay",
+            "op": "<",
+            "value": 360
+          }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_queue_intro_1", "minutes": 0 },
+      "effects": [
+        { "op": "set", "path": "world.flags.windowQueueVisited", "value": true }
+      ]
+    },
+    {
+      "id": "queue_counter_first_night_late",
+      "text": "窗口排队",
+      "ui": { "type": "button", "priority": "primary", "labelTag": "task" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "!=", "value": true },
+          { "path": "time.minuteOfDay", "op": ">=", "value": 1080 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_queue_intro_1", "minutes": 0 },
+      "effects": [
+        { "op": "set", "path": "world.flags.windowQueueVisited", "value": true }
+      ]
+    },
+    {
+      "id": "queue_counter_day",
+      "text": "窗口排队（白天，0:05）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "==", "value": true },
+          { "path": "time.minuteOfDay", "op": ">=", "value": 360 },
+          { "path": "time.minuteOfDay", "op": "<=", "value": 1079 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_counter_day", "minutes": 5 },
+      "effects": [
+        { "op": "set", "path": "world.flags.windowQueueVisited", "value": true }
+      ]
+    },
+    {
+      "id": "queue_counter_night",
+      "text": "窗口排队（夜晚，0:02）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "==", "value": true }
+        ],
+        "any": [
+          { "path": "time.minuteOfDay", "op": "<", "value": 360 },
+          { "path": "time.minuteOfDay", "op": ">=", "value": 1080 }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_counter_night", "minutes": 2 },
+      "effects": [
+        { "op": "set", "path": "world.flags.windowQueueVisited", "value": true }
+      ]
+    },
+    {
+      "id": "stairs_up_to_2f",
+      "text": "上楼（0:02）",
+      "ui": { "type": "button" },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "bayport_clinic_upstairs_hall", "minutes": 2 }
+    },
+    {
+      "id": "bench_wait_lobby",
+      "text": "长椅（0:01）",
+      "ui": { "type": "button" },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "exit_to_winddyke_blocked",
+      "text": "出门（0:01）",
+      "ui": { "type": "button", "labelTag": "special" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "!=", "value": true }
+        ]
+      },
+      "kind": "TIME_SKIP",
+      "sessionCoverage": "NONE",
+      "payload": { "minutes": 1 }
+    },
+    {
+      "id": "exit_to_winddyke_allowed",
+      "text": "出门（0:01）",
+      "ui": { "type": "button" },
+      "requires": {
+        "all": [
+          { "path": "world.flags.windowQueueVisited", "op": "==", "value": true }
+        ]
+      },
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "winddyke_street_clinic_segment", "minutes": 1 }
+    }
+  ]
+}

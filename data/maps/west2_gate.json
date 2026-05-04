@@ -1,0 +1,26 @@
+{
+  "id": "west2_gate",
+  "name": "西侧闸门",
+  "description": "你来到一扇半掩的铁闸门前。风雪暂歇，远处的灯火像被冻住一样不肯摇曳。",
+  "actions": [
+    {
+      "id": "wait_time",
+      "text": "消磨时间",
+      "ui": {
+        "type": "slider_minutes",
+        "min": 0,
+        "max": 120,
+        "step": 10,
+        "default": 0,
+        "confirmText": "确认"
+      },
+      "kind": "TIME_SKIP"
+    },
+    {
+      "id": "back_to_corridor",
+      "text": "返回走廊",
+      "ui": { "type": "button" },
+      "targetMapId": "west2_link_corridor_01"
+    }
+  ]
+}

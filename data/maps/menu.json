@@ -1,0 +1,15 @@
+{
+  "id": "menu",
+  "name": "寒武城",
+  "description": "寒武城 / Cambrian City\n\n一个关于末世、记忆与选择的文字冒险游戏。",
+  "actions": [
+    {
+      "id": "new_game",
+      "text": "开始游戏"
+    },
+    {
+      "id": "continue_game",
+      "text": "继续游戏"
+    }
+  ]
+}

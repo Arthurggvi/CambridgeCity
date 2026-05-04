@@ -1,0 +1,71 @@
+{
+  "schema": "RegionConfig/v1",
+  "units": {
+    "T_base": "celsius",
+    "A_region": "celsius",
+    "Pmax": "mm_per_hour",
+    "MoistureIndex": "ratio_0_1",
+    "SunAmp": "celsius",
+    "SnowWarmAmp": "celsius",
+    "WindBase": "m_per_s",
+    "WindVar": "m_per_s"
+  },
+  "regions": [
+    {
+      "RegionId": "West2",
+      "Name": "西部2区",
+      "Summary": "沿海冰缘开发带",
+      "T_base": -20,
+      "A_region": 5,
+      "Pmax": 3.0,
+      "MoistureIndex": 0.9,
+      "SunAmp": 3.0,
+      "SnowWarmAmp": 2.5,
+      "WindBase": 9,
+      "WindVar": 5,
+      "WindDir_prevailing": "E"
+    },
+    {
+      "RegionId": "CambCity",
+      "Name": "寒武城",
+      "Summary": "半岛超级城邦",
+      "T_base": -10,
+      "A_region": 5,
+      "Pmax": 2.0,
+      "MoistureIndex": 0.7,
+      "SunAmp": 4.0,
+      "SnowWarmAmp": 2.0,
+      "WindBase": 7,
+      "WindVar": 4,
+      "WindDir_prevailing": "W"
+    },
+    {
+      "RegionId": "OldCamb",
+      "Name": "旧寒武城遗址",
+      "Summary": "内陆废都/冰盖边缘",
+      "T_base": -47.5,
+      "A_region": 7.5,
+      "Pmax": 1.5,
+      "MoistureIndex": 0.4,
+      "SunAmp": 2.0,
+      "SnowWarmAmp": 4.0,
+      "WindBase": 11,
+      "WindVar": 6,
+      "WindDir_prevailing": "E"
+    },
+    {
+      "RegionId": "South1",
+      "Name": "南部1区",
+      "Summary": "高海拔冰穹观测带",
+      "T_base": -60,
+      "A_region": 10,
+      "Pmax": 1.0,
+      "MoistureIndex": 0.3,
+      "SunAmp": 1.5,
+      "SnowWarmAmp": 4.5,
+      "WindBase": 14,
+      "WindVar": 7,
+      "WindDir_prevailing": "SE"
+    }
+  ]
+}
