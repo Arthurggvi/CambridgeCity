@@ -81,6 +81,14 @@ function stagePlayerTree() {
   }
 
   seedEmbeddedNode();
+
+  const requiredRoot = ["README_PLAY.txt", "LICENSE.md", THIRD_PARTY_DEST_NAME];
+  for (const name of requiredRoot) {
+    const p = path.join(STAGE_DIR, name);
+    if (!fs.existsSync(p)) {
+      throw new Error(`Release stage missing required root file: ${name} (expected at ${p})`);
+    }
+  }
 }
 
 function writeZip() {
