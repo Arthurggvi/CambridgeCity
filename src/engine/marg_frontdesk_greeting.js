@@ -15,10 +15,18 @@ const GREETING_BANDS = Object.freeze({
 });
 
 const REPEAT_BANDS = Object.freeze({
-  FIRST: "marg_frontdesk_repeat_first",
-  REPEATED: "marg_frontdesk_repeat_repeated",
-  NONE: "marg_frontdesk_repeat_none"
+  NONE: "marg_frontdesk_repeat_none",
+  WITHIN_WINDOW: "marg_frontdesk_repeat_within_window"
 });
+
+const TEXT_LOW =
+  "她尴尬地笑了笑，像是刚从一串索引号里回过神，迟疑地回应了你的招呼。";
+const TEXT_MID =
+  "玛格从登记册后抬起头，认真地点了点头，像把你的问候妥善归进了某个熟人条目。";
+const TEXT_HIGH =
+  "玛格一看到你就露出明显轻快的神情，连手边的书目卡片都差点被她碰乱。";
+const TEXT_REPEAT =
+  "你又打了一次招呼，玛格愣了愣，像在确认这次寒暄是否需要单独编号归档。";
 
 function normalizeFiniteNumber(value, fallback = null) {
   const numeric = Number(value);
@@ -30,29 +38,22 @@ function getGreetingFlags(gameState) {
   return source && typeof source === "object" ? source : {};
 }
 
-function resolveGreetingBand(favorBeforeBonus) {
+export function resolveGreetingBand(favorBeforeBonus) {
   const favor = Math.trunc(Number(favorBeforeBonus) || 0);
-  if (favor >= 10) return GREETING_BANDS.HIGH;
-  if (favor >= 4) return GREETING_BANDS.MID;
+  if (favor >= 70) return GREETING_BANDS.HIGH;
+  if (favor >= 30) return GREETING_BANDS.MID;
   return GREETING_BANDS.LOW;
 }
 
-function buildGreetingText(greetingBand) {
+function buildTierText(greetingBand) {
   switch (greetingBand) {
     case GREETING_BANDS.HIGH:
-      return "你朝柜台那边点了点头。玛格立刻把手里的登记册合上，冲你露出一个很熟的笑：\"你来啦？今天要查书，还是随便看看？\"";
+      return TEXT_HIGH;
     case GREETING_BANDS.MID:
-      return "你先抬手和她打了个招呼。玛格扶着高凳边沿坐直了一点，卷发轻轻一晃：\"你好。借阅台这边现在有空，要查什么可以直接问我。\"";
+      return TEXT_MID;
     default:
-      return "你朝借阅台打了个招呼。玛格像是才从账册里回过神，赶紧把章和登记册拢好：\"你好，这里是借阅台。要登记、找书，或者不清楚规矩的话，都可以先问我。\"";
+      return TEXT_LOW;
   }
-}
-
-function buildRepeatText(repeatBand) {
-  if (repeatBand === REPEAT_BANDS.FIRST) {
-    return "你刚离开没多久又折了回来。玛格愣了一下，随即抿着笑：\"怎么啦，还有别的事？\"";
-  }
-  return "你又在借阅台前停下。玛格把下巴往柜台上一搁，声音放得很轻：\"嗯，我还在。你慢慢说。\"";
 }
 
 export function resolveMargFrontdeskGreetingOutcome({ gameState, totalMinutes = null } = {}) {
@@ -66,8 +67,10 @@ export function resolveMargFrontdeskGreetingOutcome({ gameState, totalMinutes = 
   const repeatCountWithinHour = Math.max(0, Math.trunc(Number(greetingFlags.repeatCountWithinHour || 0)));
   const lastFavorBonusDayIndex = normalizeFiniteNumber(greetingFlags.lastFavorBonusDayIndex, -1);
   const currentDayIndex = getDayIndexFromTotalMinutes(resolvedTotalMinutes);
-  const minutesSinceLastGreet = lastGreetAtMinutes == null ? null : Math.max(0, resolvedTotalMinutes - lastGreetAtMinutes);
-  const withinRepeatWindow = Number.isFinite(minutesSinceLastGreet) && minutesSinceLastGreet < REPEAT_WINDOW_MINUTES;
+  const minutesSinceLastGreet =
+    lastGreetAtMinutes == null ? null : Math.max(0, resolvedTotalMinutes - lastGreetAtMinutes);
+  const withinRepeatWindow =
+    Number.isFinite(minutesSinceLastGreet) && minutesSinceLastGreet < REPEAT_WINDOW_MINUTES;
 
   if (dutySnapshot.band !== MARG_FRONTDESK_DUTY_BANDS.ON_DUTY) {
     return Object.freeze({
@@ -83,21 +86,16 @@ export function resolveMargFrontdeskGreetingOutcome({ gameState, totalMinutes = 
 
   const greetingBand = resolveGreetingBand(favorBeforeBonus);
   const isRepeatedWindow = withinRepeatWindow === true;
-  const repeatBand = !isRepeatedWindow
-    ? REPEAT_BANDS.NONE
-    : (repeatCountWithinHour <= 0 || !Number.isFinite(lastRepeatWindowStartAt) || resolvedTotalMinutes - lastRepeatWindowStartAt >= REPEAT_WINDOW_MINUTES)
-      ? REPEAT_BANDS.FIRST
-      : REPEAT_BANDS.REPEATED;
+  const repeatBand = isRepeatedWindow ? REPEAT_BANDS.WITHIN_WINDOW : REPEAT_BANDS.NONE;
   const grantDailyFavorBonus = !isRepeatedWindow && currentDayIndex !== lastFavorBonusDayIndex;
-  const logLine = isRepeatedWindow ? buildRepeatText(repeatBand) : buildGreetingText(greetingBand);
+  const logLine = isRepeatedWindow ? TEXT_REPEAT : buildTierText(greetingBand);
+
   const nextRepeatWindowStartAt = isRepeatedWindow
-    ? (Number.isFinite(lastRepeatWindowStartAt) && resolvedTotalMinutes - lastRepeatWindowStartAt < REPEAT_WINDOW_MINUTES
-        ? lastRepeatWindowStartAt
-        : resolvedTotalMinutes)
+    ? Number.isFinite(lastRepeatWindowStartAt) && resolvedTotalMinutes - lastRepeatWindowStartAt < REPEAT_WINDOW_MINUTES
+      ? lastRepeatWindowStartAt
+      : resolvedTotalMinutes
     : resolvedTotalMinutes;
-  const nextRepeatCountWithinHour = !isRepeatedWindow
-    ? 0
-    : (repeatBand === REPEAT_BANDS.FIRST ? 1 : repeatCountWithinHour + 1);
+  const nextRepeatCountWithinHour = isRepeatedWindow ? repeatCountWithinHour + 1 : 0;
 
   const effects = [
     { op: "push", path: "logLines", value: logLine },

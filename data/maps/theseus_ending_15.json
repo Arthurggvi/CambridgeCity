@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "面前的男人正微笑着看你。金发被阳光照得很亮，几乎让人移不开视线。\n可不知为什么，你始终想不起他的名字。",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "theseus_ending_15_continue", "text": "继续", "targetMapId": "theseus_ending_16", "ui": { "type": "button", "priority": "primary" } }
   ]

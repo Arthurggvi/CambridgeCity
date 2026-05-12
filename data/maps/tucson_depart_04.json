@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "那个阳光明媚的日子",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_depart_04_continue", "text": "继续", "targetMapId": "tucson_depart_05", "ui": { "type": "button", "priority": "primary" } }
   ]

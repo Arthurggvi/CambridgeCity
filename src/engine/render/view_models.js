@@ -517,8 +517,8 @@ export function buildMenuViewModel(state) {
       pageType: "menu",
       pageId: mapId,
       variant: "menu_main",
-      title: "寒武城",
-      subtitle: "Cambrian City",
+      title: "寒武新纪",
+      subtitle: "CAMBRIAN NEW ERA",
       description: "",
       actions,
       actionDiagnostics: {

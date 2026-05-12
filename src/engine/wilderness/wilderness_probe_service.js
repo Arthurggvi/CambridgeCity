@@ -2,7 +2,7 @@
  * Phase 8: read-only wilderness move probes (no state writes, no RNG, no clock I/O).
  */
 
-import { queryWildernessCoordinate } from "./wilderness_area_query.js";
+import { queryWildernessCoordinate, listLandmarkCuesForCoordinate } from "./wilderness_area_query.js";
 import { getTerrainBiomeDef } from "./wilderness_terrain_registry.js";
 import {
   calculateWildernessStaminaCost,
@@ -20,46 +20,12 @@ function resolveMinuteOfDayFromTotalMinutes(totalMinutes) {
   return ((t % 1440) + 1440) % 1440;
 }
 
-function finiteHypot(dx, dy) {
-  return Math.hypot(Number(dx), Number(dy));
-}
-
 /**
  * @param {{ areaSpec: object, x: number, y: number }} args
  * @returns {Array<{ id: string, label: string, distance: number, enterable: boolean, gotoMapId: string|null }>}
  */
-export function collectLandmarkCuesForCoordinate({ areaSpec, x, y }) {
-  const landmarks = areaSpec?.landmarks;
-  if (!Array.isArray(landmarks) || landmarks.length === 0) return [];
-  const xi = Number.isFinite(Number(x)) ? Math.trunc(Number(x)) : 0;
-  const yi = Number.isFinite(Number(y)) ? Math.trunc(Number(y)) : 0;
-  const cues = [];
-  for (const lm of landmarks) {
-    if (!lm || typeof lm !== "object") continue;
-    const id = String(lm.id ?? "").trim();
-    if (!id) continue;
-    const lx = Number(lm.x);
-    const ly = Number(lm.y);
-    if (!Number.isFinite(lx) || !Number.isFinite(ly)) continue;
-    const detectR = Number(lm.detectRadius ?? lm.detect_radius);
-    const enterR = Number(lm.enterRadius ?? lm.enter_radius);
-    const dr = Number.isFinite(detectR) && detectR >= 0 ? detectR : 0;
-    const er = Number.isFinite(enterR) && enterR >= 0 ? enterR : 0;
-    const distance = finiteHypot(xi - lx, yi - ly);
-    if (distance <= dr + 1e-9) {
-      const label = String(lm.label ?? id).trim() || id;
-      const gotoMapId = lm.gotoMapId != null && String(lm.gotoMapId).trim() !== "" ? String(lm.gotoMapId).trim() : null;
-      cues.push({
-        id,
-        label,
-        distance,
-        enterable: distance <= er + 1e-9,
-        gotoMapId
-      });
-    }
-  }
-  cues.sort((a, b) => a.distance - b.distance);
-  return cues;
+export function collectLandmarkCuesForCoordinate(args) {
+  return listLandmarkCuesForCoordinate(args);
 }
 
 function clampIntConfidence(n) {
@@ -208,7 +174,9 @@ export function buildWildernessProbeResultForDirection({
   const toY = wy + dy;
 
   const q = queryWildernessCoordinate(areaSpec, toX, toY);
-  if (!q.insideBounds || q.kind === "boundary") {
+  // True boundary (target lies outside authored area bounds). The optional
+  // active-cell mask is *not* a boundary cause here.
+  if (q.kind === "boundary" && q.boundaryKind === "out_of_bounds") {
     const base = {
       direction: dir,
       terrainId: null,
@@ -218,6 +186,7 @@ export function buildWildernessProbeResultForDirection({
       timeCostPreview: Infinity,
       staminaCostPreview: Infinity,
       hardBlock: true,
+      blockerStyle: "void",
       warningTags: ["boundary"],
       landmarkCues: [],
       text: ""
@@ -263,11 +232,11 @@ export function buildWildernessProbeResultForDirection({
       staminaCostPreview = Infinity;
     } else if (foot === "conditional") {
       passability = "conditional";
-      timeCostPreview = calculateWildernessStepMinutes({ areaSpec, terrainDef, surfaceRuntime });
-      staminaCostPreview = calculateWildernessStaminaCost({ areaSpec, terrainDef, surfaceRuntime });
+      timeCostPreview = calculateWildernessStepMinutes({ areaSpec, terrainDef, surfaceRuntime, direction: dir });
+      staminaCostPreview = calculateWildernessStaminaCost({ areaSpec, terrainDef, surfaceRuntime, direction: dir });
     } else {
-      timeCostPreview = calculateWildernessStepMinutes({ areaSpec, terrainDef, surfaceRuntime });
-      staminaCostPreview = calculateWildernessStaminaCost({ areaSpec, terrainDef, surfaceRuntime });
+      timeCostPreview = calculateWildernessStepMinutes({ areaSpec, terrainDef, surfaceRuntime, direction: dir });
+      staminaCostPreview = calculateWildernessStaminaCost({ areaSpec, terrainDef, surfaceRuntime, direction: dir });
       if (isSlowTerrain(terrainDef, terrainId, timeCostPreview, areaSpec?.step?.baseMinutes)) {
         passability = "slow";
       } else {
@@ -303,6 +272,15 @@ export function buildWildernessProbeResultForDirection({
     visibilityLevel
   });
 
+  let blockerStyle = null;
+  if (hardBlock) {
+    if (terrainId === "open_water" || terrainId === "coastal_open_water") {
+      blockerStyle = "sea";
+    } else {
+      blockerStyle = "hard_terrain";
+    }
+  }
+
   return {
     direction: dir,
     terrainId,
@@ -312,6 +290,7 @@ export function buildWildernessProbeResultForDirection({
     timeCostPreview,
     staminaCostPreview,
     hardBlock,
+    blockerStyle,
     warningTags,
     landmarkCues,
     text

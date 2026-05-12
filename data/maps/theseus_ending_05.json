@@ -5,6 +5,7 @@
   "name": "忒修斯号",
   "description": "我从哪儿来？我要去哪儿？\n\n我不知道",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "theseus_ending_05_continue", "text": "继续", "targetMapId": "theseus_ending_06", "ui": { "type": "button", "priority": "primary" } }
   ]

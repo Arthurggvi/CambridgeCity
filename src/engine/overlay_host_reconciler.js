@@ -32,12 +32,14 @@ function collectOverlayHostState(hosts) {
   const industrialMiniMapActive = isHostOpen(hosts?.mapMiniMap?.industrial);
   const winddykeMiniMapActive = isHostOpen(hosts?.mapMiniMap?.winddyke);
   const govMiniMapActive = isHostOpen(hosts?.mapMiniMap?.gov);
+  const steelcrossMiniMapActive = isHostOpen(hosts?.mapMiniMap?.steelcross);
   const activeCount = (tasksActive ? 1 : 0)
     + (inventoryActive ? 1 : 0)
     + (clinicMiniMapActive ? 1 : 0)
     + (industrialMiniMapActive ? 1 : 0)
     + (winddykeMiniMapActive ? 1 : 0)
-    + (govMiniMapActive ? 1 : 0);
+    + (govMiniMapActive ? 1 : 0)
+    + (steelcrossMiniMapActive ? 1 : 0);
 
   let activeOverlay = null;
   let activeHostId = "map-main-host";
@@ -47,7 +49,13 @@ function collectOverlayHostState(hosts) {
   } else if (inventoryActive) {
     activeOverlay = "inventory";
     activeHostId = "inventory-overlay-host";
-  } else if (clinicMiniMapActive || industrialMiniMapActive || winddykeMiniMapActive || govMiniMapActive) {
+  } else if (
+    clinicMiniMapActive
+    || industrialMiniMapActive
+    || winddykeMiniMapActive
+    || govMiniMapActive
+    || steelcrossMiniMapActive
+  ) {
     activeOverlay = UI_OVERLAY_TYPES.MAP_MINIMAP;
     activeHostId = clinicMiniMapActive
       ? "clinic-minimap-panel"
@@ -55,7 +63,9 @@ function collectOverlayHostState(hosts) {
         ? "industrial-minimap-panel"
         : winddykeMiniMapActive
           ? "winddyke-minimap-panel"
-          : "gov-hall-minimap-panel";
+          : govMiniMapActive
+            ? "gov-hall-minimap-panel"
+            : "steelcross-minimap-panel";
   }
 
   return {
@@ -65,6 +75,7 @@ function collectOverlayHostState(hosts) {
     industrialMiniMapActive,
     winddykeMiniMapActive,
     govMiniMapActive,
+    steelcrossMiniMapActive,
     activeCount,
     activeOverlay,
     activeHostId
@@ -80,6 +91,7 @@ function resolveHostById(hosts, hostId) {
   if (id === "industrial-minimap-panel") return hosts?.mapMiniMap?.industrial || null;
   if (id === "winddyke-minimap-panel") return hosts?.mapMiniMap?.winddyke || null;
   if (id === "gov-hall-minimap-panel") return hosts?.mapMiniMap?.gov || null;
+  if (id === "steelcross-minimap-panel") return hosts?.mapMiniMap?.steelcross || null;
   return null;
 }
 
@@ -116,6 +128,11 @@ export function reconcileOverlayHostsFromCanonicalUi(state, hosts, registry, opt
     canonicalOverlay === UI_OVERLAY_TYPES.MAP_MINIMAP && minimapBranch === "gov",
     { clearOnClose: true }
   );
+  setHostState(
+    hosts?.mapMiniMap?.steelcross,
+    canonicalOverlay === UI_OVERLAY_TYPES.MAP_MINIMAP && minimapBranch === "steelcross",
+    { clearOnClose: true }
+  );
 
   const after = collectOverlayHostState(hosts);
   const expectedHostId = canonicalOverlay
@@ -128,6 +145,8 @@ export function reconcileOverlayHostsFromCanonicalUi(state, hosts, registry, opt
       ? "winddyke-minimap-panel"
       : minimapBranch === "gov"
         ? "gov-hall-minimap-panel"
+        : minimapBranch === "steelcross"
+          ? "steelcross-minimap-panel"
         : minimapBranch === "clinic"
           ? "clinic-minimap-panel"
           : "map-main-host")

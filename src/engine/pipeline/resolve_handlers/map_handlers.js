@@ -31,6 +31,14 @@ import { resolveWildernessEndSessionReadOnly } from "../../wilderness/wilderness
 import { getWildernessAreaSpec } from "../../wilderness/wilderness_area_registry.js";
 import { resolveWildernessMovePlanReadOnly } from "../../wilderness/wilderness_movement_resolver.js";
 import { WILDERNESS_MOVE_DIRECTIONS } from "../../wilderness/wilderness_movement_cost.js";
+import { buildWildernessEventOpportunityContext } from "../../wilderness/events/wilderness_event_move_integration.js";
+import { validateWildernessEventActionResolve } from "../../wilderness/events/wilderness_event_action_integration.js";
+import {
+  ETHAN_RESCUE_AGREE_ACTION_ID,
+  ETHAN_RESCUE_OFFER_DECISION_MAP_ID,
+  ETHAN_RESCUE_REFUSE_CONFIRM_ACTION_ID,
+  ETHAN_RESCUE_REFUSE_STAY_MAP_ID
+} from "../../wilderness/wilderness_ethan_rescue_service.js";
 
 function isPlainObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -190,6 +198,38 @@ export async function handleMapActions(ctx) {
   });
   if (!map) return false;
 
+  const applyGameplayPrecheck = () => {
+    if (plan?.rejection) return;
+    const rejection = shouldRejectGameplayAction(gameState, plan);
+    if (!rejection) return;
+    plan.rejection = rejection;
+    addNote(plan, `玩法门禁拒绝：${rejection.code}`);
+  };
+
+  if (String(action?.type || "").trim() === "WILDERNESS_EVENT_ACTION") {
+    const pipelineWildId = String(id || "").trim();
+    if (!pipelineWildId.startsWith("wild_evt:") && pipelineWildId !== "wild_evt_resume_tail") {
+      return false;
+    }
+    const syntheticMapAction = {
+      id: pipelineWildId,
+      kind: "WILDERNESS_EVENT_ACTION",
+      text: "",
+      payload: payload && typeof payload === "object" ? { ...payload } : {}
+    };
+    const r = validateWildernessEventActionResolve({ gameState, map, mapAction: syntheticMapAction });
+    if (!r.ok) {
+      plan.rejection = r.rejection;
+      addNote(plan, "WILDERNESS_EVENT_ACTION rejected");
+      applyGameplayPrecheck();
+      return true;
+    }
+    addWildernessPipelineIntent(plan, { type: "WILDERNESS_EVENT_ACTION", eventActionPlan: r.eventActionPlan });
+    addNote(plan, "wilderness:event_action intent queued (pipeline)");
+    applyGameplayPrecheck();
+    return true;
+  }
+
   if (id === SHOP_GOODS_PURCHASE_ACTION_ID) {
     await queueOneShotBusinessFromBuilder({
       action,
@@ -245,14 +285,6 @@ export async function handleMapActions(ctx) {
     });
     return false;
   }
-
-  const applyGameplayPrecheck = () => {
-    if (plan?.rejection) return;
-    const rejection = shouldRejectGameplayAction(gameState, plan);
-    if (!rejection) return;
-    plan.rejection = rejection;
-    addNote(plan, `玩法门禁拒绝：${rejection.code}`);
-  };
 
   const isSleepingCoverage = (sessionCoverageRaw) => {
     const coverage = String(sessionCoverageRaw || "NONE").trim().toUpperCase();
@@ -336,13 +368,22 @@ export async function handleMapActions(ctx) {
           : `你又一次翻开了${readingResult.selectedBook.title}。`
       )
     );
-    if (readingResult.isFirstRead && readingResult.selectedRecordId) {
-      addRecordIntent(plan, {
-        type: "UNLOCK_RECORD",
-        recordId: readingResult.selectedRecordId,
-        triggerContext: readingResult.triggerContext
-      });
-      addNote(plan, `阅览室首次阅读：book=${readingResult.selectedBook.id}, record=${readingResult.selectedRecordId}`);
+    if (readingResult.isFirstRead && readingResult.reward) {
+      const rewardExp = Number(readingResult?.reward?.experience || 0);
+      const expAmount = Number.isFinite(rewardExp) ? Math.trunc(rewardExp) : 0;
+      if (expAmount > 0) {
+      const current = Array.isArray(plan.profileIntents) ? plan.profileIntents : [];
+      plan.profileIntents = [
+        ...current,
+        {
+          type: "xp",
+          key: "experience",
+          amount: expAmount,
+          reason: `library_reading:first_read:${readingResult.selectedContentId || readingResult.selectedBook.id}`
+        }
+      ];
+      }
+      addNote(plan, `阅览室首次阅读：book=${readingResult.selectedBook.id}`);
     } else {
       addNote(plan, `阅览室重复阅读：book=${readingResult.selectedBook.id}`);
     }
@@ -576,10 +617,202 @@ export async function handleMapActions(ctx) {
         direction: dir,
         actionId: String(id || "").trim(),
         worldWeather: gameState?.world?.weather && typeof gameState.world.weather === "object" ? gameState.world.weather : {},
-        totalMinutes: gameState?.time?.totalMinutes
+        totalMinutes: gameState?.time?.totalMinutes,
+        player: gameState?.player,
+        rngLike: action?.meta?.wildernessMoveRngLike && typeof action.meta.wildernessMoveRngLike === "object"
+          ? action.meta.wildernessMoveRngLike
+          : undefined
       });
-      addWildernessPipelineIntent(plan, { type: "WILDERNESS_MOVE", movementPlan });
+      const eventOpportunityContext = buildWildernessEventOpportunityContext({
+        movementPlan,
+        plannedAtMinutes: Math.floor(Number(gameState?.time?.totalMinutes ?? 0))
+      });
+      addWildernessPipelineIntent(plan, { type: "WILDERNESS_MOVE", movementPlan, eventOpportunityContext });
       addNote(plan, `wilderness:move intent queued ok=${movementPlan.ok} dir=${dir}`);
+      applyGameplayPrecheck();
+      return true;
+    }
+
+    if (mapAction.kind === "WILDERNESS_EVENT_ACTION") {
+      const r = validateWildernessEventActionResolve({ gameState, map, mapAction });
+      if (!r.ok) {
+        plan.rejection = r.rejection;
+        addNote(plan, "WILDERNESS_EVENT_ACTION rejected");
+        applyGameplayPrecheck();
+        return true;
+      }
+      addWildernessPipelineIntent(plan, { type: "WILDERNESS_EVENT_ACTION", eventActionPlan: r.eventActionPlan });
+      addNote(plan, "wilderness:event_action intent queued");
+      applyGameplayPrecheck();
+      return true;
+    }
+
+    if (mapAction.kind === "WILDERNESS_ETHAN_RESCUE_ACCEPT") {
+      if (String(map?.id || "").trim() !== ETHAN_RESCUE_OFFER_DECISION_MAP_ID) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_ACCEPT_WRONG_MAP",
+          reason: "伊森救援确认仅允许在专用事件地图",
+          reasons: [`mapId=${String(map?.id || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_ACCEPT rejected wrong map");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (gameState?.world?.wilderness?.active !== true) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_ACCEPT_SESSION_INACTIVE",
+          reason: "野外会话未激活",
+          reasons: ["world.wilderness.active!==true"]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_ACCEPT rejected inactive");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (String(gameState.world.wilderness.state || "").trim() !== "RESCUE_PENDING") {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_ACCEPT_BAD_STATE",
+          reason: "当前不在搜救接应状态",
+          reasons: [`state=${String(gameState.world.wilderness.state || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_ACCEPT rejected state");
+        applyGameplayPrecheck();
+        return true;
+      }
+      const fr = gameState.world.wilderness.flags && typeof gameState.world.wilderness.flags === "object"
+        ? gameState.world.wilderness.flags
+        : {};
+      if (String(fr.ethanRescueLastReason || "").trim() !== "stamina_zero") {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_ACCEPT_BAD_REASON_FLAG",
+          reason: "救援原因标记不匹配",
+          reasons: [`ethanRescueLastReason=${String(fr.ethanRescueLastReason || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_ACCEPT rejected reason flag");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (String(id || "").trim() !== ETHAN_RESCUE_AGREE_ACTION_ID) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_ACCEPT_BAD_ACTION_ID",
+          reason: "必须使用 ethan_rescue_agree_return",
+          reasons: [`actionId=${String(id || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_ACCEPT action id mismatch");
+        applyGameplayPrecheck();
+        return true;
+      }
+      addWildernessPipelineIntent(plan, { type: "WILDERNESS_ETHAN_RESCUE_ACCEPT" });
+      addNote(plan, "wilderness:ethan_rescue_accept intent queued");
+      applyGameplayPrecheck();
+      return true;
+    }
+
+    if (mapAction.kind === "WILDERNESS_ETHAN_RESCUE_REFUSE") {
+      if (String(map?.id || "").trim() !== ETHAN_RESCUE_REFUSE_STAY_MAP_ID) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_REFUSE_WRONG_MAP",
+          reason: "伊森救援拒绝确认仅允许在专用叙事地图",
+          reasons: [`mapId=${String(map?.id || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_REFUSE rejected wrong map");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (gameState?.world?.wilderness?.active !== true) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_REFUSE_SESSION_INACTIVE",
+          reason: "野外会话未激活",
+          reasons: ["world.wilderness.active!==true"]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_REFUSE rejected inactive");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (String(gameState.world.wilderness.state || "").trim() !== "RESCUE_PENDING") {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_REFUSE_BAD_STATE",
+          reason: "当前不在搜救接应状态",
+          reasons: [`state=${String(gameState.world.wilderness.state || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_REFUSE rejected state");
+        applyGameplayPrecheck();
+        return true;
+      }
+      const frRef = gameState.world.wilderness.flags && typeof gameState.world.wilderness.flags === "object"
+        ? gameState.world.wilderness.flags
+        : {};
+      if (String(frRef.ethanRescueLastReason || "").trim() !== "stamina_zero") {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_REFUSE_BAD_REASON_FLAG",
+          reason: "救援原因标记不匹配",
+          reasons: [`ethanRescueLastReason=${String(frRef.ethanRescueLastReason || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_REFUSE rejected reason flag");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (String(id || "").trim() !== ETHAN_RESCUE_REFUSE_CONFIRM_ACTION_ID) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "ETHAN_RESCUE_REFUSE_BAD_ACTION_ID",
+          reason: "必须使用 ethan_rescue_refuse_confirm",
+          reasons: [`actionId=${String(id || "")}`]
+        };
+        addNote(plan, "WILDERNESS_ETHAN_RESCUE_REFUSE action id mismatch");
+        applyGameplayPrecheck();
+        return true;
+      }
+      addWildernessPipelineIntent(plan, { type: "WILDERNESS_ETHAN_RESCUE_REFUSE" });
+      addNote(plan, "wilderness:ethan_rescue_refuse intent queued");
+      applyGameplayPrecheck();
+      return true;
+    }
+
+    if (mapAction.kind === "WILDERNESS_RETURN_FROM_LANDMARK") {
+      if (String(map?.id || "").trim() === "wilderness_runtime") {
+        plan.rejection = {
+          source: "wilderness",
+          code: "WILDERNESS_RETURN_WRONG_MAP",
+          reason: "返回野外动作不允许在 wilderness_runtime",
+          reasons: ["mapId=wilderness_runtime"]
+        };
+        addNote(plan, "WILDERNESS_RETURN_FROM_LANDMARK rejected on wilderness_runtime");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (gameState?.world?.wilderness?.active !== true) {
+        plan.rejection = {
+          source: "wilderness",
+          code: "WILDERNESS_RETURN_SESSION_INACTIVE",
+          reason: "没有活跃的野外会话",
+          reasons: ["world.wilderness.active!==true"]
+        };
+        addNote(plan, "WILDERNESS_RETURN_FROM_LANDMARK rejected inactive");
+        applyGameplayPrecheck();
+        return true;
+      }
+      if (String(id || "").trim() !== "return_to_wilderness_runtime") {
+        plan.rejection = {
+          source: "wilderness",
+          code: "WILDERNESS_RETURN_BAD_ACTION_ID",
+          reason: "返回野外必须使用 return_to_wilderness_runtime",
+          reasons: [`actionId=${String(id || "")}`]
+        };
+        addNote(plan, "WILDERNESS_RETURN_FROM_LANDMARK action id mismatch");
+        applyGameplayPrecheck();
+        return true;
+      }
+      addWildernessPipelineIntent(plan, { type: "WILDERNESS_RETURN_FROM_LANDMARK" });
+      addNote(plan, "wilderness:return_from_landmark intent queued");
       applyGameplayPrecheck();
       return true;
     }

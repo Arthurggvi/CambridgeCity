@@ -1,0 +1,14 @@
+{
+  "id": "wilderness_ethan_rescue_offer_2",
+  "legacy": true,
+  "name": "探照灯光",
+  "description": "恍惚间，一束光从风雪深处扫过来，先是擦过雪脊，又慢慢落到你身上。\n\n发动机的低鸣压过风声。你眯起眼，认出那个从车灯后走来的熟悉身影。\n\n是伊森。",
+  "actions": [
+    {
+      "id": "ethan_rescue_offer_continue_2",
+      "text": "继续",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "wilderness_ethan_rescue_offer_3", "minutes": 0 }
+    }
+  ]
+}

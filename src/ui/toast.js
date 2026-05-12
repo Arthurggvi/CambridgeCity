@@ -28,6 +28,20 @@ function formatSigned(value, decimals = 1) {
   return `${abs}`;
 }
 
+function formatToastDeltaPrefix(delta) {
+  if (!Number.isFinite(Number(delta)) || Number(delta) === 0) return "";
+  return Number(delta) > 0 ? "＋" : "-";
+}
+
+function mapToastLabel(label) {
+  const key = String(label || "").trim();
+  if (!key) return "";
+  // Unified display mapping (UI only)
+  if (key === "社会阅历") return "阅历";
+  if (key === "experience") return "阅历";
+  return key;
+}
+
 function formatMoneyFromCents(cents) {
   return formatBillCents(cents);
 }
@@ -79,14 +93,15 @@ function normalizeDeltaToastPayload(payload = {}) {
   const lines = Array.isArray(payload?.lines)
     ? payload.lines.map((line) => {
       if (line && typeof line === "object") {
-        const label = String(line.label || "").trim();
+        const label = mapToastLabel(String(line.label || "").trim());
         const deltaRaw = Number(line.delta);
         const decimals = Number.isFinite(Number(line.decimals)) ? Math.max(0, Math.trunc(Number(line.decimals))) : 0;
         const text = String(line.text || "").trim();
         const delta = Number.isFinite(deltaRaw) ? deltaRaw : null;
         const absDelta = delta === null ? "" : Math.abs(delta).toFixed(decimals);
-        const signedDelta = delta === null ? "" : `${delta > 0 ? "+" : delta < 0 ? "-" : ""}${absDelta || "0"}`;
-        const derivedText = text || (label && signedDelta ? `${label} ${signedDelta}` : text);
+        const prefix = delta === null ? "" : formatToastDeltaPrefix(delta);
+        const signedDelta = delta === null ? "" : `${prefix}${absDelta || "0"}`;
+        const derivedText = text || (label && signedDelta ? `${label}${signedDelta}` : text);
         return derivedText
           ? {
               label: label || null,
@@ -126,6 +141,15 @@ function appendToastSemanticIcon(doc, frame, normalizedPayload) {
     iconWrap.className = "delta-toast-transient-icon delta-toast-transient-icon-heart";
     iconWrap.setAttribute("aria-hidden", "true");
     iconWrap.textContent = "♥";
+    frame.appendChild(iconWrap);
+    return iconWrap;
+  }
+
+  if (normalizedPayload?.icon === "warning" || normalizedPayload?.semanticType === "wilderness_lost_direction") {
+    const iconWrap = doc.createElement("div");
+    iconWrap.className = "delta-toast-transient-icon delta-toast-transient-icon-warning";
+    iconWrap.setAttribute("aria-hidden", "true");
+    iconWrap.textContent = "!";
     frame.appendChild(iconWrap);
     return iconWrap;
   }
@@ -201,9 +225,13 @@ function collectProfileDeltaLines(report) {
     const beforeTotalXp = getProfileTotalXp(def.key, beforeProfile?.[def.key]?.level, beforeProfile?.[def.key]?.xp);
     const afterTotalXp = getProfileTotalXp(def.key, afterProfile?.[def.key]?.level, afterProfile?.[def.key]?.xp);
     if (beforeTotalXp === afterTotalXp) continue;
+    const delta = afterTotalXp - beforeTotalXp;
     lines.push({
       key: def.key,
-      delta: afterTotalXp - beforeTotalXp,
+      label: def.label,
+      delta,
+      decimals: 0,
+      // keep a verbose fallback for debug/inspection
       text: fmtDelta(def.label, beforeTotalXp, afterTotalXp, { decimals: 0 })
     });
   }
@@ -246,6 +274,33 @@ export function buildWorldviewReadingToastPayloadFromReport(report) {
     semanticType: "worldview_delta",
     icon: "book-abstract",
     lines
+  };
+}
+
+export function buildLibraryReadingToastPayloadFromReport(report) {
+  const ops = Array.isArray(report?.profile?.apply?.intentOps) ? report.profile.apply.intentOps : [];
+  const xpOps = ops
+    .filter((op) => op && typeof op === "object")
+    .filter((op) => String(op.type || "").trim() === "xp")
+    .filter((op) => String(op.key || "").trim() === "experience")
+    .filter((op) => {
+      const reason = String(op.reason || "").trim();
+      return reason.startsWith("library_reading:first_read:");
+    });
+
+  const total = xpOps.reduce((sum, op) => sum + Math.max(0, Math.trunc(Number(op.amount || 0))), 0);
+  if (total <= 0) return null;
+
+  return {
+    title: "",
+    variant: "worldview-reading",
+    semanticType: "library_reading_delta",
+    icon: "book-abstract",
+    lines: [{
+      label: "阅历",
+      delta: total,
+      decimals: 0
+    }]
   };
 }
 
@@ -327,6 +382,9 @@ function renderDataDeltaToastPresenter({ payload, itemRoot, documentRoot }) {
   if (normalizedPayload.semanticType === "social_favor_delta") {
     itemRoot.classList.add("delta-toast--social-favor");
   }
+  if (normalizedPayload.variant === "wilderness-lost" || normalizedPayload.semanticType === "wilderness_lost_direction") {
+    itemRoot.classList.add("delta-toast--wilderness-lost");
+  }
 
   const frame = doc.createElement("div");
   frame.className = "delta-toast-transient-frame";
@@ -377,7 +435,17 @@ export function buildDataDeltaToastPayloadFromReport(report, options = {}) {
 
   numericLines.push(...collectProfileDeltaLines(report)
     .filter((line) => !omitProfileKeys.has(String(line?.key || "").trim()))
-    .map((line) => line.text));
+    .map((line) => (
+      line && typeof line === "object"
+        ? {
+            label: String(line.label || "").trim(),
+            delta: Number(line.delta),
+            decimals: Number.isFinite(Number(line.decimals)) ? Math.max(0, Math.trunc(Number(line.decimals))) : 0,
+            text: ""
+          }
+        : null
+    ))
+    .filter(Boolean));
 
   if (numericLines.length === 0) {
     return null;
@@ -411,7 +479,7 @@ export function buildRecordUnlockToastPayloadsFromReport(report) {
     payloads.push({
       title: "状态更新",
       variant: "record-unlock",
-      lines: [`社会阅历+${expAmount}，新纪录解锁！`]
+      lines: [`阅历＋${expAmount}，新纪录解锁！`]
     });
   }
 

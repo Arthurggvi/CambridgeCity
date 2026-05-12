@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "...",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "theseus_ending_13a_continue", "text": "继续", "targetMapId": "theseus_ending_14", "ui": { "type": "button", "priority": "primary" } }
   ]

@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "远方的光被松针筛成细碎的金屑，落在红褐色的沙土上。\n空气里浮着一点苦涩的甜，像树脂、尘土和晒热后的风混在一起。",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_home_window_return", "text": "返回", "targetMapId": "tucson_home", "ui": { "type": "button", "priority": "primary" } }
   ]

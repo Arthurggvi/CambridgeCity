@@ -1,0 +1,14 @@
+{
+  "id": "west2_outpost_rescue_aid_tent_bed",
+  "legacy": true,
+  "name": "急救帐篷",
+  "description": "伊森伸手叫来一名队员，担架很快被放到你身边。你被抬上车时，车厢里的热气和金属味一起涌了过来。\n\n没过几十分钟，你就被送回了急救帐篷。帆布顶被风压得很低，旁边的暖风机还在嗡嗡转着。\n\n“好好休息，我先回去了。”\n\n伊森拍了拍你的肩。\n\n“让我加班这码事，算你欠我一个人情。”",
+  "actions": [
+    {
+      "id": "return_to_rescue_station_after_recovery",
+      "text": "返回搜救站",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "west2_outpost_rescue_station", "minutes": 0 }
+    }
+  ]
+}

@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "书桌上堆着几样零散的东西，像是被人反复翻动过，又勉强收拾整齐。",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_home_view_photo", "text": "某张照片", "eventId": "ev_tucson_home_view_photo", "ui": { "type": "button", "priority": "primary" } },
     { "id": "tucson_home_view_blue_book", "text": "蓝色的书", "eventId": "ev_tucson_home_view_blue_book", "ui": { "type": "button" } },

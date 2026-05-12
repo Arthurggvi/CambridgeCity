@@ -5,6 +5,7 @@
   "name": "???",
   "description": "...",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "theseus_ending_03_continue", "text": "继续", "targetMapId": "theseus_ending_04", "ui": { "type": "button", "priority": "primary" } }
   ]

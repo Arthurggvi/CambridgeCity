@@ -15,6 +15,7 @@ import { validateArchiveReadingContract } from "./archive_reading_contract_valid
 import { validateActionSemanticContract } from "./action_semantic_contract_validate.js";
 import { validateBusinessSemanticContract } from "../business/business_semantic_validate.js";
 import { WILDERNESS_MOVE_DIRECTIONS } from "../wilderness/wilderness_movement_cost.js";
+import { ETHAN_RESCUE_OFFER_DECISION_MAP_ID, ETHAN_RESCUE_REFUSE_STAY_MAP_ID } from "../wilderness/wilderness_ethan_rescue_service.js";
 
 function err(fileName, path, message) {
   console.error(`${fileName} -> ${path}: ${message}`);
@@ -771,6 +772,89 @@ function validateLegacyMap(mapJson, fileName) {
       }
       err(fileName, `${basePath}.kind`, `wilderness_runtime 不允许 action.kind=${k}`);
       return false;
+    }
+
+    if (action.kind === "WILDERNESS_RETURN_FROM_LANDMARK") {
+      if (mapType === "wilderness_runtime") {
+        err(fileName, `${basePath}.kind`, "WILDERNESS_RETURN_FROM_LANDMARK 不允许出现在 wilderness_runtime");
+        return false;
+      }
+      const allowedReturnKeys = new Set(["id", "text", "kind"]);
+      for (const key of Object.keys(action)) {
+        if (!allowedReturnKeys.has(key)) {
+          err(fileName, `${basePath}.${key}`, "WILDERNESS_RETURN_FROM_LANDMARK action 仅允许 id / text / kind");
+          return false;
+        }
+      }
+      const semanticResultReturnLm = validateActionSemanticContract(action, fileName, basePath);
+      if (!semanticResultReturnLm.ok) {
+        semanticResultReturnLm.errors.forEach((message) => console.error(message));
+        return false;
+      }
+      const businessSemanticResultReturnLm = validateBusinessSemanticContract(action?.semantic, fileName, `${basePath}.semantic`);
+      if (!businessSemanticResultReturnLm.ok) {
+        businessSemanticResultReturnLm.errors.forEach((message) => console.error(message));
+        return false;
+      }
+      continue;
+    }
+
+    if (action.kind === "WILDERNESS_ETHAN_RESCUE_ACCEPT") {
+      if (String(mapJson?.id || "").trim() !== ETHAN_RESCUE_OFFER_DECISION_MAP_ID) {
+        err(
+          fileName,
+          `${basePath}.kind`,
+          `WILDERNESS_ETHAN_RESCUE_ACCEPT 仅允许出现在 ${ETHAN_RESCUE_OFFER_DECISION_MAP_ID}`
+        );
+        return false;
+      }
+      const allowedEthanKeys = new Set(["id", "text", "kind"]);
+      for (const key of Object.keys(action)) {
+        if (!allowedEthanKeys.has(key)) {
+          err(fileName, `${basePath}.${key}`, "WILDERNESS_ETHAN_RESCUE_ACCEPT action 仅允许 id / text / kind");
+          return false;
+        }
+      }
+      const semanticEthan = validateActionSemanticContract(action, fileName, basePath);
+      if (!semanticEthan.ok) {
+        semanticEthan.errors.forEach((message) => console.error(message));
+        return false;
+      }
+      const businessEthan = validateBusinessSemanticContract(action?.semantic, fileName, `${basePath}.semantic`);
+      if (!businessEthan.ok) {
+        businessEthan.errors.forEach((message) => console.error(message));
+        return false;
+      }
+      continue;
+    }
+
+    if (action.kind === "WILDERNESS_ETHAN_RESCUE_REFUSE") {
+      if (String(mapJson?.id || "").trim() !== ETHAN_RESCUE_REFUSE_STAY_MAP_ID) {
+        err(
+          fileName,
+          `${basePath}.kind`,
+          `WILDERNESS_ETHAN_RESCUE_REFUSE 仅允许出现在 ${ETHAN_RESCUE_REFUSE_STAY_MAP_ID}`
+        );
+        return false;
+      }
+      const allowedRefuseKeys = new Set(["id", "text", "kind"]);
+      for (const key of Object.keys(action)) {
+        if (!allowedRefuseKeys.has(key)) {
+          err(fileName, `${basePath}.${key}`, "WILDERNESS_ETHAN_RESCUE_REFUSE action 仅允许 id / text / kind");
+          return false;
+        }
+      }
+      const semanticRef = validateActionSemanticContract(action, fileName, basePath);
+      if (!semanticRef.ok) {
+        semanticRef.errors.forEach((message) => console.error(message));
+        return false;
+      }
+      const businessRef = validateBusinessSemanticContract(action?.semantic, fileName, `${basePath}.semantic`);
+      if (!businessRef.ok) {
+        businessRef.errors.forEach((message) => console.error(message));
+        return false;
+      }
+      continue;
     }
 
     // ========== kind=TRANSITION 校验（P0-2）==========

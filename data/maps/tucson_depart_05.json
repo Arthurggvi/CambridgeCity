@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "允许我给这短暂的人生抄录一些意义",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_depart_05_continue", "text": "继续", "targetMapId": "tucson_depart_06", "ui": { "type": "button", "priority": "primary" } }
   ]

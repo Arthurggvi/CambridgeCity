@@ -30,22 +30,22 @@ export function resolveBodySnowPreset() {
 
 export function getBodySnowLayerSpec(profileId, layerId) {
   const normalizedProfileId = String(profileId || "default").trim().toLowerCase();
-  void normalizedProfileId;
+  const isMenu = normalizedProfileId === "menu";
 
   if (layerId === 1) {
     return {
       id: 1,
-      alphaMin: 0.2,
-      alphaMax: 0.3,
+      alphaMin: isMenu ? 0.18 : 0.2,
+      alphaMax: isMenu ? 0.28 : 0.3,
       sizeMin: 1,
       sizeMax: 1,
-      baseCount: 160,
-      vyMin: 0.25,
-      vyMax: 0.45,
+      baseCount: isMenu ? 150 : 160,
+      vyMin: isMenu ? 0.22 : 0.25,
+      vyMax: isMenu ? 0.42 : 0.45,
       deltaMin: 6,
       deltaMax: 14,
-      segMinSec: 1.2,
-      segMaxSec: 2.6,
+      segMinSec: isMenu ? 1.35 : 1.2,
+      segMaxSec: isMenu ? 2.9 : 2.6,
       windWeight: 0.35
     };
   }
@@ -53,13 +53,13 @@ export function getBodySnowLayerSpec(profileId, layerId) {
   if (layerId === 2) {
     return {
       id: 2,
-      alphaMin: 0.35,
-      alphaMax: 0.55,
+      alphaMin: isMenu ? 0.38 : 0.35,
+      alphaMax: isMenu ? 0.56 : 0.55,
       sizeMin: 1,
       sizeMax: 2,
-      baseCount: 110,
-      vyMin: 0.55,
-      vyMax: 0.9,
+      baseCount: isMenu ? 130 : 110,
+      vyMin: isMenu ? 0.5 : 0.55,
+      vyMax: isMenu ? 0.92 : 0.9,
       deltaMin: 10,
       deltaMax: 22,
       segMinSec: 1.05,
@@ -70,13 +70,13 @@ export function getBodySnowLayerSpec(profileId, layerId) {
 
   return {
     id: 3,
-    alphaMin: 0.6,
-    alphaMax: 0.85,
+    alphaMin: isMenu ? 0.62 : 0.6,
+    alphaMax: isMenu ? 0.86 : 0.85,
     sizeMin: 2,
-    sizeMax: 3,
-    baseCount: 70,
-    vyMin: 0.95,
-    vyMax: 1.45,
+    sizeMax: isMenu ? 4 : 3,
+    baseCount: isMenu ? 90 : 70,
+    vyMin: isMenu ? 0.9 : 0.95,
+    vyMax: isMenu ? 1.55 : 1.45,
     deltaMin: 16,
     deltaMax: 36,
     segMinSec: 0.9,

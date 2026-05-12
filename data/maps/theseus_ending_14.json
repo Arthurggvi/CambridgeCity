@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "“东西收拾好了吗？”",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "theseus_ending_14_continue", "text": "继续", "targetMapId": "theseus_ending_15", "ui": { "type": "button", "priority": "primary" } }
   ]

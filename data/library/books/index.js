@@ -1,0 +1,88 @@
+import west2LibraryBookOnTheOriginOfSpecies001 from "./west2_library_book_on_the_origin_of_species_001.js";
+import west2LibraryBookMathematicalPrinciplesOfNaturalPhilosophy001 from "./west2_library_book_mathematical_principles_of_natural_philosophy_001.js";
+import west2LibraryBookOnTheRevolutionsOfTheHeavenlySpheres001 from "./west2_library_book_on_the_revolutions_of_the_heavenly_spheres_001.js";
+import west2LibraryBookTwoNewSciencesDialogue001 from "./west2_library_book_two_new_sciences_dialogue_001.js";
+import west2LibraryBookTreatiseOnElectricityAndMagnetism001 from "./west2_library_book_treatise_on_electricity_and_magnetism_001.js";
+import west2LibraryBookDeMotuCordis001 from "./west2_library_book_de_motu_cordis_001.js";
+import west2LibraryBookPrinciplesOfGeology001 from "./west2_library_book_principles_of_geology_001.js";
+import west2LibraryBookNewSystemOfChemicalPhilosophy001 from "./west2_library_book_new_system_of_chemical_philosophy_001.js";
+import west2LibraryBookDescentOfMan001 from "./west2_library_book_descent_of_man_001.js";
+import west2LibraryBookSouvenirsEntomologiques001 from "./west2_library_book_souvenirs_entomologiques_001.js";
+import west2LibraryBookCosmos001 from "./west2_library_book_cosmos_001.js";
+import west2LibraryBookAnalyticalTheoryOfHeat001 from "./west2_library_book_analytical_theory_of_heat_001.js";
+import west2LibraryBookExperimentalResearchesInElectricity001 from "./west2_library_book_experimental_researches_in_electricity_001.js";
+import west2LibraryBookHandbookOfPhysiologicalOptics001 from "./west2_library_book_handbook_of_physiological_optics_001.js";
+import west2LibraryBookDialogueConcerningTwoChiefWorldSystems001 from "./west2_library_book_dialogue_concerning_two_chief_world_systems_001.js";
+import west2LibraryBookElements001 from "./west2_library_book_elements_001.js";
+import west2LibraryBookWarAndPeace001 from "./west2_library_book_war_and_peace_001.js";
+import west2LibraryBookPrideAndPrejudice001 from "./west2_library_book_pride_and_prejudice_001.js";
+import west2LibraryBookDavidCopperfield001 from "./west2_library_book_david_copperfield_001.js";
+import west2LibraryBookTheRedAndTheBlack001 from "./west2_library_book_the_red_and_the_black_001.js";
+import west2LibraryBookCrimeAndPunishment001 from "./west2_library_book_crime_and_punishment_001.js";
+import west2LibraryBookAnnaKarenina001 from "./west2_library_book_anna_karenina_001.js";
+import west2LibraryBookWutheringHeights001 from "./west2_library_book_wuthering_heights_001.js";
+import west2LibraryBookMadameBovary001 from "./west2_library_book_madame_bovary_001.js";
+import west2LibraryBookATaleOfTwoCities001 from "./west2_library_book_a_tale_of_two_cities_001.js";
+import west2LibraryBookDonQuixote001 from "./west2_library_book_don_quixote_001.js";
+import west2LibraryBookRobinsonCrusoe001 from "./west2_library_book_robinson_crusoe_001.js";
+import west2LibraryBookGulliversTravels001 from "./west2_library_book_gullivers_travels_001.js";
+import west2LibraryBookOliverTwist001 from "./west2_library_book_oliver_twist_001.js";
+import west2LibraryBookJaneEyre001 from "./west2_library_book_jane_eyre_001.js";
+import west2LibraryBookNotreDameDeParis001 from "./west2_library_book_notre_dame_de_paris_001.js";
+import west2LibraryBookEugenieGrandet001 from "./west2_library_book_eugenie_grandet_001.js";
+import west2LibraryBookTessOfTheDurbervilles001 from "./west2_library_book_tess_of_the_durbervilles_001.js";
+import west2LibraryBookMobyDick001 from "./west2_library_book_moby_dick_001.js";
+import west2LibraryBookTheScarletLetter001 from "./west2_library_book_the_scarlet_letter_001.js";
+import west2LibraryBookDeadSouls001 from "./west2_library_book_dead_souls_001.js";
+
+const BOOK_CONTENT_BY_ID = Object.freeze({
+  west2_library_book_on_the_origin_of_species_001: west2LibraryBookOnTheOriginOfSpecies001,
+  west2_library_book_mathematical_principles_of_natural_philosophy_001: west2LibraryBookMathematicalPrinciplesOfNaturalPhilosophy001,
+  west2_library_book_on_the_revolutions_of_the_heavenly_spheres_001: west2LibraryBookOnTheRevolutionsOfTheHeavenlySpheres001,
+  west2_library_book_two_new_sciences_dialogue_001: west2LibraryBookTwoNewSciencesDialogue001,
+  west2_library_book_treatise_on_electricity_and_magnetism_001: west2LibraryBookTreatiseOnElectricityAndMagnetism001,
+  west2_library_book_de_motu_cordis_001: west2LibraryBookDeMotuCordis001,
+  west2_library_book_principles_of_geology_001: west2LibraryBookPrinciplesOfGeology001,
+  west2_library_book_new_system_of_chemical_philosophy_001: west2LibraryBookNewSystemOfChemicalPhilosophy001,
+  west2_library_book_descent_of_man_001: west2LibraryBookDescentOfMan001,
+  west2_library_book_souvenirs_entomologiques_001: west2LibraryBookSouvenirsEntomologiques001,
+  west2_library_book_cosmos_001: west2LibraryBookCosmos001,
+  west2_library_book_analytical_theory_of_heat_001: west2LibraryBookAnalyticalTheoryOfHeat001,
+  west2_library_book_experimental_researches_in_electricity_001: west2LibraryBookExperimentalResearchesInElectricity001,
+  west2_library_book_handbook_of_physiological_optics_001: west2LibraryBookHandbookOfPhysiologicalOptics001,
+  west2_library_book_dialogue_concerning_two_chief_world_systems_001: west2LibraryBookDialogueConcerningTwoChiefWorldSystems001,
+  west2_library_book_elements_001: west2LibraryBookElements001,
+  west2_library_book_war_and_peace_001: west2LibraryBookWarAndPeace001,
+  west2_library_book_pride_and_prejudice_001: west2LibraryBookPrideAndPrejudice001,
+  west2_library_book_david_copperfield_001: west2LibraryBookDavidCopperfield001,
+  west2_library_book_the_red_and_the_black_001: west2LibraryBookTheRedAndTheBlack001,
+  west2_library_book_crime_and_punishment_001: west2LibraryBookCrimeAndPunishment001,
+  west2_library_book_anna_karenina_001: west2LibraryBookAnnaKarenina001,
+  west2_library_book_wuthering_heights_001: west2LibraryBookWutheringHeights001,
+  west2_library_book_madame_bovary_001: west2LibraryBookMadameBovary001,
+  west2_library_book_a_tale_of_two_cities_001: west2LibraryBookATaleOfTwoCities001,
+  west2_library_book_don_quixote_001: west2LibraryBookDonQuixote001,
+  west2_library_book_robinson_crusoe_001: west2LibraryBookRobinsonCrusoe001,
+  west2_library_book_gullivers_travels_001: west2LibraryBookGulliversTravels001,
+  west2_library_book_oliver_twist_001: west2LibraryBookOliverTwist001,
+  west2_library_book_jane_eyre_001: west2LibraryBookJaneEyre001,
+  west2_library_book_notre_dame_de_paris_001: west2LibraryBookNotreDameDeParis001,
+  west2_library_book_eugenie_grandet_001: west2LibraryBookEugenieGrandet001,
+  west2_library_book_tess_of_the_durbervilles_001: west2LibraryBookTessOfTheDurbervilles001,
+  west2_library_book_moby_dick_001: west2LibraryBookMobyDick001,
+  west2_library_book_the_scarlet_letter_001: west2LibraryBookTheScarletLetter001,
+  west2_library_book_dead_souls_001: west2LibraryBookDeadSouls001
+});
+
+export function getLibraryBookContentById(contentId) {
+  const key = String(contentId || "").trim();
+  const entry = BOOK_CONTENT_BY_ID[key] || null;
+  if (!entry || typeof entry !== "object") return null;
+  return Object.freeze({
+    title: String(entry.title || "").trim(),
+    body: String(entry.body || "").trim()
+  });
+}
+
+export const libraryBookContentIds = Object.freeze(Object.keys(BOOK_CONTENT_BY_ID));
+

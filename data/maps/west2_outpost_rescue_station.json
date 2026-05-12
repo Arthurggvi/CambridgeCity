@@ -248,13 +248,6 @@
       "edgeId": "west2_outpost_rescue_front_tent_to_main_tent_edge"
     },
     {
-      "id": "go_to_rescue_exit_gate",
-      "sceneId": "west2_outpost_rescue_front_tent",
-      "type": "TRANSITION",
-      "text": "出站口",
-      "edgeId": "west2_outpost_rescue_front_tent_to_exit_gate_edge"
-    },
-    {
       "id": "go_to_rescue_vehicle_shed",
       "sceneId": "west2_outpost_rescue_front_tent",
       "type": "TRANSITION",
@@ -523,7 +516,9 @@
         "helper": "wilderness_start_session"
       },
       "wilderness": {
-        "areaId": "west2_old_marker_patrol_line"
+        "areaId": "west2_old_marker_patrol_line",
+        "x": -6,
+        "y": 1
       }
     },
     {

@@ -28,7 +28,20 @@ import { forceWeatherEvent } from "./environment_weather.js";
 import { resolveMapRuntimeDescriptionResult } from "./map_content_runtime.js";
 import { buildRootRenderViewModel, buildSidebarStatusViewModel, isMenuPageId } from "./render/view_models.js";
 import { buildWildernessViewModel } from "./wilderness/wilderness_view_model.js";
-import { renderWildernessRuntime } from "./render/wilderness_runtime_fragments.js";
+import {
+  renderWildernessRuntime,
+  setWildernessReadoutGameSurfaceInert,
+  WILDERNESS_READOUT_OVERLAY_HOST_ID
+} from "./render/wilderness_runtime_fragments.js";
+import {
+  buildWildernessEventViewModel,
+  buildWildernessEventRuntimeSyntheticActions
+} from "./wilderness/events/wilderness_event_view_model.js";
+import {
+  renderWildernessEventRuntime,
+  ensureWildernessEventRuntimeChoicesOverlayDispatchBound,
+  resolveWildernessEventRuntimeSyntheticEntries
+} from "./render/wilderness_event_runtime_fragments.js";
 import { getProfileViewModel } from "./profile/read.js";
 import { renderQuestionnaireCreditsLanding, renderQuestionnairePanel } from "./render/questionnaire_menu_page.js";
 import {
@@ -135,6 +148,7 @@ import { readDebugFlag, getDebugFlagSnapshot } from "./debug_flag_registry.js";
 import { getUiSurfaceRegistry } from "./ui_surface_registry.js";
 import {
   MINIMAP_SPECS,
+  resolveCurrentMiniMapBranch,
   resolveMapMiniMapBranch,
   resolveSteelcrossMiniMapSpec,
   resolveTransitOnboardMiniMapSpec,
@@ -142,6 +156,7 @@ import {
 } from "./minimap/minimap_spec_registry.js";
 import { BUS_ONBOARD_MAP_ID, readTransitOnboardMiniMapState } from "./transit/transit_service.js";
 import { readMiniMapViewportSnapshot } from "./minimap/minimap_viewport_controller.js";
+import { buildWildernessLocalMiniMapVm } from "./wilderness/wilderness_local_minimap_view_model.js";
 import { getJobDefinitionById } from "./jobs/job_definitions.js";
 import { JOB_SESSION_STATUS, normalizeJobSession } from "./jobs/job_session.js";
 import { getInquiryDefinitionById } from "./inquiry/inquiry_definitions.js";
@@ -1047,7 +1062,8 @@ function setMiniMapPanelVariant(panel, variantName = "") {
     "minimap-variant-industrial",
     "minimap-variant-gov",
     "minimap-variant-steelcross",
-    "minimap-variant-transit"
+    "minimap-variant-transit",
+    "minimap-variant-wilderness"
   ];
   panel.classList.remove(...variantClasses);
   if (variantName) panel.classList.add(variantName);
@@ -1123,8 +1139,28 @@ function bindMiniMapPanelToggle(panel) {
   syncToggleState();
 }
 
+function wildernessHeadingSvgDelta(heading, radius = 0.38) {
+  const h = String(heading || "").trim().toUpperCase();
+  const table = {
+    N: [0, 1],
+    NE: [1, 1],
+    E: [1, 0],
+    SE: [1, -1],
+    S: [0, -1],
+    SW: [-1, -1],
+    W: [-1, 0],
+    NW: [-1, 1]
+  };
+  const raw = table[h] || table.N;
+  const len = Math.hypot(raw[0], raw[1]);
+  const ux = len > 0 ? raw[0] / len : 0;
+  const uy = len > 0 ? raw[1] / len : 1;
+  return { x2: ux * radius, y2: -uy * radius };
+}
+
 function finalizeMiniMapPanel(panel, worldTimeContext, spec = null) {
   if (!panel) return;
+  panel.hidden = false;
   panel.setAttribute("aria-hidden", "false");
   if (spec) {
     panel.dataset.minimapDensity = resolveMiniMapDensity(spec);
@@ -2693,6 +2729,7 @@ function setHudVisibility(visible) {
   const govHallMinimap = document.getElementById("gov-hall-minimap-panel");
   const steelcrossMinimap = document.getElementById("steelcross-minimap-panel");
   const transitMinimap = document.getElementById("transit-minimap-panel");
+  const wildernessLocalMinimap = document.getElementById("wilderness-local-minimap-panel");
   const inventoryDock = document.getElementById("inventory-dock-toggle");
 
   if (dock) dock.style.display = visible ? "block" : "none";
@@ -2704,6 +2741,7 @@ function setHudVisibility(visible) {
   if (govHallMinimap) govHallMinimap.style.display = visible ? "" : "none";
   if (steelcrossMinimap) steelcrossMinimap.style.display = visible ? "" : "none";
   if (transitMinimap) transitMinimap.style.display = visible ? "" : "none";
+  if (wildernessLocalMinimap) wildernessLocalMinimap.style.display = visible ? "" : "none";
   if (inventoryDock) inventoryDock.style.display = visible ? "block" : "none";
 }
 
@@ -3618,9 +3656,28 @@ function buildMapMiniMapOverlayRenderModel(map) {
 }
 
 function commitMapMiniMapOverlay(viewModel) {
-  renderContextMiniMap(viewModel?.map || null, UI_OVERLAY_TYPES.MAP_MINIMAP);
   const mapId = String(viewModel?.mapId || viewModel?.map?.id || "");
-  const branch = resolveMapMiniMapBranch(mapId);
+  const map = viewModel?.map || null;
+  if (map?.ui && typeof map.ui === "object" && map.ui.minimap === false) {
+    // Hard gate: minimap disabled by map authoring.
+    hideMiniMapPanel("clinic-minimap-panel");
+    hideMiniMapPanel("industrial-minimap-panel");
+    hideMiniMapPanel("winddyke-minimap-panel");
+    hideMiniMapPanel("gov-hall-minimap-panel");
+    hideMiniMapPanel("steelcross-minimap-panel");
+    hideMiniMapPanel("transit-minimap-panel");
+    hideMiniMapPanel("wilderness-local-minimap-panel");
+    return { hostId: "map-main-host" };
+  }
+
+  renderContextMiniMap(map, UI_OVERLAY_TYPES.MAP_MINIMAP);
+  if (mapId === "wilderness_runtime") {
+    // Wilderness local minimap is a companion surface only: it must not be the
+    // overlay transition / getRenderedActiveHostId canonical host (reconciler
+    // never drives this DOM). Commit host stays map-main-host like branch-null MAP_MINIMAP.
+    return { hostId: "map-main-host" };
+  }
+  const branch = resolveCurrentMiniMapBranch(mapId, map);
   return {
     hostId: getMiniMapHostIdByBranch(branch) || "map-main-host"
   };
@@ -3665,6 +3722,7 @@ function applyLegacyOverlayCleanupCompat(hosts) {
   touch(hosts?.mapMiniMap?.industrial);
   touch(hosts?.mapMiniMap?.winddyke);
   touch(hosts?.mapMiniMap?.gov);
+  touch(document.getElementById("wilderness-local-minimap-panel"));
 }
 
 function getOverlayTransitionManager() {
@@ -4578,8 +4636,8 @@ function buildCreditsPageViewModel(pageViewModel) {
     : null;
   const questionnaireActive = questionnaireHost?.active === true;
   return {
-    pageTitleCn: "寒武城",
-    pageTitleEn: "CAMBRIAN CITY",
+    pageTitleCn: "寒武新纪",
+    pageTitleEn: "CAMBRIAN NEW ERA",
     metaLine: formatVersionLine(BUILD),
     questionnaireHost,
     questionnaireActive,
@@ -4659,6 +4717,13 @@ function renderPageViewModel(pageViewModel, appContainer, choicesContainer) {
 
   appContainer.innerHTML = "";
   choicesContainer.innerHTML = "";
+  const nextMapId = String(pageViewModel?.map?.id || "").trim();
+  if (nextMapId !== "wilderness_runtime") {
+    document.getElementById(WILDERNESS_READOUT_OVERLAY_HOST_ID)?.remove();
+    setWildernessReadoutGameSurfaceInert(false);
+    setWildernessMoveAccordionOpen(false);
+    delete choicesContainer.dataset.wildernessMoveAccordion;
+  }
   choicesContainer.hidden = false;
   choicesContainer.removeAttribute("aria-hidden");
   choicesContainer.classList.remove("is-critical-collapse", "is-critical-dead");
@@ -4691,8 +4756,8 @@ function renderMenuPageViewModel(pageViewModel, appContainer, choicesContainer) 
   if (variant === "menu_main") {
     appContainer.innerHTML = `
       <article class="map-panel map-panel-main-hero">
-        <h1 class="menu-main-title">${escapeHtml(String(pageViewModel.title || "寒武城"))}</h1>
-        <div class="menu-main-subtitle">${escapeHtml(String(pageViewModel.subtitle || "Cambrian City"))}</div>
+        <h1 class="menu-main-title">${escapeHtml(String(pageViewModel.title || "寒武新纪"))}</h1>
+        <div class="menu-main-subtitle">${escapeHtml(String(pageViewModel.subtitle || "CAMBRIAN NEW ERA"))}</div>
       </article>
     `;
     for (const action of Array.isArray(pageViewModel.actions) ? pageViewModel.actions : []) {
@@ -5015,20 +5080,455 @@ function renderInlineSessionSlot(article, frame) {
   return true;
 }
 
+const WILDERNESS_RUNTIME_OUTPOST_ACTION_LABEL = "进入前哨";
+
+const WILDERNESS_MOVE_DIR_LABEL_ZH = Object.freeze({
+  N: "北",
+  NE: "东北",
+  E: "东",
+  SE: "东南",
+  S: "南",
+  SW: "西南",
+  W: "西",
+  NW: "西北"
+});
+
+/** UI-only: wilderness_runtime move accordion expanded (not persisted). */
+let _wildernessMoveAccordionOpen = false;
+let _wildernessMoveUiWindowCaptureInstalled = false;
+
+function setWildernessMoveAccordionOpen(nextOpen) {
+  _wildernessMoveAccordionOpen = Boolean(nextOpen);
+  const choices = document.getElementById("choices");
+  const accordion = choices?.querySelector(".wilderness-move-accordion");
+  const toggle = choices?.querySelector("[data-wilderness-move-toggle]");
+  if (accordion) accordion.classList.toggle("is-open", _wildernessMoveAccordionOpen);
+  if (toggle) toggle.setAttribute("aria-expanded", _wildernessMoveAccordionOpen ? "true" : "false");
+  const chevron = choices?.querySelector(".wilderness-move-chevron");
+  if (chevron) chevron.textContent = _wildernessMoveAccordionOpen ? "▴" : "▾";
+  if (!_wildernessMoveAccordionOpen) {
+    resetWildernessMoveConsoleToDefault();
+  }
+}
+
+function handleWildernessMoveUiCapture(event) {
+  const mapId = String(gameState.currentMapId || gameState.currentMap?.id || "").trim();
+  if (mapId !== "wilderness_runtime") return;
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  const choices = document.getElementById("choices");
+  if (!choices || !choices.contains(target)) return;
+
+  const toggle = target.closest("[data-wilderness-move-toggle]");
+  if (toggle && choices.contains(toggle)) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    setWildernessMoveAccordionOpen(!_wildernessMoveAccordionOpen);
+    return;
+  }
+
+  const dirBtn = target.closest("button.wilderness-move-btn[data-action-id]");
+  if (dirBtn && choices.contains(dirBtn)) {
+    const aid = String(dirBtn.dataset.actionId || "").trim();
+    if (aid.startsWith("wilderness_move_")) {
+      setWildernessMoveAccordionOpen(true);
+    }
+  }
+}
+
+function ensureWildernessMoveUiWindowCapture() {
+  if (typeof window === "undefined" || _wildernessMoveUiWindowCaptureInstalled) return;
+  _wildernessMoveUiWindowCaptureInstalled = true;
+  // Replaced ensureWildernessRuntimeMoveChoicesCapture (#choices-only) with window capture so toggle runs before document-level routing.
+  window.addEventListener("click", handleWildernessMoveUiCapture, true);
+}
+
+function mapWildernessRuntimeNonMovementDisplayEntries(entries, entryActionId) {
+  const eid = String(entryActionId || "").trim();
+  return (Array.isArray(entries) ? entries : []).map((row) => {
+    const action = row?.action && typeof row.action === "object" ? row.action : null;
+    if (!action) return row;
+    const aid = String(action.id || "").trim();
+    const text = String(action.text || "").trim();
+    if (
+      aid === "wilderness_end_return_fallback"
+      || text === "返回前哨"
+      || (eid && aid === eid)
+      || aid.startsWith("wilderness_enter_")
+    ) {
+      return {
+        ...row,
+        action: { ...action, text: WILDERNESS_RUNTIME_OUTPOST_ACTION_LABEL }
+      };
+    }
+    return row;
+  });
+}
+
+function readFiniteField(obj, keys) {
+  if (!obj || typeof obj !== "object") return null;
+  for (const k of keys) {
+    if (!(k in obj)) continue;
+    const n = Number(obj[k]);
+    if (Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+function pickWildernessMoveHoverMinutesFromAction(action) {
+  if (!action || typeof action !== "object") return null;
+  const w = action.wilderness && typeof action.wilderness === "object" ? action.wilderness : null;
+  let v = readFiniteField(action, ["minutes", "cost", "time"]);
+  if (v == null && w) v = readFiniteField(w, ["minutes", "cost", "time"]);
+  if (v == null || v < 0 || v === Infinity) return null;
+  return Math.trunc(v);
+}
+
+function pickWildernessMoveHoverStaminaSignedFromAction(action) {
+  if (!action || typeof action !== "object") return null;
+  const w = action.wilderness && typeof action.wilderness === "object" ? action.wilderness : null;
+  let raw = readFiniteField(action, ["staminaCost", "stamina", "staminaDelta"]);
+  if (raw == null && w) raw = readFiniteField(w, ["staminaCost", "stamina", "staminaDelta"]);
+  const eff = action.effect;
+  if (raw == null && eff && typeof eff === "object") {
+    raw = readFiniteField(eff, ["stamina", "staminaCost", "delta"]);
+  }
+  if (raw == null || raw === Infinity) return null;
+  if (raw > 0) return -Math.trunc(raw);
+  return Math.trunc(raw);
+}
+
+function wildernessMoveHoverMinutesFromVmProbe(probe) {
+  if (!probe || typeof probe !== "object") return null;
+  const t = Number(probe.timeCostPreview);
+  if (!Number.isFinite(t) || t === Infinity || t < 0) return null;
+  return Math.trunc(t);
+}
+
+function wildernessMoveHoverStaminaSignedFromVmProbe(probe) {
+  if (!probe || typeof probe !== "object") return null;
+  const s = Number(probe.staminaCostPreview);
+  if (!Number.isFinite(s) || s === Infinity) return null;
+  if (s > 0) return -Math.trunc(s);
+  return Math.trunc(s);
+}
+
+/**
+ * UI-only hover copy for wilderness move console. Priority: 回退 → 跨界 → 变向 → 相同.
+ * @param {{
+ *   selectedDirection: string,
+ *   footprintDirection: string,
+ *   lastMoveDirection: string,
+ *   currentTerrainId: string,
+ *   targetTerrainId: string
+ * }} p
+ * @returns {string}
+ */
+function resolveWildernessMoveHoverDescription(p) {
+  const selectedDirection = String(p?.selectedDirection || "").trim().toUpperCase();
+  const footprintDirection = String(p?.footprintDirection || "").trim().toUpperCase();
+  const lastMoveDirection = String(p?.lastMoveDirection || "").trim().toUpperCase();
+  const currentTerrainId = String(p?.currentTerrainId || "").trim();
+  const targetTerrainId = String(p?.targetTerrainId || "").trim();
+
+  if (selectedDirection && footprintDirection && selectedDirection === footprintDirection) {
+    return "沿着脚印返回";
+  }
+
+  if (currentTerrainId && targetTerrainId && currentTerrainId !== targetTerrainId) {
+    return "穿越当前地形";
+  }
+
+  if (selectedDirection && lastMoveDirection && selectedDirection !== lastMoveDirection) {
+    return "变更行进方向";
+  }
+
+  if (selectedDirection && lastMoveDirection && selectedDirection === lastMoveDirection) {
+    return "继续沿方向执行";
+  }
+
+  return "";
+}
+
+function resetWildernessMoveConsoleToDefault() {
+  const line = document.getElementById("wilderness-console-output-line");
+  const desc = document.getElementById("wilderness-console-output-desc");
+  if (line) line.textContent = "";
+  if (desc) {
+    desc.textContent = "";
+    desc.hidden = true;
+    desc.setAttribute("aria-hidden", "true");
+  }
+}
+
+function setWildernessConsoleMovePreviewLines(lineEl, descEl, slot, entry, vmProbe, hoverSessionSnap) {
+  if (!lineEl) return;
+  const dirZh = WILDERNESS_MOVE_DIR_LABEL_ZH[slot] || slot;
+  const action = entry?.action && typeof entry.action === "object" ? entry.action : null;
+  let mins = pickWildernessMoveHoverMinutesFromAction(action);
+  if (mins == null) mins = wildernessMoveHoverMinutesFromVmProbe(vmProbe);
+  let staminaSigned = pickWildernessMoveHoverStaminaSignedFromAction(action);
+  if (staminaSigned == null) staminaSigned = wildernessMoveHoverStaminaSignedFromVmProbe(vmProbe);
+  const timePart = mins == null ? "耗时：--" : `耗时：${mins} 分钟`;
+  const stPart = staminaSigned == null ? "体力：--" : `体力：${staminaSigned}`;
+  lineEl.textContent = `> 方向：${dirZh}    ${timePart}    ${stPart}`;
+
+  if (!descEl) return;
+  const snap = hoverSessionSnap && typeof hoverSessionSnap === "object" ? hoverSessionSnap : {};
+  const targetTerrainId =
+    vmProbe?.terrainId != null && String(vmProbe.terrainId).trim() !== ""
+      ? String(vmProbe.terrainId).trim()
+      : "";
+  const descText = resolveWildernessMoveHoverDescription({
+    selectedDirection: String(slot || "").trim().toUpperCase(),
+    footprintDirection: String(snap.footprintDirection || "").trim().toUpperCase(),
+    lastMoveDirection: String(snap.lastMoveDirection || "").trim().toUpperCase(),
+    currentTerrainId: String(snap.currentTerrainId || "").trim(),
+    targetTerrainId
+  });
+  if (descText) {
+    descEl.textContent = `> ${descText}`;
+    descEl.hidden = false;
+    descEl.removeAttribute("aria-hidden");
+    return;
+  }
+  if (!String(snap.lastMoveDirection || "").trim()) {
+    descEl.textContent = "> --";
+    descEl.hidden = false;
+    descEl.removeAttribute("aria-hidden");
+    return;
+  }
+  descEl.textContent = "";
+  descEl.hidden = true;
+  descEl.setAttribute("aria-hidden", "true");
+}
+
 function renderMapPageViewModel(pageViewModel, appContainer, choicesContainer) {
+  // Map page can swap; keep per-map styling opt-in.
+  choicesContainer?.classList?.remove?.("choices--wilderness-runtime");
   const mapIdForWilderness = String(pageViewModel?.map?.id || "").trim();
+  if (mapIdForWilderness === "wilderness_event_runtime") {
+    ensureWildernessEventRuntimeChoicesOverlayDispatchBound(choicesContainer, gameState);
+    const articleEvt = document.createElement("article");
+    appContainer.appendChild(articleEvt);
+    const evtVm = buildWildernessEventViewModel(gameState);
+    renderWildernessEventRuntime(articleEvt, evtVm);
+    const syntheticRaw = buildWildernessEventRuntimeSyntheticActions(gameState);
+    const actionEntries = resolveWildernessEventRuntimeSyntheticEntries(gameState, pageViewModel.map, syntheticRaw);
+    renderResolvedActionEntries(pageViewModel.map, actionEntries, choicesContainer);
+    return;
+  }
   if (mapIdForWilderness === "wilderness_runtime") {
+    choicesContainer?.classList?.add?.("choices--wilderness-runtime");
     const articleWild = document.createElement("article");
     articleWild.className = "map-panel map-panel-wilderness-runtime";
     appContainer.appendChild(articleWild);
     const vmWild = buildWildernessViewModel(gameState);
     const wildHost = renderWildernessRuntime(vmWild);
     articleWild.appendChild(wildHost);
-    renderResolvedActionEntries(
-      pageViewModel.map,
-      Array.isArray(pageViewModel.actions) ? pageViewModel.actions : [],
-      choicesContainer
-    );
+    // Inject a synthetic entry transition action into the canonical wilderness_runtime map actions
+    // so dispatch -> resolve -> commit follows the normal LOAD_MAP syscall chain.
+    const entryVm = vmWild?.currentMapEntryVm;
+    if (entryVm && entryVm.exists === true && entryVm.enterable === true && String(entryVm.actionId || "").trim() && String(entryVm.mapId || "").trim()) {
+      const map = pageViewModel.map;
+      if (map && Array.isArray(map.actions) && !map.actions.some((a) => String(a?.id || "") === String(entryVm.actionId))) {
+        map.actions.push({
+          id: String(entryVm.actionId),
+          text: WILDERNESS_RUNTIME_OUTPOST_ACTION_LABEL,
+          kind: "TRANSITION",
+          targetMapId: String(entryVm.mapId)
+        });
+      }
+    }
+
+    const entries = Array.isArray(pageViewModel.actions) ? pageViewModel.actions : [];
+    const movementEntries = entries.filter((e) => e?.isMovement === true || String(e?.action?.kind || "").toUpperCase() === "WILDERNESS_MOVE");
+    const nonMovementEntries = entries.filter((e) => !movementEntries.includes(e));
+    // Bug2: per-direction hidden/blockerStyle metadata lives on the wilderness
+    // VM actions (`buildWildernessViewModel` -> `attachProbesToRuntimeActions`).
+    // The canonical pageViewModel.actions array carries dispatch ids only, so
+    // bridge by action id. Renderer must NEVER recompute boundary itself —
+    // it just keys into the VM-provided table. resolveWildernessMovePlan
+    // still runs in the resolve pipeline as the authoritative blocker.
+    const wildActionMetaById = new Map();
+    if (vmWild && Array.isArray(vmWild.actions)) {
+      for (const a of vmWild.actions) {
+        const aid = String(a?.id || "").trim();
+        if (!aid || !aid.startsWith("wilderness_move_")) continue;
+        wildActionMetaById.set(aid, {
+          hidden: a?.hidden === true,
+          blockerStyle: typeof a?.blockerStyle === "string" ? a.blockerStyle : null,
+          probe: a?.probe && typeof a.probe === "object" ? a.probe : null
+        });
+      }
+    }
+    const returnDirVm = String(vmWild?.session?.returnDirection || "").trim().toUpperCase();
+    const entryAid = entryVm?.exists === true && entryVm?.enterable === true ? String(entryVm.actionId || "").trim() : "";
+    const displayNonMovement = mapWildernessRuntimeNonMovementDisplayEntries(nonMovementEntries, entryAid);
+    renderResolvedActionEntries(pageViewModel.map, displayNonMovement, choicesContainer);
+    if (movementEntries.length > 0) {
+      ensureWildernessMoveUiWindowCapture();
+
+      const consoleWrap = document.createElement("div");
+      consoleWrap.className = "wilderness-console-output-wrap";
+      const consoleOut = document.createElement("div");
+      consoleOut.className = "wilderness-console-output";
+      const consoleTag = document.createElement("span");
+      consoleTag.className = "wilderness-console-output__tag";
+      consoleTag.textContent = "行动预览";
+      const consoleLine = document.createElement("div");
+      consoleLine.className = "wilderness-console-output__line";
+      consoleLine.id = "wilderness-console-output-line";
+      consoleLine.setAttribute("role", "status");
+      consoleLine.textContent = "";
+      const consoleDesc = document.createElement("div");
+      consoleDesc.className = "wilderness-console-output__desc";
+      consoleDesc.id = "wilderness-console-output-desc";
+      consoleDesc.hidden = true;
+      consoleDesc.setAttribute("aria-hidden", "true");
+      consoleOut.appendChild(consoleTag);
+      consoleOut.appendChild(consoleLine);
+      consoleOut.appendChild(consoleDesc);
+      consoleWrap.appendChild(consoleOut);
+      articleWild.appendChild(consoleWrap);
+
+      const moveOpen = _wildernessMoveAccordionOpen === true;
+
+      const acc = document.createElement("section");
+      acc.className = `wilderness-move-accordion${moveOpen ? " is-open" : ""}`;
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "wilderness-move-toggle";
+      toggle.setAttribute("data-wilderness-move-toggle", "1");
+      toggle.setAttribute("aria-expanded", moveOpen ? "true" : "false");
+
+      const main = document.createElement("span");
+      main.className = "wilderness-move-toggle-main";
+      main.textContent = "移动";
+
+      const headingRaw = String(vmWild?.session?.heading || "").trim().toUpperCase();
+      const meta = document.createElement("span");
+      meta.className = "wilderness-move-toggle-meta";
+      meta.textContent = headingRaw ? `当前朝向：${headingRaw}` : "\u00a0";
+
+      const chev = document.createElement("span");
+      chev.className = "wilderness-move-chevron";
+      chev.setAttribute("aria-hidden", "true");
+      chev.textContent = moveOpen ? "▴" : "▾";
+
+      toggle.appendChild(main);
+      toggle.appendChild(meta);
+      toggle.appendChild(chev);
+
+      const panel = document.createElement("div");
+      panel.className = "wilderness-move-panel";
+
+      const pad = document.createElement("div");
+      pad.className = "wilderness-move-pad";
+      pad.addEventListener("pointerleave", (ev) => {
+        const rt = ev.relatedTarget;
+        if (rt instanceof Node && pad.contains(rt)) return;
+        resetWildernessMoveConsoleToDefault();
+      });
+
+      const sess = vmWild?.session && typeof vmWild.session === "object" ? vmWild.session : {};
+      const hoverSessionSnap = {
+        footprintDirection: String(sess.footprintDirection || sess.returnDirection || "").trim().toUpperCase(),
+        lastMoveDirection: String(sess.lastMoveDirection || "").trim().toUpperCase(),
+        currentTerrainId:
+          vmWild?.terrain?.terrainId != null && String(vmWild.terrain.terrainId).trim() !== ""
+            ? String(vmWild.terrain.terrainId).trim()
+            : ""
+      };
+
+      const byDir = new Map();
+      for (const me of movementEntries) {
+        const dir = String(me?.action?.wilderness?.direction || me?.action?.direction || "").trim().toUpperCase();
+        if (dir) byDir.set(dir, me);
+      }
+      const ariaZh = WILDERNESS_MOVE_DIR_LABEL_ZH;
+      const slotRows = [
+        ["NW", "N", "NE"],
+        ["W", null, "E"],
+        ["SW", "S", "SE"]
+      ];
+      for (const row of slotRows) {
+        for (const slot of row) {
+          if (slot == null) {
+            const core = document.createElement("div");
+            core.className = "wilderness-move-center";
+            core.setAttribute("aria-hidden", "true");
+            pad.appendChild(core);
+            continue;
+          }
+          const entry = byDir.get(slot) || null;
+          // Hidden directions (true boundary or hard-block terrain) come
+          // out of the VM with `hidden:true`. The renderer must not query
+          // terrain itself; emit an inert spacer keeping the grid layout.
+          const aid = entry?.action ? String(entry.action.id || "").trim() : "";
+          const vmMeta = aid ? wildActionMetaById.get(aid) : null;
+          const hiddenByVm =
+            (vmMeta && vmMeta.hidden === true)
+            || (entry && (entry.hidden === true || entry.action?.hidden === true))
+            || false;
+          if (hiddenByVm) {
+            const spacer = document.createElement("div");
+            spacer.className = `wilderness-move-slot-hidden wilderness-move-slot-hidden--${slot.toLowerCase()}`;
+            spacer.setAttribute("aria-hidden", "true");
+            const style = String(
+              (vmMeta && vmMeta.blockerStyle)
+                || entry?.blockerStyle
+                || entry?.action?.blockerStyle
+                || ""
+            ).trim();
+            if (style) spacer.dataset.blockerStyle = style;
+            pad.appendChild(spacer);
+            continue;
+          }
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `wilderness-move-btn wilderness-move-btn--${slot.toLowerCase()}`;
+          const isReturnStep = Boolean(returnDirVm && slot === returnDirVm);
+          if (isReturnStep) {
+            btn.classList.add("is-return-step");
+            btn.dataset.returnStep = "true";
+          }
+          btn.textContent = slot;
+          const baseMoveAria = `向${ariaZh[slot] || slot}移动`;
+          btn.setAttribute("aria-label", isReturnStep ? `${baseMoveAria}（可返回上一格）` : baseMoveAria);
+          if (entry && entry.action && String(entry.action.id || "").trim()) {
+            btn.setAttribute("data-action-id", String(entry.action.id));
+            const disabled = entry.disabled === true || entry.locked === true || entry.action.disabled === true;
+            if (disabled) btn.disabled = true;
+          } else {
+            btn.disabled = true;
+          }
+          const vmProbeForHover = vmMeta?.probe || null;
+          btn.addEventListener("pointerenter", () => {
+            setWildernessConsoleMovePreviewLines(
+              document.getElementById("wilderness-console-output-line"),
+              document.getElementById("wilderness-console-output-desc"),
+              slot,
+              entry,
+              vmProbeForHover,
+              hoverSessionSnap
+            );
+          });
+          pad.appendChild(btn);
+        }
+      }
+
+      panel.appendChild(pad);
+      acc.appendChild(toggle);
+      acc.appendChild(panel);
+
+      const wrap = document.createElement("div");
+      wrap.className = "wilderness-action-section--movement";
+      wrap.appendChild(acc);
+      choicesContainer.appendChild(wrap);
+    }
     return;
   }
 
@@ -7209,6 +7709,372 @@ function ensureSteelcrossMiniMapPanel() {
   return panel;
 }
 
+/** Lead time (ms): arrow motion starts first; world slide begins after this when heading changed. */
+const WILDERNESS_MINIMAP_ARROW_LEAD_MS = 180;
+/** When heading unchanged (pulse only), world slide starts sooner (ms). */
+const WILDERNESS_MINIMAP_WORLD_DELAY_SAME_HEADING_MS = 100;
+
+/** UI-only: previous wilderness local minimap frame for world-layer slide (not persisted). */
+let _wildernessLocalMinimapPrevSnapshot = null;
+
+function resetWildernessLocalMinimapAnimationCache() {
+  _wildernessLocalMinimapPrevSnapshot = null;
+}
+
+function wildernessLocalMinimapReducedMotion() {
+  try {
+    return !!window?.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+  } catch {
+    return false;
+  }
+}
+
+function wildernessHeadingToAngleDeg(heading) {
+  const key = String(heading || "").trim().toUpperCase();
+  if (key === "N") return 0;
+  if (key === "NE") return 45;
+  if (key === "E") return 90;
+  if (key === "SE") return 135;
+  if (key === "S") return 180;
+  if (key === "SW") return 225;
+  if (key === "W") return 270;
+  if (key === "NW") return 315;
+  return 0;
+}
+
+function shortestAngleDeltaDeg(fromDeg, toDeg) {
+  const from = Number(fromDeg);
+  const to = Number(toDeg);
+  if (!Number.isFinite(from) || !Number.isFinite(to)) return 0;
+  return ((to - from + 540) % 360) - 180;
+}
+
+/**
+ * @param {SVGPathElement} arrowEl
+ * @param {string} prevHeading
+ * @param {string} currentHeading
+ * @param {number} [finalRotationDeg]
+ */
+function scheduleWildernessLocalMinimapArrowMotion(arrowEl, prevHeading, currentHeading, finalRotationDeg) {
+  if (!arrowEl || wildernessLocalMinimapReducedMotion()) return;
+  const from = wildernessHeadingToAngleDeg(prevHeading);
+  const to = Number.isFinite(Number(finalRotationDeg))
+    ? Number(finalRotationDeg)
+    : wildernessHeadingToAngleDeg(currentHeading);
+  const delta = shortestAngleDeltaDeg(from, to);
+  if (!Number.isFinite(delta)) return;
+
+  const headingMotion = Math.abs(delta) > 1e-6;
+  const durationMs = headingMotion ? 320 : 220;
+  const easeOutCubic = (t) => 1 - (1 - t) ** 3;
+  const t0 = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+
+  const step = (now) => {
+    if (!arrowEl.isConnected) return;
+    const raw = Math.min(1, Math.max(0, (now - t0) / durationMs));
+    const eased = easeOutCubic(raw);
+    const angle = from + delta * eased;
+    const pulse = raw < 0.5
+      ? 1 + 0.08 * (raw / 0.5)
+      : 1.08 - 0.08 * ((raw - 0.5) / 0.5);
+
+    if (raw >= 1) {
+      arrowEl.setAttribute("transform", `rotate(${to})`);
+      return;
+    }
+    arrowEl.setAttribute("transform", `rotate(${angle}) scale(${pulse})`);
+    requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+}
+
+/**
+ * @param {object} vm
+ * @param {{ available?: boolean, areaId?: string, center?: { x?: unknown, y?: unknown }, heading?: string }|null} prev
+ * @returns {{ dx: number, dy: number }|null}
+ */
+function computeWildernessLocalMinimapSlideDelta(vm, prev) {
+  if (!vm || vm.available !== true) return null;
+  if (!prev || prev.available !== true) return null;
+  if (String(prev.areaId || "").trim() !== String(vm.areaId || "").trim()) return null;
+  const px = Number(prev.center?.x);
+  const py = Number(prev.center?.y);
+  const cx = Number(vm.center?.x);
+  const cy = Number(vm.center?.y);
+  if (!Number.isFinite(px) || !Number.isFinite(py) || !Number.isFinite(cx) || !Number.isFinite(cy)) return null;
+  const dx = Math.trunc(cx) - Math.trunc(px);
+  const dy = Math.trunc(cy) - Math.trunc(py);
+  if (dx === 0 && dy === 0) return null;
+  if (Math.abs(dx) > 1 || Math.abs(dy) > 1) return null;
+  return { dx, dy };
+}
+
+function explainWildernessLocalMinimapSlideSkip(vm, prev) {
+  if (!vm || vm.available !== true) return "vm_unavailable";
+  if (!prev || prev.available !== true) return "no_prev_or_prev_unavailable";
+  if (String(prev.areaId || "").trim() !== String(vm.areaId || "").trim()) return "area_mismatch";
+  const px = Number(prev.center?.x);
+  const py = Number(prev.center?.y);
+  const cx = Number(vm.center?.x);
+  const cy = Number(vm.center?.y);
+  if (!Number.isFinite(px) || !Number.isFinite(py) || !Number.isFinite(cx) || !Number.isFinite(cy)) return "center_non_finite";
+  const dx = Math.trunc(cx) - Math.trunc(px);
+  const dy = Math.trunc(cy) - Math.trunc(py);
+  if (dx === 0 && dy === 0) return "center_unchanged";
+  if (Math.abs(dx) > 1 || Math.abs(dy) > 1) return "move_step_too_large";
+  return "ok";
+}
+
+function logWildernessLocalMinimapSlideDebug(payload) {
+  try {
+    if (typeof window === "undefined" || window.__DEBUG_WILDERNESS_MINIMAP_ANIM__ !== true) return;
+    console.info("[WildernessMinimapSlide]", payload);
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * @param {SVGGElement} world
+ * @param {{ dx: number, dy: number }} delta
+ */
+function scheduleWildernessLocalMinimapWorldSlide(world, delta) {
+  if (!world || !delta) return;
+  const startX = -delta.dx;
+  const startY = delta.dy;
+  const durationMs = 440;
+  const easeOutQuint = (t) => 1 - (1 - t) ** 5;
+  const t0 = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+
+  const step = (now) => {
+    if (!world.isConnected) return;
+    const raw = Math.min(1, Math.max(0, (now - t0) / durationMs));
+    const eased = easeOutQuint(raw);
+    const x = startX * (1 - eased);
+    const y = startY * (1 - eased);
+    if (raw >= 1) {
+      world.removeAttribute("transform");
+      return;
+    }
+    world.setAttribute("transform", `translate(${x} ${y})`);
+    requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+}
+
+/**
+ * @param {SVGGElement} worldEl
+ * @param {{ dx: number, dy: number }} slideDelta
+ * @param {number} delayMs
+ */
+function scheduleWildernessLocalMinimapWorldSlideDelayed(worldEl, slideDelta, delayMs) {
+  if (!worldEl || !slideDelta || wildernessLocalMinimapReducedMotion()) return;
+
+  const run = () => {
+    if (!worldEl.isConnected) return;
+    scheduleWildernessLocalMinimapWorldSlide(worldEl, slideDelta);
+  };
+
+  if (!Number.isFinite(delayMs) || delayMs <= 0) {
+    run();
+    return;
+  }
+
+  window.setTimeout(() => {
+    if (!worldEl.isConnected) return;
+    scheduleWildernessLocalMinimapWorldSlide(worldEl, slideDelta);
+  }, delayMs);
+}
+
+function ensureWildernessLocalMiniMapPanel() {
+  let panel = document.getElementById("wilderness-local-minimap-panel");
+  if (!panel) {
+    panel = document.createElement("aside");
+    panel.id = "wilderness-local-minimap-panel";
+    panel.className = "minimap-shell minimap-variant-wilderness wilderness-local-minimap-panel";
+    panel.setAttribute("aria-live", "polite");
+    panel.setAttribute("aria-hidden", "true");
+    document.body.appendChild(panel);
+  }
+
+  panel.classList.add("minimap-shell", "wilderness-local-minimap-panel");
+
+  return panel;
+}
+
+function renderWildernessLocalMiniMapPanel(map) {
+  void map;
+  const prevSnap = _wildernessLocalMinimapPrevSnapshot;
+  const panel = ensureWildernessLocalMiniMapPanel();
+  setMiniMapPanelVariant(panel, "minimap-variant-wilderness");
+  const worldTimeContext = getWorldTimeContext();
+  const vm = buildWildernessLocalMiniMapVm(gameState, {});
+
+  if (!vm.available) {
+    let html = buildMiniMapHeadRowMarkup("野外方位", "野", { showToggle: false });
+    html += buildMiniMapShellBodyOpenMarkup();
+    html += buildMiniMapShellBodyCloseMarkup();
+    panel.innerHTML = html;
+    finalizeMiniMapPanel(panel, worldTimeContext, null);
+    resetWildernessLocalMinimapAnimationCache();
+    return;
+  }
+
+  let html = buildMiniMapHeadRowMarkup("野外方位", "野", { showToggle: false });
+  html += buildMiniMapShellBodyOpenMarkup();
+  html += `<svg class="clinic-minimap wilderness-local-minimap-svg" data-minimap-spec="wilderness-local" viewBox="${escapeAttr(vm.viewBox)}" aria-label="野外局部地形">`;
+
+  const slideDelta = computeWildernessLocalMinimapSlideDelta(vm, prevSnap);
+  const skipReason = explainWildernessLocalMinimapSlideSkip(vm, prevSnap);
+  logWildernessLocalMinimapSlideDebug({
+    prev: prevSnap,
+    vmAreaId: vm.areaId,
+    vmCenter: vm.center,
+    dxDy: slideDelta,
+    shouldAnimate: Boolean(slideDelta) && !wildernessLocalMinimapReducedMotion(),
+    skipReason
+  });
+  const wantsSlide = Boolean(slideDelta) && !wildernessLocalMinimapReducedMotion();
+  const startX = slideDelta ? -slideDelta.dx : 0;
+  const startY = slideDelta ? slideDelta.dy : 0;
+  const worldOpenTag = wantsSlide && slideDelta
+    ? `<g class="wilderness-local-minimap-world" transform="translate(${startX} ${startY})">`
+    : "<g class=\"wilderness-local-minimap-world\">";
+  html += worldOpenTag;
+
+  // Fixed 3x3 SVG geometry: dx -> column, dy -> row (math-Y flipped to SVG-Y).
+  // dy=+1 (north) sits at the top (y=-1.5), dy=-1 (south) at the bottom.
+  const cellGeometry = (dx, dy) => ({
+    x: dx - 0.5,
+    y: -dy - 0.5,
+    w: 1,
+    h: 1
+  });
+
+  // Layer 1: 3x3 terrain cells from vm.cells. Renderer is purely VM-driven:
+  // never re-query area spec or terrain defs.
+  const cells = Array.isArray(vm.cells) ? vm.cells : [];
+  for (const cell of cells) {
+    if (!cell || typeof cell !== "object") continue;
+    const geo = cellGeometry(Number(cell.dx) || 0, Number(cell.dy) || 0);
+    const symStyle = (cell.symbolStyle && typeof cell.symbolStyle === "object") ? cell.symbolStyle : null;
+    const fill = symStyle && typeof symStyle.fill === "string" ? symStyle.fill : "";
+    const stroke = symStyle && typeof symStyle.stroke === "string" ? symStyle.stroke : "";
+    const symClass = typeof cell.symbolClass === "string" && cell.symbolClass.trim()
+      ? cell.symbolClass.trim()
+      : "";
+    const classes = ["wilderness-local-minimap-cell"];
+    if (symClass) classes.push(symClass);
+    if (cell.isOutOfBounds === true) classes.push("wilderness-local-minimap-cell--out-of-bounds");
+    if (cell.isUnknown === true) classes.push("wilderness-local-minimap-cell--unknown");
+    if (cell.isCenter === true) classes.push("wilderness-local-minimap-cell--center");
+    const terrainId = cell.terrainId != null ? String(cell.terrainId) : "";
+    const danger = cell.danger != null ? String(cell.danger) : "";
+    const styleAttr = (fill || stroke)
+      ? ` style="${fill ? `fill:${fill};` : ""}${stroke ? `stroke:${stroke};` : ""}"`
+      : "";
+    html += `<rect class="${classes.join(" ")}" data-terrain-id="${escapeAttr(terrainId)}" data-danger="${escapeAttr(danger)}" data-is-center="${cell.isCenter === true ? "1" : "0"}" x="${geo.x}" y="${geo.y}" width="${geo.w}" height="${geo.h}"${styleAttr}></rect>`;
+  }
+
+  // Layer 2: per-direction neighbor blocker overlays (existing contract).
+  // void/sea/hard_terrain still render on top of the cell layer to preserve
+  // the established blocker visual without renderer doing any classification.
+  const NEIGHBOR_TILE_GEOMETRY = {
+    NW: { x: -1.5, y: -1.5, w: 1, h: 1 },
+    N:  { x: -0.5, y: -1.5, w: 1, h: 1 },
+    NE: { x:  0.5, y: -1.5, w: 1, h: 1 },
+    W:  { x: -1.5, y: -0.5, w: 1, h: 1 },
+    E:  { x:  0.5, y: -0.5, w: 1, h: 1 },
+    SW: { x: -1.5, y:  0.5, w: 1, h: 1 },
+    S:  { x: -0.5, y:  0.5, w: 1, h: 1 },
+    SE: { x:  0.5, y:  0.5, w: 1, h: 1 }
+  };
+  const neighbors = (vm.neighbors && typeof vm.neighbors === "object") ? vm.neighbors : null;
+  if (neighbors) {
+    for (const dir of Object.keys(NEIGHBOR_TILE_GEOMETRY)) {
+      const n = neighbors[dir];
+      if (!n || typeof n !== "object") continue;
+      const style = String(n.blockerStyle || "").trim();
+      if (!style) continue;
+      const geo = NEIGHBOR_TILE_GEOMETRY[dir];
+      html += `<rect class="wilderness-local-minimap-neighbor wilderness-local-minimap-neighbor--${escapeAttr(style)}" data-direction="${escapeAttr(dir)}" data-blocker-style="${escapeAttr(style)}" x="${geo.x}" y="${geo.y}" width="${geo.w}" height="${geo.h}"></rect>`;
+    }
+  }
+
+  // Layer 3: internal terrain-change boundary segments.
+  for (const seg of vm.segments) {
+    const y1 = -seg.y1;
+    const y2 = -seg.y2;
+    html += `<line class="wilderness-local-minimap-boundary" data-segment-id="${escapeAttr(seg.id)}" x1="${seg.x1}" y1="${y1}" x2="${seg.x2}" y2="${y2}"></line>`;
+  }
+
+  // Layer 4: fallback frame + corners (existing contract).
+  if (vm.fallbackFrameVisible === true) {
+    html += '<rect class="wilderness-local-minimap-sample-frame" x="-1.5" y="-1.5" width="3" height="3" rx="0.12" />';
+    html += '<path class="wilderness-local-minimap-sample-corners" d="M -1.5,-1.5 L -1.22,-1.5 M -1.5,-1.5 L -1.5,-1.22 M 1.5,-1.5 L 1.22,-1.5 M 1.5,-1.5 L 1.5,-1.22 M -1.5,1.5 L -1.22,1.5 M -1.5,1.5 L -1.5,1.22 M 1.5,1.5 L 1.22,1.5 M 1.5,1.5 L 1.5,1.22" />';
+  }
+
+  html += "</g>";
+
+  // Layer 5: center arrow. Base path points up (toward -Y); rotation comes
+  // straight from vm.playerArrow.rotationDeg so renderer does no heading math.
+  const arrow = (vm.playerArrow && typeof vm.playerArrow === "object") ? vm.playerArrow : null;
+  const toDeg = arrow && Number.isFinite(Number(arrow.rotationDeg))
+    ? Number(arrow.rotationDeg)
+    : wildernessHeadingToAngleDeg(vm.heading);
+  const sameAreaForArrow =
+    prevSnap && prevSnap.available === true
+    && String(prevSnap.areaId || "").trim() === String(vm.areaId || "").trim();
+  const prevHeadingStr = sameAreaForArrow && prevSnap.heading != null ? String(prevSnap.heading).trim() : "";
+  const currHeadingStr = String(vm.heading || "").trim();
+  const canArrowMotion =
+    sameAreaForArrow
+    && prevHeadingStr
+    && currHeadingStr
+    && !wildernessLocalMinimapReducedMotion();
+  const fromDegForHtml = canArrowMotion ? wildernessHeadingToAngleDeg(prevHeadingStr) : toDeg;
+  const arrowRotateHtml = canArrowMotion && fromDegForHtml !== toDeg ? fromDegForHtml : toDeg;
+  const arrowDirection = arrow && typeof arrow.direction === "string" ? arrow.direction : "N";
+  html += `<path class="wilderness-local-minimap-arrow" data-direction="${escapeAttr(arrowDirection)}" data-rotation-deg="${toDeg}" d="M 0 -0.246 L 0.131 0.115 L 0 0.033 L -0.131 0.115 Z" transform="rotate(${arrowRotateHtml})"></path>`;
+  html += "</svg>";
+  html += buildMiniMapShellBodyCloseMarkup();
+
+  panel.innerHTML = html;
+  finalizeMiniMapPanel(panel, worldTimeContext, null);
+  const worldEl = panel.querySelector(".wilderness-local-minimap-world");
+  const arrowEl = panel.querySelector(".wilderness-local-minimap-arrow");
+  const willRunArrowMotion =
+    !wildernessLocalMinimapReducedMotion()
+    && prevSnap?.heading
+    && vm?.heading
+    && String(prevSnap.areaId) === String(vm.areaId)
+    && arrowEl instanceof SVGPathElement;
+  if (willRunArrowMotion) {
+    scheduleWildernessLocalMinimapArrowMotion(arrowEl, String(prevSnap.heading), String(vm.heading), toDeg);
+  }
+  if (wantsSlide && slideDelta && worldEl instanceof SVGGElement) {
+    const hasHeadingChange =
+      prevSnap?.heading
+      && vm?.heading
+      && String(prevSnap.heading).toUpperCase() !== String(vm.heading).toUpperCase();
+    const worldDelayMs = willRunArrowMotion
+      ? (hasHeadingChange ? WILDERNESS_MINIMAP_ARROW_LEAD_MS : WILDERNESS_MINIMAP_WORLD_DELAY_SAME_HEADING_MS)
+      : 0;
+    scheduleWildernessLocalMinimapWorldSlideDelayed(worldEl, slideDelta, worldDelayMs);
+  }
+  _wildernessLocalMinimapPrevSnapshot = {
+    available: true,
+    areaId: String(vm.areaId || "").trim(),
+    heading: currHeadingStr,
+    center: {
+      x: Math.trunc(Number(vm.center?.x)),
+      y: Math.trunc(Number(vm.center?.y))
+    }
+  };
+}
+
 function renderClinicMiniMapPanel(map) {
   const panel = ensureClinicMiniMapPanel();
   setMiniMapPanelVariant(panel, "minimap-variant-clinic");
@@ -7693,6 +8559,50 @@ function hideMiniMapPanel(panelId) {
   panel.innerHTML = "";
 }
 
+/**
+ * Bug1 fix: defensive single-target cleanup for the wilderness local minimap
+ * host. Called on every render path when the canonical map is NOT
+ * `wilderness_runtime`. Independent of the global `clearAllMiniMapHosts(...)`
+ * sweep — does not touch any other minimap host (clinic/industrial/winddyke/
+ * gov/steelcross/transit), and does not reintroduce the tucson-ending sweep
+ * regression. Idempotent: re-calling on an already-cleared panel is a no-op.
+ */
+function hideWildernessLocalMiniMapHostHard(reason) {
+  void reason;
+  resetWildernessLocalMinimapAnimationCache();
+  const panel = document.getElementById("wilderness-local-minimap-panel");
+  if (!panel) return;
+  panel.innerHTML = "";
+  panel.setAttribute("aria-hidden", "true");
+  panel.hidden = true;
+  panel.classList.remove("is-open", "is-active", "active", "visible", "is-empty");
+  delete panel.dataset.minimapMode;
+  delete panel.dataset.minimapDensity;
+  delete panel.dataset.minimapLabelMode;
+}
+
+function clearAllMiniMapHosts({ reason = "unknown", includeSteelcross = true } = {}) {
+  void reason;
+  const ids = [
+    "clinic-minimap-panel",
+    "industrial-minimap-panel",
+    "winddyke-minimap-panel",
+    "gov-hall-minimap-panel",
+    ...(includeSteelcross ? ["steelcross-minimap-panel"] : []),
+    "transit-minimap-panel",
+    "wilderness-local-minimap-panel"
+  ];
+  for (const id of ids) {
+    hideMiniMapPanel(id);
+    const host = document.getElementById(id);
+    if (!host) continue;
+    host.hidden = true;
+    host.setAttribute("aria-hidden", "true");
+    host.classList.remove("is-open", "is-active", "active", "visible");
+  }
+  resetWildernessLocalMinimapAnimationCache();
+}
+
 function renderContextMiniMap(map, activeOverlay) {
   if (String(activeOverlay || "") !== UI_OVERLAY_TYPES.MAP_MINIMAP) {
     hideMiniMapPanel("clinic-minimap-panel");
@@ -7701,6 +8611,8 @@ function renderContextMiniMap(map, activeOverlay) {
     hideMiniMapPanel("gov-hall-minimap-panel");
     hideMiniMapPanel("steelcross-minimap-panel");
     hideMiniMapPanel("transit-minimap-panel");
+    hideMiniMapPanel("wilderness-local-minimap-panel");
+    resetWildernessLocalMinimapAnimationCache();
     return;
   }
 
@@ -7712,11 +8624,29 @@ function renderContextMiniMap(map, activeOverlay) {
   hideMiniMapPanel("transit-minimap-panel");
 
   const mapId = String(map?.id || "");
+  if (mapId !== "wilderness_runtime") {
+    hideMiniMapPanel("wilderness-local-minimap-panel");
+  }
+
+  if (map?.ui && typeof map.ui === "object" && map.ui.minimap === false) {
+    if (mapId === "wilderness_runtime") {
+      hideMiniMapPanel("wilderness-local-minimap-panel");
+    }
+    resetWildernessLocalMinimapAnimationCache();
+    return;
+  }
 
   if (mapId === BUS_ONBOARD_MAP_ID) {
     renderTransitLineMiniMapPanel();
     return;
   }
+
+  if (mapId === "wilderness_runtime") {
+    renderWildernessLocalMiniMapPanel(map);
+    return;
+  }
+
+  hideMiniMapPanel("wilderness-local-minimap-panel");
 
   const branch = resolveMapMiniMapBranch(mapId);
 
@@ -8419,6 +9349,7 @@ export function render() {
   try {
     const renderCycle = ++_sceneTextRenderCycleSeq;
     const sceneTextAuditEnabled = true;
+    ensureWildernessMoveUiWindowCapture();
     closeSlotPopover();
     // ========== 1. 始终先渲染时间栏和玩家状态栏 ==========
     settingsManager.applyToDocument();
@@ -8432,6 +9363,19 @@ export function render() {
     const map = getCanonicalCurrentMap(gameState, { source: "renderer:render", repairState: true });
     const activeMapId = String(map?.id || getCanonicalMapId(gameState) || "");
     const actionIdForTrace = typeof window !== "undefined" ? String(window.__LAST_DISPATCH_ACTION_ID__ || "") : "";
+    const minimapDisabled = map?.ui && typeof map.ui === "object" && map.ui.minimap === false;
+    // Bug1: when the canonical map is not the wilderness runtime, the
+    // wilderness local minimap host MUST be cleared regardless of which
+    // (or no) minimap overlay the outer surface ends up selecting. The
+    // overlay layer below already covers MAP_MINIMAP transitions and
+    // minimap-disabled maps, but a regular map without an active minimap
+    // overlay (and without `map.ui.minimap === false`) would otherwise
+    // leave the previously-rendered 3x3 host visible. This is a single-
+    // target hard cleanup; the global `clearAllMiniMapHosts` and the
+    // tucson-ending residue fixes are untouched.
+    if (activeMapId !== "wilderness_runtime") {
+      hideWildernessLocalMiniMapHostHard("non_wilderness_runtime_render");
+    }
     normalizeCanonicalUiState(gameState);
     const uiStateRenderStart = getUiActionStateSnapshot(gameState);
     const routeAtRenderStart = resolveUiSurface(gameState, { source: "render:start", actionId: actionIdForTrace });
@@ -8596,6 +9540,13 @@ export function render() {
 
     if (!pageViewModel) {
       throw new Error("page view model missing");
+    }
+
+    if (minimapDisabled) {
+      clearAllMiniMapHosts({
+        reason: "current_map_minimap_disabled",
+        includeSteelcross: true
+      });
     }
 
     const policyOutputBoundary = computeSceneTextPolicyOutputBoundary(pageViewModel);
@@ -8844,10 +9795,11 @@ export function render() {
       tasks: tasksOverlayHost,
       inventory: inventoryOverlayHost,
       mapMiniMap: {
-        clinic: ensureClinicMiniMapPanel(),
-        industrial: ensureIndustrialMiniMapPanel(),
-        winddyke: ensureWinddykeMiniMapPanel(),
-        gov: ensureGovHallMiniMapPanel()
+        clinic: document.getElementById("clinic-minimap-panel"),
+        industrial: document.getElementById("industrial-minimap-panel"),
+        winddyke: document.getElementById("winddyke-minimap-panel"),
+        gov: document.getElementById("gov-hall-minimap-panel"),
+        steelcross: document.getElementById("steelcross-minimap-panel")
       }
     };
     _overlayTransitionRuntimeContext.actionIdForTrace = actionIdForTrace;
@@ -8868,16 +9820,24 @@ export function render() {
       };
     }
 
+    if (selectedSurface?.overlayType === UI_OVERLAY_TYPES.MAP_MINIMAP && minimapDisabled) {
+      clearAllMiniMapHosts({ reason: "blocked_map_minimap_overlay", includeSteelcross: true });
+      selectedOverlayEntry = null;
+    }
+
     if (selectedOverlayEntry && selectedSurface.pageType === "map") {
+      const overlayMap = selectedSurface?.overlayType === UI_OVERLAY_TYPES.MAP_MINIMAP
+        ? (map || pageViewModel.page?.map || committedMap || renderMapRef)
+        : (pageViewModel.page?.map || committedMap || map || renderMapRef);
       const overlayViewModel = selectedOverlayEntry.buildViewModel({
-        map: pageViewModel.page?.map || committedMap || map || renderMapRef,
+        map: overlayMap,
         hosts: overlayHosts,
         state: gameState,
         actionId: actionIdForTrace
       });
       selectedOverlayCommitResult = selectedOverlayEntry.commit({
         viewModel: overlayViewModel,
-        map: pageViewModel.page?.map || committedMap || map || renderMapRef,
+        map: overlayMap,
         hosts: overlayHosts,
         state: gameState,
         actionId: actionIdForTrace
@@ -9020,7 +9980,8 @@ export function render() {
     const domWinddykeMiniMap = overlayReconcileResult.after.winddykeMiniMapActive;
     const domGovHallMiniMap = overlayReconcileResult.after.govMiniMapActive;
     const domSteelcrossMiniMap = !!document.querySelector('#steelcross-minimap-panel[aria-hidden="false"]');
-    const domMapMiniMapOverlay = !!(domClinicMiniMap || domIndustrialMiniMap || domWinddykeMiniMap || domGovHallMiniMap || domSteelcrossMiniMap);
+    const domWildernessLocalMiniMap = !!document.querySelector('#wilderness-local-minimap-panel[aria-hidden="false"]');
+    const domMapMiniMapOverlay = !!(domClinicMiniMap || domIndustrialMiniMap || domWinddykeMiniMap || domGovHallMiniMap || domSteelcrossMiniMap || domWildernessLocalMiniMap);
     const canonicalOverlayRaw = overlayReconcileResult.canonicalOverlay;
     const canonicalOverlay = canonicalOverlayRaw === "tasks" ? null : canonicalOverlayRaw;
     const domOverlayCount = overlayReconcileResult.after.activeCount;
@@ -9442,6 +10403,16 @@ function renderActionWidget(map, action, options = {}) {
   if (action?.ui?.mapId) button.dataset.mapId = String(action.ui.mapId || "");
   if (action?.ui?.sceneId) button.dataset.sceneId = String(action.ui.sceneId || "");
   if (action?.ui?.interactionId) button.dataset.interactionId = String(action.ui.interactionId || "");
+  if (String(action?.kind || "").trim().toUpperCase() === "WILDERNESS_EVENT_ACTION") {
+    button.dataset.wildernessEventDispatchOverlay = "1";
+    button.dataset.wildernessEventActionType = "WILDERNESS_EVENT_ACTION";
+    try {
+      const pl = action.payload && typeof action.payload === "object" ? action.payload : {};
+      button.dataset.wildernessEventPayload = encodeURIComponent(JSON.stringify(pl));
+    } catch (_e) {
+      button.dataset.wildernessEventPayload = encodeURIComponent("{}");
+    }
+  }
   button.className = "journal-action";
   button.classList.add("map-action-btn", options.kindTag === "移动" ? "map-move-btn" : "map-choice-btn");
   const actionFeedback = String(action?.ui?.runtimeActionFeedback || "").trim();

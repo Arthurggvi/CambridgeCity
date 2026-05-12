@@ -19,6 +19,7 @@ import {
 import { DOSSIER_ENTRY_EMPHASIS_TARGET } from "../../ui/transient/sidebar_dossier_entry_emphasis.js";
 import {
   buildDataDeltaToastPayloadFromReport,
+  buildLibraryReadingToastPayloadFromReport,
   buildWorldviewReadingToastPayloadFromReport,
   buildRecordUnlockToastPayloadsFromReport,
   getRecentToastMessageEntries,
@@ -150,6 +151,36 @@ function buildSocialFavorToastPayloadsFromReport(report) {
   return payloads;
 }
 
+/**
+ * @param {object} report - commit report
+ * @returns {{ dedupeKey: string, payload: object }[]}
+ */
+export function buildWildernessLostToastPayloadsFromReport(report) {
+  const rows = Array.isArray(report?.wilderness?.results) ? report.wilderness.results : [];
+  const out = [];
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (String(row?.type || "") !== "WILDERNESS_MOVE") continue;
+    if (row.ok !== true) continue;
+    if (row.staminaInsufficient === true) continue;
+    const lm = row?.lostMove;
+    if (!lm || lm.lost !== true) continue;
+    const intended = String(lm.intendedDirection || "").trim();
+    const actual = String(lm.actualDirection || "").trim();
+    out.push({
+      dedupeKey: `wilderness_lost_direction:${i}:${intended}:${actual}`,
+      payload: {
+        title: "状态更新",
+        lines: ["你似乎偏离了行进方向"],
+        variant: "wilderness-lost",
+        semanticType: "wilderness_lost_direction",
+        icon: "warning"
+      }
+    });
+  }
+  return out;
+}
+
 export function buildTransientIntentSeed({
   id = "",
   type = "",
@@ -210,7 +241,11 @@ export function getTransientIntentsFromCommitReport(report, context = {}) {
         }
       }));
     }
-  } else if (afterCriticalMode === "COLLAPSE" && beforeCriticalMode !== afterCriticalMode) {
+  } else if (
+    afterCriticalMode === "COLLAPSE"
+    && beforeCriticalMode !== afterCriticalMode
+    && report?.wilderness?.suppressGenericCollapseNotice !== true
+  ) {
     intents.push(buildTransientIntentSeed({
       id: `critical_state_notice:${afterCriticalMode}:${createdAt}`,
       type: CRITICAL_STATE_NOTICE_TRANSIENT_TYPE,
@@ -276,6 +311,15 @@ export function getTransientIntentsFromCommitReport(report, context = {}) {
   }
 
   const toastMessages = [];
+  const libraryReadingToastPayload = buildLibraryReadingToastPayloadFromReport(report);
+  if (libraryReadingToastPayload) {
+    toastMessages.push({
+      idPrefix: "library_reading_toast",
+      source: "library_reading_toast",
+      dedupeKey: `library_reading_toast:${libraryReadingToastPayload.lines.map((line) => `${line.label}:${line.delta}`).join("|")}`,
+      payload: libraryReadingToastPayload
+    });
+  }
   const worldviewReadingToastPayload = buildWorldviewReadingToastPayloadFromReport(report);
   if (worldviewReadingToastPayload) {
     toastMessages.push({
@@ -287,7 +331,10 @@ export function getTransientIntentsFromCommitReport(report, context = {}) {
   }
 
   const deltaToastPayload = buildDataDeltaToastPayloadFromReport(report, {
-    omitProfileKeys: worldviewReadingToastPayload ? ["experience"] : []
+    omitProfileKeys: [
+      ...(worldviewReadingToastPayload ? ["experience"] : []),
+      ...(libraryReadingToastPayload ? ["experience"] : [])
+    ]
   });
   if (deltaToastPayload) {
     toastMessages.push({
@@ -314,6 +361,15 @@ export function getTransientIntentsFromCommitReport(report, context = {}) {
       idPrefix: "social_favor_toast",
       source: "social_favor_toast",
       dedupeKey: `social_favor_toast:${payload.lines.join("|")}`,
+      payload
+    });
+  }
+
+  for (const { dedupeKey, payload } of buildWildernessLostToastPayloadsFromReport(report)) {
+    toastMessages.push({
+      idPrefix: "wilderness_lost_toast",
+      source: "wilderness_lost_toast",
+      dedupeKey,
       payload
     });
   }

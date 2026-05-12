@@ -8,6 +8,7 @@
     { "type": "achievement.signal", "key": "theseus_departure_complete" }
   ],
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "menu_exit_main", "text": "返回主菜单", "ui": { "type": "button", "priority": "primary" } },
     { "id": "menu_go_load", "text": "读取存档", "ui": { "type": "button" } }

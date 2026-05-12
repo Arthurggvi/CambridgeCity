@@ -28,7 +28,7 @@ import {
 import { getLibraryReadingBlockerReason, resolveLibraryReadingAction } from "../../library_reading/service.js";
 import { buildSocialIntentFromEffectRow, isSocialEffectType } from "../social_effect_rows.js";
 import { queueOneShotBusinessFromBuilder } from "./one_shot_business_map_action.js";
-import { recordDefinitions } from "../../../../data/records/index.js";
+import { getLibraryBookContentById } from "../../../../data/library/books/index.js";
 import { getSupplySubmissionSpec, isSubmittableSupplyItem } from "../../items_db.js";
 import { addWildernessPipelineIntent } from "../plan_types.js";
 import { resolveWildernessStartSessionReadOnly } from "../../wilderness/wilderness_action_plans.js";
@@ -46,13 +46,9 @@ function findSceneById(map, sceneId) {
   return map.scenes.find((row) => String(row?.id || "").trim() === String(sceneId || "").trim()) || null;
 }
 
-function getRecordBodyById(recordId) {
-  const key = String(recordId || "").trim();
-  if (!key) return "";
-  const record = Array.isArray(recordDefinitions)
-    ? recordDefinitions.find((row) => String(row?.id || "").trim() === key)
-    : null;
-  return String(record?.body || "").trim();
+function getLibraryBookBodyByContentId(contentId) {
+  const content = getLibraryBookContentById(contentId);
+  return String(content?.body || "").trim();
 }
 
 function buildLibraryReadingResultMap(map, readingResult, recordBody) {
@@ -164,8 +160,15 @@ function applyRuntimeInteractionHelpers(interaction, gameState) {
 
   if (helperId === RUNTIME_INTERACTION_HELPERS.marg_frontdesk_greeting) {
     const greetingOutcome = resolveMargFrontdeskGreetingOutcome({ gameState, totalMinutes: gameState?.time?.totalMinutes });
+    const nextUi = interaction?.ui && typeof interaction.ui === "object" ? { ...interaction.ui } : {};
+    const nextFeedback = nextUi.feedback && typeof nextUi.feedback === "object" ? { ...nextUi.feedback } : {};
+    if (typeof greetingOutcome?.logLine === "string" && greetingOutcome.logLine.trim()) {
+      nextFeedback.message = greetingOutcome.logLine;
+      nextUi.feedback = nextFeedback;
+    }
     return {
       ...interaction,
+      ui: nextUi,
       effects: [
         ...(Array.isArray(interaction?.effects) ? interaction.effects : []),
         ...greetingOutcome.effects
@@ -550,10 +553,15 @@ export async function handleSceneInteractionV2(ctx) {
       plan.action.payload = { ...plan.action.payload, ...basePayload };
       return true;
     }
+    const rawStartX = runtimeInteraction?.wilderness?.x;
+    const rawStartY = runtimeInteraction?.wilderness?.y;
+    const hasStartX = Number.isInteger(rawStartX);
+    const hasStartY = Number.isInteger(rawStartY);
     addWildernessPipelineIntent(plan, {
       type: "WILDERNESS_START_SESSION",
       areaSpec: startRead.areaSpec,
-      originMapId: String(map?.id || "").trim()
+      originMapId: String(map?.id || "").trim(),
+      ...(hasStartX && hasStartY ? { startAt: { x: rawStartX, y: rawStartY } } : {})
     });
     addNote(plan, `wilderness:start_session intent queued area=${String(startRead.areaSpec?.id || "")}`);
     plan.action.payload = { ...plan.action.payload, ...basePayload };
@@ -610,7 +618,7 @@ export async function handleSceneInteractionV2(ctx) {
       };
       return true;
     }
-    const recordBody = getRecordBodyById(readingResult.selectedRecordId);
+    const recordBody = getLibraryBookBodyByContentId(readingResult.selectedContentId);
     const resultMap = buildLibraryReadingResultMap(map, readingResult, recordBody);
     const resultScene = findSceneById(resultMap, LIBRARY_READING_RESULT_SCENE_ID);
     addEffect(plan, Effects.set("player.meta.libraryReading", readingResult.nextState));
@@ -626,12 +634,21 @@ export async function handleSceneInteractionV2(ctx) {
           : `你又一次翻开了${readingResult.selectedBook.title}。`
       )
     );
-    if (readingResult.isFirstRead && readingResult.selectedRecordId) {
-      plan.recordIntents.push({
-        type: "UNLOCK_RECORD",
-        recordId: readingResult.selectedRecordId,
-        triggerContext: readingResult.triggerContext
-      });
+    if (readingResult.isFirstRead && readingResult.reward) {
+      const rewardExp = Number(readingResult?.reward?.experience || 0);
+      const expAmount = Number.isFinite(rewardExp) ? Math.trunc(rewardExp) : 0;
+      if (expAmount > 0) {
+      const current = Array.isArray(plan.profileIntents) ? plan.profileIntents : [];
+      plan.profileIntents = [
+        ...current,
+        {
+          type: "xp",
+          key: "experience",
+          amount: expAmount,
+          reason: `library_reading:first_read:${readingResult.selectedContentId || readingResult.selectedBook.id}`
+        }
+      ];
+      }
       addNote(plan, `scene_interaction_v2 library_reading:first:${readingResult.selectedBook.id}`);
     } else {
       addNote(plan, `scene_interaction_v2 library_reading:repeat:${readingResult.selectedBook.id}`);
@@ -640,7 +657,7 @@ export async function handleSceneInteractionV2(ctx) {
       ...plan.action.payload,
       ...basePayload,
       bookId: readingResult.selectedBook.id,
-      recordId: readingResult.selectedRecordId,
+      contentId: readingResult.selectedContentId,
       isFirstRead: readingResult.isFirstRead === true,
       resultSceneId: LIBRARY_READING_RESULT_SCENE_ID
     };

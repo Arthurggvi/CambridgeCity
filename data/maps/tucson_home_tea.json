@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "杯里的热气还没散尽。你低头时，在微微晃动的茶面里看见一个头发斑白的人影。\n那张脸和你靠得太近，近得让人一时分不清是在看倒影，还是在看许多年后的自己。",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_home_tea_return", "text": "返回", "targetMapId": "tucson_home_desk", "ui": { "type": "button", "priority": "primary" } }
   ]

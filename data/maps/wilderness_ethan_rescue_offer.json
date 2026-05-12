@@ -1,0 +1,14 @@
+{
+  "id": "wilderness_ethan_rescue_offer",
+  "legacy": true,
+  "name": "雪面失衡",
+  "description": "你的身体越来越沉，呼吸像被冻在胸腔里。每一次抬脚都比上一次更慢，雪面却还在向前延伸。\n\n忽然，你脚下一滑，膝盖砸进雪里，视野里的白色开始失去边界。",
+  "actions": [
+    {
+      "id": "ethan_rescue_offer_continue_1",
+      "text": "继续",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "wilderness_ethan_rescue_offer_2", "minutes": 0 }
+    }
+  ]
+}

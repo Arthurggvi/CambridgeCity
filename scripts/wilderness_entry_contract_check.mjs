@@ -95,6 +95,7 @@ async function main() {
   assert(startResult.ok === true, "start commit ok");
   assert(gameState.world.wilderness.active === true, "wilderness active after start");
   assert(gameState.world.wilderness.areaId === "west2_old_marker_patrol_line", "areaId after start");
+  assert(gameState.world.wilderness.x === -6 && gameState.world.wilderness.y === 1, "start coords (-6,1)");
   assert(String(gameState.currentMapId || "") === "wilderness_runtime", "currentMapId after start");
   assert(String(gameState.world.currentMapId || "") === "wilderness_runtime", "world.currentMapId after start");
   assert(JSON.stringify(captureVitals(gameState)) === JSON.stringify(vit0), "start commit must not change player vitals");

@@ -5,6 +5,7 @@
   "name": "忒修斯号",
   "description": "就这样看着海鸥飞向天际，\n我想，\n这会是我最后一次感受这个地方",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "theseus_ending_07_continue", "text": "继续", "targetMapId": "theseus_ending_08", "ui": { "type": "button", "priority": "primary" } }
   ]

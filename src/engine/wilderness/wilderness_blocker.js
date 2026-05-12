@@ -203,6 +203,7 @@ export function createTerrainRequirementWildernessBlocker({ areaId, regionId, te
 
 /**
  * Extract notice payloads for blocked WILDERNESS_MOVE rows (for dispatch / tests).
+ * Works for any `row.blocker.kind` that carries `blocker.notice` (including `player_state_block`).
  * @param {object|null|undefined} report
  * @returns {Array<{ title: string, message: string, actions: Array<{id:string,label:string}> }>}
  */
@@ -222,6 +223,39 @@ export function collectWildernessMoveBlockedNoticeDialogs(report) {
             label: String(a?.label || "停下").trim() || "停下"
           }))
         : [{ id: "stay", label: "停下" }]
+    });
+  }
+  return out;
+}
+
+/**
+ * Bug3 (round 2): collect dialog payloads for `WILDERNESS_STAMINA_HOLDOUT_NOTICE`
+ * rows that commit emits when a staminaInsufficient attempt cannot cross the
+ * stamina_zero threshold (i.e., `before.stamina <= 0`). This is *not* a
+ * `player_state_block` blocker — it's a non-blocker, click-feedback dialog
+ * that replaces the removed "体力不足" copy.
+ * @param {object|null|undefined} report
+ * @returns {Array<{ title: string, message: string, actions: Array<{id:string,label:string}> }>}
+ */
+export function collectWildernessStaminaHoldoutNotices(report) {
+  const rows = Array.isArray(report?.wilderness?.results) ? report.wilderness.results : [];
+  const out = [];
+  for (const row of rows) {
+    if (row?.type !== "WILDERNESS_STAMINA_HOLDOUT_NOTICE") continue;
+    const n = row.notice;
+    if (!n || typeof n !== "object") continue;
+    const title = String(n.title || "").trim() || "无力前行";
+    const message = String(n.message || "").trim();
+    if (!message) continue;
+    out.push({
+      title,
+      message,
+      actions: Array.isArray(n.actions) && n.actions.length > 0
+        ? n.actions.map((a) => ({
+            id: String(a?.id || "ok").trim() || "ok",
+            label: String(a?.label || "知道了").trim() || "知道了"
+          }))
+        : [{ id: "ok", label: "知道了" }]
     });
   }
   return out;

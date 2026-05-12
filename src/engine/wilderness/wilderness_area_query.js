@@ -97,24 +97,130 @@ export function getTerrainDefAtCoordinate(areaSpec, x, y) {
   return getTerrainBiomeDef(terrainId);
 }
 
+/**
+ * Coordinate query result shape:
+ *   - kind: "boundary" only when truly out of authored area bounds.
+ *   - boundaryKind: "out_of_bounds" | null — distinguishes the only blocking
+ *     boundary cause from in-bounds informational states.
+ *   - inActiveCellMask: true|false — informational hint derived from the
+ *     optional `areaSpec.activeCellKeys` set. When the area has no mask
+ *     (null/empty), every in-bounds cell is treated as inside the mask.
+ *     This field MUST NOT be consumed as a blocker; it is a presentation
+ *     hint (e.g. patrol corridor highlighting) only.
+ */
 export function queryWildernessCoordinate(areaSpec, x, y) {
   if (!isCoordinateInsideBounds(areaSpec, x, y)) {
     return {
       kind: "boundary",
+      boundaryKind: "out_of_bounds",
       terrainId: null,
       terrainDef: null,
       zone: null,
-      insideBounds: false
+      insideBounds: false,
+      inActiveCellMask: false
     };
   }
+
+  // Compute the informational `inActiveCellMask` hint. When no mask is
+  // authored we default to true so callers can treat the whole area as
+  // "inside the corridor" without special-casing.
+  let inActiveCellMask = true;
+  const activeKeys = areaSpec?.activeCellKeys;
+  if (activeKeys && typeof activeKeys?.has === "function" && activeKeys?.size > 0) {
+    const xi = Number.isFinite(Number(x)) ? Math.trunc(Number(x)) : 0;
+    const yi = Number.isFinite(Number(y)) ? Math.trunc(Number(y)) : 0;
+    inActiveCellMask = activeKeys.has(`${xi},${yi}`);
+  }
+
   const zone = getTerrainZoneAtCoordinate(areaSpec, x, y);
   const terrainId = zone != null ? zone.terrainId : areaSpec.defaultTerrainId;
   const terrainDef = getTerrainBiomeDef(terrainId);
   return {
     kind: "terrain",
+    boundaryKind: null,
     terrainId,
     terrainDef,
     zone,
-    insideBounds: true
+    insideBounds: true,
+    inActiveCellMask
   };
+}
+
+const LM_EPS = 1e-9;
+
+function landmarkHypot(dx, dy) {
+  return Math.hypot(Number(dx), Number(dy));
+}
+
+/**
+ * Landmarks within `detectRadius` (Euclidean distance in cell units). `enterable` uses `enterRadius`.
+ * @param {{ areaSpec: object, x: number, y: number }} args
+ * @returns {Array<{ id: string, label: string, distance: number, enterable: boolean, gotoMapId: string|null }>}
+ */
+export function listLandmarkCuesForCoordinate({ areaSpec, x, y }) {
+  const landmarks = areaSpec?.landmarks;
+  if (!Array.isArray(landmarks) || landmarks.length === 0) return [];
+  const xi = Number.isFinite(Number(x)) ? Math.trunc(Number(x)) : 0;
+  const yi = Number.isFinite(Number(y)) ? Math.trunc(Number(y)) : 0;
+  const cues = [];
+  for (const lm of landmarks) {
+    if (!lm || typeof lm !== "object") continue;
+    const id = String(lm.id ?? "").trim();
+    if (!id) continue;
+    const lx = Number(lm.x);
+    const ly = Number(lm.y);
+    if (!Number.isFinite(lx) || !Number.isFinite(ly)) continue;
+    const detectR = Number(lm.detectRadius ?? lm.detect_radius);
+    const enterR = Number(lm.enterRadius ?? lm.enter_radius);
+    const dr = Number.isFinite(detectR) && detectR >= 0 ? detectR : 0;
+    const er = Number.isFinite(enterR) && enterR >= 0 ? enterR : 0;
+    const distance = landmarkHypot(xi - lx, yi - ly);
+    if (distance <= dr + LM_EPS) {
+      const label = String(lm.label ?? id).trim() || id;
+      const gotoMapId = lm.gotoMapId != null && String(lm.gotoMapId).trim() !== "" ? String(lm.gotoMapId).trim() : null;
+      cues.push({
+        id,
+        label,
+        distance,
+        enterable: distance <= er + LM_EPS,
+        gotoMapId
+      });
+    }
+  }
+  cues.sort((a, b) => a.distance - b.distance);
+  return cues;
+}
+
+/**
+ * Enterable landmark at (x,y): within enterRadius (Euclidean) and has gotoMapId. Nearest wins ties.
+ * @param {{ areaSpec: object, x: number, y: number }} args
+ * @returns {{ id: string, label: string, gotoMapId: string, x: number, y: number }|null}
+ */
+export function getEnterableLandmarkAtCoordinate({ areaSpec, x, y }) {
+  const landmarks = areaSpec?.landmarks;
+  if (!Array.isArray(landmarks) || landmarks.length === 0) return null;
+  const xi = Number.isFinite(Number(x)) ? Math.trunc(Number(x)) : 0;
+  const yi = Number.isFinite(Number(y)) ? Math.trunc(Number(y)) : 0;
+  let best = null;
+  let bestD = Infinity;
+  for (const lm of landmarks) {
+    if (!lm || typeof lm !== "object") continue;
+    const id = String(lm.id ?? "").trim();
+    if (!id) continue;
+    const lx = Number(lm.x);
+    const ly = Number(lm.y);
+    if (!Number.isFinite(lx) || !Number.isFinite(ly)) continue;
+    const enterR = Number(lm.enterRadius ?? lm.enter_radius);
+    const er = Number.isFinite(enterR) && enterR >= 0 ? enterR : 0;
+    const gotoMapId = lm.gotoMapId != null && String(lm.gotoMapId).trim() !== "" ? String(lm.gotoMapId).trim() : null;
+    if (!gotoMapId) continue;
+    const distance = landmarkHypot(xi - lx, yi - ly);
+    if (distance > er + LM_EPS) continue;
+    if (distance < bestD - LM_EPS) {
+      bestD = distance;
+      const label = String(lm.label ?? id).trim() || id;
+      best = { id, label, gotoMapId, x: Math.trunc(lx), y: Math.trunc(ly) };
+    }
+  }
+  return best;
 }

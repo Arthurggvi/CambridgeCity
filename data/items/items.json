@@ -326,6 +326,78 @@
       ]
     },
     {
+      "id": "tool_wilderness_gps",
+      "name": "野外 GPS",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "wilderness_gps",
+      "description": [
+        "卫星定位与区域元数据读数。",
+        "仅在装备时于野外运行时页「工具读数」中显示坐标与会话信息。"
+      ]
+    },
+    {
+      "id": "tool_magnetic_compass",
+      "name": "磁罗盘",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "magnetic_compass",
+      "description": [
+        "机械磁针定向，不依赖电源。",
+        "装备后在野外工具读数中显示八向朝向与中文化方位。"
+      ]
+    },
+    {
+      "id": "tool_heart_rate_monitor",
+      "name": "心率监测仪",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "heart_rate_monitor",
+      "description": [
+        "腕式生理负荷估计。",
+        "装备后在野外工具读数中显示体力、疲劳与移动体力预览区间。"
+      ]
+    },
+    {
+      "id": "tool_wind_anemometer",
+      "name": "手持风速仪",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "wind_anemometer",
+      "description": [
+        "叶轮式瞬时风速读数。",
+        "装备后在野外工具读数中显示当前风速或区域风基线（m/s）。"
+      ]
+    },
+    {
+      "id": "tool_electronic_wind_vane",
+      "name": "便携式电子风向标",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "electronic_wind_vane",
+      "description": [
+        "电子风向传感。",
+        "装备后在野外工具读数中显示当前或盛行风向（中文风名）。"
+      ]
+    },
+    {
+      "id": "tool_snow_depth_sensor",
+      "name": "超声波雪深传感器",
+      "category": "tool",
+      "stackable": false,
+      "equipType": "tool",
+      "toolTag": "snow_depth_sensor",
+      "description": [
+        "非接触雪深与地表探读相关读数。",
+        "装备后在野外工具读数中显示雪深、能见度与探读置信等。"
+      ]
+    },
+    {
       "id": "material_scrap_fiber",
       "name": "纤维碎料",
       "category": "material",

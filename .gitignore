@@ -65,6 +65,12 @@ research_station.json
 **/profile_store/**
 **/browser-profile/**
 
+# --- Wilderness area preview snapshots (authoring-only; never commit) ---
+tools/wilderness_area_preview/snapshots/**/*.json
+tools/wilderness_area_preview/snapshots/**/*.tmp
+tools/wilderness_area_preview/.pending/**/*.json
+tools/wilderness_area_preview/.pending/**/*.tmp
+
 # --- OS & editor (optional noise) ---
 Thumbs.db
 Desktop.ini

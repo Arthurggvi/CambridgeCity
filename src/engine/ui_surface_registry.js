@@ -1,4 +1,5 @@
 import { TRANSIENT_RUNTIME_HOST_ID, TRANSIENT_RUNTIME_OWNER } from "../ui/transient/transient_contract.js";
+import { isReleaseBuild } from "./release_flag.js";
 
 const UI_SURFACE_REGISTRY = Object.freeze({
   scene_text: {
@@ -72,13 +73,15 @@ const UI_SURFACE_REGISTRY = Object.freeze({
     allowedMutators: [
       "renderer.ensureClinicMiniMapPanel",
       "renderer.ensureWinddykeMiniMapPanel",
-      "renderer.ensureGovHallMiniMapPanel"
+      "renderer.ensureGovHallMiniMapPanel",
+      "renderer.ensureWildernessLocalMiniMapPanel"
     ],
     resolveLiveHost: ({ documentRoot } = {}) => {
       const doc = documentRoot || document;
       return doc.querySelector("#clinic-minimap-panel")
         || doc.querySelector("#winddyke-minimap-panel")
-        || doc.querySelector("#gov-hall-minimap-panel");
+        || doc.querySelector("#gov-hall-minimap-panel")
+        || doc.querySelector("#wilderness-local-minimap-panel");
     }
   },
   transition_cinematic: {
@@ -119,11 +122,26 @@ const UI_SURFACE_REGISTRY = Object.freeze({
         || doc.querySelector(".scene-text-dom-locator-panel")
         || doc.querySelector(".scene-text-diagnostic-panel");
     }
+  },
+  wilderness_readout_overlay: {
+    owner: "render/wilderness_runtime_fragments+ui/interaction",
+    stablePoint: "host_created",
+    runtimeRootRequired: false,
+    controllerRequired: false,
+    allowedMutators: [
+      "render/wilderness_runtime_fragments.renderWildernessRuntime",
+      "ui/interaction.handleUiAction"
+    ],
+    resolveLiveHost: ({ documentRoot } = {}) =>
+      (documentRoot || document).getElementById("wilderness-readout-overlay-host")
   }
 });
 
 export function getUiSurfaceRegistry() {
-  return UI_SURFACE_REGISTRY;
+  if (!isReleaseBuild()) return UI_SURFACE_REGISTRY;
+  const filtered = { ...UI_SURFACE_REGISTRY };
+  delete filtered.debug_probe;
+  return Object.freeze(filtered);
 }
 
 export function getUiSurfaceDefinition(surfaceId) {

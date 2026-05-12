@@ -49,7 +49,11 @@ import { makeActionFromUI, makeSystemAction, validateAction } from "./action_typ
 import { resolve } from "./resolve.js";
 import { commit } from "./commit.js";
 import { getTransientIntentsFromCommitReport } from "./transient_intent_adapter.js";
-import { collectWildernessMoveBlockedNoticeDialogs } from "../wilderness/wilderness_blocker.js";
+import {
+  collectWildernessMoveBlockedNoticeDialogs,
+  collectWildernessStaminaHoldoutNotices
+} from "../wilderness/wilderness_blocker.js";
+import { collectEthanRescueNoticeDialogs } from "../wilderness/wilderness_ethan_rescue_service.js";
 import { validatePlan } from "./plan_types.js";
 import {
   getTimeView,
@@ -115,6 +119,7 @@ import {
   pushUiRouteTrace,
   resolveUiSurface
 } from "../ui_route.js";
+import { isReleaseBuild } from "../release_flag.js";
 import { getCanonicalMapId, setCanonicalMapContext } from "../map_context.js";
 import {
   closeMenu as closeNightKitchenMenu,
@@ -756,6 +761,40 @@ async function maybeHandleSteelcrossMarketClosing(report, { suppressDialogs = fa
   return true;
 }
 
+function validateUiDispatchAction(action) {
+  if (String(action?.type || "").trim() === "WILDERNESS_EVENT_ACTION") {
+    if (!action || typeof action !== "object") {
+      throw new Error("[Action验证] Action 不能为 null/undefined");
+    }
+    if (!action.id || typeof action.id !== "string") {
+      throw new Error("[Action验证] WILDERNESS_EVENT_ACTION.id 必需");
+    }
+    const wid = String(action.id || "").trim();
+    if (!wid.startsWith("wild_evt:") && wid !== "wild_evt_resume_tail") {
+      throw new Error("[Action验证] WILDERNESS_EVENT_ACTION.id 非法");
+    }
+    if (!action.payload || typeof action.payload !== "object") {
+      throw new Error("[Action验证] WILDERNESS_EVENT_ACTION.payload 必需为对象");
+    }
+    if (!action.meta || typeof action.meta !== "object") {
+      throw new Error("[Action验证] WILDERNESS_EVENT_ACTION.meta 必需");
+    }
+    if (!action.meta.atMs || typeof action.meta.atMs !== "number") {
+      throw new Error("[Action验证] WILDERNESS_EVENT_ACTION.meta.atMs 必需为数字");
+    }
+    if (!action.meta.source) {
+      throw new Error("[Action验证] WILDERNESS_EVENT_ACTION.meta.source 必需");
+    }
+    try {
+      JSON.stringify(action);
+    } catch (error) {
+      throw new Error(`[Action验证] Action 必须可序列化为 JSON: ${error.message}`);
+    }
+    return true;
+  }
+  return validateAction(action);
+}
+
 /**
  * Dispatch Action（UI 入口）
  * 
@@ -769,6 +808,7 @@ export async function dispatch(actionId, payload = {}, options = {}) {
   const uiStatePrev = getUiActionStateSnapshot(gameState);
   const actionIdText = String(actionId || "");
   const beforeMapIdSnapshot = String(gameState.currentMapId || gameState.world?.currentMapId || gameState.currentMap?.id || "");
+  const beforeSceneIdSnapshot = String(gameState?.currentSceneId || gameState?.currentScene?.id || "");
   const beforeUiPageSnapshot = String(gameState?.ui?.page || "");
   const beforePageTypeSnapshot = currentPageTypeFromState(gameState);
 
@@ -779,6 +819,15 @@ export async function dispatch(actionId, payload = {}, options = {}) {
   const uiRuntime = options?.uiRuntime && typeof options.uiRuntime === "object"
     ? { ...options.uiRuntime }
     : null;
+  const shouldEmitDebugUiTrace = (() => {
+    try {
+      const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      if (params && params.get("debugUi") === "1") return true;
+      return typeof window !== "undefined" && window.localStorage?.getItem("cc:debugUi") === "1";
+    } catch {
+      return false;
+    }
+  })();
   const makeReturn = (ok, extra = null) => {
     if (!returnReport) return ok;
     const base = {
@@ -794,6 +843,22 @@ export async function dispatch(actionId, payload = {}, options = {}) {
   };
   let shouldPlayTheseusEndingTransition = false;
   let theseusEndingTransitionPlayed = false;
+
+  const isDebugOnlyActionId = (idText) => {
+    const id = String(idText || "").trim();
+    if (!id) return false;
+    if (id.startsWith("debug_")) return true;
+    if (id.startsWith("inv_debug_") || id.startsWith("inv_debug_gain:")) return true;
+    if (id.includes("debug_")) return true;
+    return false;
+  };
+
+  if (isReleaseBuild() && isDebugOnlyActionId(actionIdText)) {
+    return makeReturn(false, {
+      reason: "release_build_debug_action_blocked",
+      error: `Release build blocks debug action: ${actionIdText}`
+    });
+  }
 
   // ========== 1. 防重入 ==========
   if (isDispatching) {
@@ -876,6 +941,17 @@ export async function dispatch(actionId, payload = {}, options = {}) {
     commitEntered: false,
     commitExited: false
   });
+  if (shouldEmitDebugUiTrace) {
+    console.info("[GREET_MARG_TRACE] dispatch payload", {
+      actionId: actionIdText,
+      payload: payload && typeof payload === "object" ? { ...payload } : payload,
+      before: {
+        currentMapId: beforeMapIdSnapshot || null,
+        currentSceneId: beforeSceneIdSnapshot || null,
+        uiPage: beforeUiPageSnapshot || null
+      }
+    });
+  }
   
   isDispatching = true;
   if (typeof window !== "undefined") {
@@ -1142,9 +1218,26 @@ export async function dispatch(actionId, payload = {}, options = {}) {
     }
 
     // ========== 2. 创建 Action ==========
+    const canonicalMapForWild = getCanonicalMapId(gameState);
+    const normalizedWildActionId = String(actionId || "").trim();
+    const isPipelineWildernessEventAction = options?.systemAction !== true
+      && canonicalMapForWild === "wilderness_event_runtime"
+      && (normalizedWildActionId.startsWith("wild_evt:") || normalizedWildActionId === "wild_evt_resume_tail");
+
     const action = options?.systemAction === true
       ? makeSystemAction(actionId, payload, gameState)
-      : makeActionFromUI(actionId, payload, gameState);
+      : isPipelineWildernessEventAction
+        ? {
+            type: "WILDERNESS_EVENT_ACTION",
+            id: normalizedWildActionId,
+            payload: payload && typeof payload === "object" ? { ...payload } : {},
+            meta: {
+              atMs: Date.now(),
+              source: "ui",
+              mapId: canonicalMapForWild || "wilderness_event_runtime"
+            }
+          }
+        : makeActionFromUI(actionId, payload, gameState);
     traceCtx.actionType = String(action?.type || "") || null;
     pushOpenCallchainTrace({
       source: "dispatch:start",
@@ -1160,7 +1253,7 @@ export async function dispatch(actionId, payload = {}, options = {}) {
     
     // 开发期验证
     try {
-      validateAction(action);
+      validateUiDispatchAction(action);
     } catch (error) {
       console.error(`[Dispatch] Action 验证失败:`, error);
       return abortDispatch();
@@ -1269,6 +1362,23 @@ export async function dispatch(actionId, payload = {}, options = {}) {
       violationCode: resolvedRoute.violations.length > 0 ? "overlay_contract_violation" : null,
       errorMessage: resolvedRoute.violations.length > 0 ? resolvedRoute.violations.join(",") : null
     });
+    if (shouldEmitDebugUiTrace) {
+      const effectSummaries = Array.isArray(plan?.effects)
+        ? plan.effects
+            .map((e) => ({
+              op: String(e?.op || ""),
+              path: "path" in (e || {}) ? String(e?.path || "") : null
+            }))
+            .filter((e) => e.op || e.path)
+        : [];
+      console.info("[GREET_MARG_TRACE] resolved plan", {
+        actionId: traceCtx.actionId,
+        rejection: plan?.rejection || null,
+        notes: Array.isArray(plan?.notes) ? plan.notes.slice(0, 30) : [],
+        sysCalls: Array.isArray(plan?.sysCalls) ? plan.sysCalls.map((c) => String(c?.type || "")) : [],
+        effects: effectSummaries
+      });
+    }
     if (routePrev.uiOverlay !== routeProjectedAfterResolve.uiOverlay && routeProjectedAfterResolve.uiOverlay) {
       pushOverlayLifecycleTrace({
         source: "overlay:request_open",
@@ -1420,6 +1530,16 @@ export async function dispatch(actionId, payload = {}, options = {}) {
       commitExited: false
     });
     const { ok, report } = await commit(plan, gameState);
+    if (shouldEmitDebugUiTrace) {
+      console.info("[GREET_MARG_TRACE] commit after", {
+        actionId: traceCtx.actionId,
+        after: {
+          currentMapId: String(gameState.currentMapId || gameState.world?.currentMapId || gameState.currentMap?.id || "") || null,
+          currentSceneId: String(gameState?.currentSceneId || gameState?.currentScene?.id || "") || null,
+          uiPage: String(gameState?.ui?.page || "") || null
+        }
+      });
+    }
     traceCtx.commitExited = true;
     traceCtx.stage = "commit_end";
 
@@ -1445,6 +1565,40 @@ export async function dispatch(actionId, payload = {}, options = {}) {
               kind: String(a.id || "").trim() === "stay" ? "primary" : "secondary"
             }))
           : [{ id: "stay", label: "停下", kind: "primary" }];
+        await showNoticeDialog({
+          title: dlg.title,
+          message: dlg.message,
+          actions
+        });
+      }
+
+      // Bug3 (round 2): non-blocker holdout feedback for staminaInsufficient
+      // attempts that cannot cross stamina_zero (replaces removed "体力不足").
+      const staminaHoldoutDialogs = collectWildernessStaminaHoldoutNotices(report);
+      for (const dlg of staminaHoldoutDialogs) {
+        const actions = Array.isArray(dlg.actions) && dlg.actions.length > 0
+          ? dlg.actions.map((a) => ({
+              id: String(a.id || "ok").trim() || "ok",
+              label: String(a.label || "知道了").trim() || "知道了",
+              kind: "primary"
+            }))
+          : [{ id: "ok", label: "知道了", kind: "primary" }];
+        await showNoticeDialog({
+          title: dlg.title,
+          message: dlg.message,
+          actions
+        });
+      }
+
+      const ethanRescueDialogs = collectEthanRescueNoticeDialogs(report);
+      for (const dlg of ethanRescueDialogs) {
+        const actions = Array.isArray(dlg.actions) && dlg.actions.length > 0
+          ? dlg.actions.map((a) => ({
+              id: String(a.id || "ok").trim() || "ok",
+              label: String(a.label || "知道了").trim() || "知道了",
+              kind: String(a.kind || "primary") === "secondary" ? "secondary" : "primary"
+            }))
+          : [{ id: "ok", label: "知道了", kind: "primary" }];
         await showNoticeDialog({
           title: dlg.title,
           message: dlg.message,
@@ -1703,8 +1857,15 @@ export async function dispatch(actionId, payload = {}, options = {}) {
       suppressRender
     });
 
-    if (!timedLocationClosureHandled && !steelcrossMarketClosingHandled && !suppressFeedback && !suppressDialogs) {
-      showFeedbackFromReport(actionId, report);
+    if (!suppressFeedback && !suppressDialogs) {
+      // Even if a timed closure/forced relocation consumed the main flow, we still want the post-commit
+      // generic feedback (profile deltas, money/time deltas, etc.) to be emitted through the unified
+      // transient runtime owner chain. Action-scoped feedback remains opt-in by the handler.
+      if (timedLocationClosureHandled || steelcrossMarketClosingHandled) {
+        showFeedbackFromReport(actionId, report, { includeActionScoped: false });
+      } else {
+        showFeedbackFromReport(actionId, report);
+      }
     }
 
     if (govHallForcedExitApplied && !suppressFeedback && !suppressDialogs) {

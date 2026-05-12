@@ -1,0 +1,13 @@
+{
+  "id": "west2_maintenance_corridor_entry",
+  "legacy": true,
+  "name": "维修通道外门",
+  "description": "一扇低矮的外门嵌在雪坡后侧，门框边缘被风雪磨得发白。",
+  "actions": [
+    {
+      "id": "return_to_wilderness_runtime",
+      "text": "返回野外",
+      "kind": "WILDERNESS_RETURN_FROM_LANDMARK"
+    }
+  ]
+}

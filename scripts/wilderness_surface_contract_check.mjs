@@ -17,6 +17,8 @@ import {
 } from "../src/engine/wilderness/wilderness_movement_cost.js";
 import { resolveWildernessMovePlanReadOnly } from "../src/engine/wilderness/wilderness_movement_resolver.js";
 
+const rngWildernessMoveNeverLost = { random: () => 0.99 };
+
 function assert(c, m) {
   if (!c) throw new Error(m);
 }
@@ -171,7 +173,9 @@ async function main() {
     direction: "E",
     actionId: "wilderness_move_E",
     worldWeather: gameState.world.weather,
-    totalMinutes: gameState.time.totalMinutes
+    totalMinutes: gameState.time.totalMinutes,
+    player: gameState.player,
+    rngLike: rngWildernessMoveNeverLost
   });
   assert(planMove.ok === true && planMove.surface && typeof planMove.surface.snowDepthCm === "number", "resolver attaches surface on success");
   assert(
@@ -180,15 +184,25 @@ async function main() {
   );
   console.log("[PASS] resolver surface on heavy-weather move");
 
+  // `west2_old_marker_patrol_line` generated zones: east step from (6,-7) lands on
+  // `ice_shelf_edge` at (7,-7) (passability.foot === "hard_block"). The legacy
+  // sample (6,0)->(7,0) drifted when (7,0) became `ice_shelf_surface` (conditional).
   const bIce = resolveWildernessMovePlanReadOnly({
-    wilderness: activeWest2(6, 0),
+    wilderness: activeWest2(6, -7),
     areaSpec,
     direction: "E",
     actionId: "wilderness_move_E",
     worldWeather: {},
-    totalMinutes: 5000
+    totalMinutes: 5000,
+    requirePlayerStateCheck: false,
+    rngLike: rngWildernessMoveNeverLost
   });
-  assert(bIce.ok === false && bIce.blocker?.kind === "terrain_hard_block", "ice hard block preserved");
+  assert(
+    bIce.ok === false &&
+      bIce.blocker?.kind === "terrain_hard_block" &&
+      bIce.terrainId === "ice_shelf_edge",
+    "ice hard block preserved"
+  );
 
   const bBound = resolveWildernessMovePlanReadOnly({
     wilderness: activeWest2(8, 8),
@@ -196,7 +210,9 @@ async function main() {
     direction: "N",
     actionId: "wilderness_move_N",
     worldWeather: {},
-    totalMinutes: 5000
+    totalMinutes: 5000,
+    requirePlayerStateCheck: false,
+    rngLike: rngWildernessMoveNeverLost
   });
   assert(bBound.ok === false && bBound.blocker?.kind === "boundary_block", "boundary preserved");
 
@@ -204,7 +220,7 @@ async function main() {
   zones.push({
     id: "contract_crevasse_cell",
     terrainId: "crevasse_field",
-    priority: 99,
+    priority: 10_000,
     shape: { type: "rect", x1: 2, y1: 2, x2: 2, y2: 2 }
   });
   const specC = { ...areaSpec, terrainZones: zones };
@@ -214,7 +230,9 @@ async function main() {
     direction: "N",
     actionId: "wilderness_move_N",
     worldWeather: {},
-    totalMinutes: 5000
+    totalMinutes: 5000,
+    requirePlayerStateCheck: false,
+    rngLike: rngWildernessMoveNeverLost
   });
   assert(bCrev.ok === false && bCrev.blocker?.kind === "terrain_requirement_block", "crevasse requirement preserved");
 

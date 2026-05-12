@@ -23,13 +23,15 @@ function cloneTerrainDefs() {
   return structuredClone(TERRAIN_BIOME_DEFS);
 }
 
-function main() {
+async function main() {
   const regions = listWildernessRegionProfiles();
   assertPass(regions.length >= 4, "expected region profiles");
   console.log("[PASS] region profiles loaded");
 
   const terrains = Object.keys(TERRAIN_BIOME_DEFS);
-  assertPass(terrains.length === 20, `expected 20 terrain defs, got ${terrains.length}`);
+  // Count was 20 prior to the wilderness movement refactor; +2 for the new
+  // hard-block sea terrains (`open_water`, `coastal_open_water`).
+  assertPass(terrains.length === 22, `expected 22 terrain defs, got ${terrains.length}`);
   console.log("[PASS] terrain biome defs loaded");
 
   const areas = listWildernessAreaSpecs();
@@ -43,28 +45,76 @@ function main() {
   const area = getWildernessAreaSpec("west2_old_marker_patrol_line");
   assertPass(area != null, "missing west2_old_marker_patrol_line spec");
 
-  const samples = [
-    { x: 0, y: 0, terrainId: "managed_compacted_route" },
-    { x: 2, y: 1, terrainId: "flagged_marker_line" },
-    { x: 5, y: -1, terrainId: "snow_drift_zone" },
-    { x: 0, y: 3, terrainId: "sastrugi_field" },
-    { x: 7, y: 0, terrainId: "ice_shelf_edge" },
-    { x: 9, y: 0, terrainId: null, boundary: true }
-  ];
+  // West2 checks must be structural (content is authored and may change).
+  assertPass(typeof area.defaultTerrainId === "string" && area.defaultTerrainId.length > 0, "west2 defaultTerrainId");
+  assertPass(typeof area.regionId === "string" && area.regionId.length > 0, "west2 regionId");
+  assertPass(area.bounds && typeof area.bounds === "object", "west2 bounds");
+  assertPass(Array.isArray(area.terrainZones), "west2 terrainZones array");
 
-  for (const s of samples) {
-    const q = queryWildernessCoordinate(area, s.x, s.y);
-    if (s.boundary) {
-      assertPass(q.kind === "boundary" && q.insideBounds === false && q.terrainId === null, `sample (${s.x},${s.y}) boundary`);
-    } else {
-      assertPass(q.kind === "terrain" && q.insideBounds === true, `sample (${s.x},${s.y}) kind`);
-      assertPass(q.terrainId === s.terrainId, `sample (${s.x},${s.y}) expected ${s.terrainId}, got ${q.terrainId}`);
-      assertPass(getTerrainIdAtCoordinate(area, s.x, s.y) === s.terrainId, `getTerrainIdAtCoordinate (${s.x},${s.y})`);
-    }
+  // Ensure generated terrain zones module can import (authoring pipeline relies on this).
+  const gen = await import("../data/wilderness/areas/generated/west2_old_marker_patrol_line.generated_terrain_zones.js");
+  const genKeys = Object.keys(gen || {});
+  assertPass(genKeys.length >= 1, "west2 generated module exports");
+
+  // Query semantics: inside bounds => terrain kind; outside => boundary/null.
+  const out = queryWildernessCoordinate(area, area.bounds.maxX + 1, area.bounds.maxY + 1);
+  assertPass(out.kind === "boundary" && out.insideBounds === false && out.terrainId === null, "west2 boundary query semantics");
+
+  // Query result must be either boundary/null or a known terrainId.
+  // After the activeCellKeys decoupling, every authored in-bounds point must
+  // resolve to a terrain (never to boundary), regardless of mask membership.
+  for (const p of [
+    { x: area.bounds.minX, y: area.bounds.minY },
+    { x: area.bounds.maxX, y: area.bounds.maxY },
+    { x: 0, y: 0 }
+  ]) {
+    const q = queryWildernessCoordinate(area, p.x, p.y);
+    assertPass(q.kind === "terrain" && q.insideBounds === true, `west2 query kind (${p.x},${p.y})`);
+    assertPass(typeof q.terrainId === "string" && q.terrainId.length > 0, `west2 terrainId type (${p.x},${p.y})`);
+    assertPass(Object.prototype.hasOwnProperty.call(TERRAIN_BIOME_DEFS, q.terrainId), `west2 terrainId must exist: ${q.terrainId}`);
+    const t = getTerrainIdAtCoordinate(area, p.x, p.y);
+    assertPass(t === q.terrainId, `west2 getTerrainIdAtCoordinate matches query (${p.x},${p.y})`);
   }
-  console.log("[PASS] west2_old_marker_patrol_line coordinate samples passed");
+  console.log("[PASS] west2_old_marker_patrol_line structural checks passed");
 
-  const lineBandEndpointProbe = {
+  // Optional active mask contract: mask is now a presentation hint only.
+  // (1) in-mask cells still resolve to terrain, (2) bounds-in out-of-mask
+  // cells also resolve to terrain (no boundary), with `inActiveCellMask:false`,
+  // (3) bounds-out remains boundary/null with `boundaryKind:"out_of_bounds"`.
+  const maskFixture = {
+    id: "synthetic_active_mask_probe",
+    label: "synthetic",
+    regionId: "West2",
+    entryMapId: "synthetic",
+    runtimeMapId: "synthetic",
+    fallbackMapId: "synthetic",
+    bounds: { minX: 0, maxX: 2, minY: 0, maxY: 2 },
+    step: { metersPerCell: 150, baseMinutes: 10, baseStaminaCost: 5 },
+    defaultTerrainId: "wind_packed_snow",
+    activeCellKeys: new Set(["0,0", "1,0"]),
+    terrainZones: [
+      { id: "zone_0_0", terrainId: "flagged_marker_line", priority: 10, shape: { type: "rect", x1: 0, y1: 0, x2: 0, y2: 0 } }
+    ],
+    landmarks: []
+  };
+  const m00 = queryWildernessCoordinate(maskFixture, 0, 0);
+  assertPass(m00.kind === "terrain" && m00.terrainId === "flagged_marker_line", "active mask: (0,0) is active and zone hit");
+  assertPass(m00.inActiveCellMask === true, "active mask: (0,0) inActiveCellMask=true");
+  const m10 = queryWildernessCoordinate(maskFixture, 1, 0);
+  assertPass(m10.kind === "terrain" && m10.terrainId === "wind_packed_snow", "active mask: (1,0) is active and defaults");
+  assertPass(m10.inActiveCellMask === true, "active mask: (1,0) inActiveCellMask=true");
+  const m20 = queryWildernessCoordinate(maskFixture, 2, 0);
+  assertPass(m20.kind === "terrain", "active mask: (2,0) bounds-in out-of-mask now terrain");
+  assertPass(m20.terrainId === "wind_packed_snow", "active mask: (2,0) falls through to default terrain");
+  assertPass(m20.inActiveCellMask === false, "active mask: (2,0) inActiveCellMask=false hint");
+  assertPass(m20.boundaryKind == null, "active mask: (2,0) boundaryKind is null");
+  const mout = queryWildernessCoordinate(maskFixture, -1, 0);
+  assertPass(mout.kind === "boundary" && mout.terrainId === null, "active mask: bounds out => boundary");
+  assertPass(mout.boundaryKind === "out_of_bounds", "active mask: bounds out boundaryKind=out_of_bounds");
+  console.log("[PASS] optional active mask fixture passed");
+
+  // Coordinate query algorithm contract: use a fixed fixture area (not authored data).
+  const fixtureArea = {
     id: "synthetic_line_band_endpoint_probe",
     label: "synthetic",
     regionId: "West2",
@@ -90,18 +140,33 @@ function main() {
     landmarks: []
   };
   assertPass(
-    getTerrainIdAtCoordinate(lineBandEndpointProbe, 0, 0) === "flagged_marker_line",
+    getTerrainIdAtCoordinate(fixtureArea, 0, 0) === "flagged_marker_line",
     "line_band closed segment: start endpoint within radius must hit"
   );
   assertPass(
-    getTerrainIdAtCoordinate(lineBandEndpointProbe, 6, 2) === "flagged_marker_line",
+    getTerrainIdAtCoordinate(fixtureArea, 6, 2) === "flagged_marker_line",
     "line_band closed segment: end endpoint within radius must hit"
   );
+
+  // Overlap priority: a higher-priority rect must win over the line_band at (0,0).
+  const fixtureAreaOverlap = structuredClone(fixtureArea);
+  fixtureAreaOverlap.terrainZones = [
+    ...fixtureArea.terrainZones,
+    {
+      id: "probe_high_priority_rect",
+      terrainId: "managed_compacted_route",
+      priority: 10,
+      shape: { type: "rect", x1: 0, y1: 0, x2: 0, y2: 0 }
+    }
+  ];
   assertPass(
-    queryWildernessCoordinate(area, 0, 0).terrainId === "managed_compacted_route",
-    "(0,0) must prefer higher-priority outpost over overlapping line_band"
+    getTerrainIdAtCoordinate(fixtureAreaOverlap, 0, 0) === "managed_compacted_route",
+    "overlap priority: rect must win over line_band at (0,0)"
   );
-  console.log("[PASS] line_band closed-segment endpoint + overlap priority checks passed");
+  const fixtureOut = queryWildernessCoordinate(fixtureAreaOverlap, fixtureAreaOverlap.bounds.maxX + 1, fixtureAreaOverlap.bounds.maxY + 1);
+  assertPass(fixtureOut.kind === "boundary" && fixtureOut.insideBounds === false && fixtureOut.terrainId === null, "fixture boundary semantics");
+
+  console.log("[PASS] coordinate query fixture samples passed");
 
   const regionIds = new Set(listWildernessRegionProfiles().map((p) => p.id));
   const terrainIds = new Set(Object.keys(TERRAIN_BIOME_DEFS));
@@ -156,4 +221,10 @@ function main() {
   console.log("[PASS] negative validation cases rejected as expected");
 }
 
-main();
+main().catch((e) => {
+  // Keep failure format consistent with assertPass throws.
+  const msg = String(e?.stack || e?.message || e || "");
+  // eslint-disable-next-line no-console
+  console.error(msg);
+  process.exit(1);
+});

@@ -16,11 +16,13 @@ import { ensureRecordsEntryEmphasisRegistration } from "./ui/transient/sidebar_r
 import { ensureWinddykeThermalGuideForCurrentState } from "./ui/winddyke_thermal_intro_guide.js";
 import { validateTransitData } from "./engine/transit/transit_validate.js";
 import { initAchievementStore } from "./engine/achievement_store.js";
+import { isReleaseBuild } from "./engine/release_flag.js";
 
 const STARTUP_MAP_ID = "menu_main";
 const HOST_MARKER_SESSION_DISMISS_KEY = "cc:hostDebugMarker:dismissed";
 
 function shouldRunLiveInteractionAudit() {
+  if (isReleaseBuild()) return false;
   try {
     return new URLSearchParams(window.location.search).get("interactionAudit") === "1";
   } catch {
@@ -29,6 +31,7 @@ function shouldRunLiveInteractionAudit() {
 }
 
 function isBuildDebugEnabled() {
+  if (isReleaseBuild()) return false;
   try {
     const params = new URLSearchParams(window.location.search);
     if (params.get("debugBuild") === "1") return true;
@@ -102,6 +105,7 @@ function dismissHostMarker(marker) {
 }
 
 function mountHostMarker() {
+  if (isReleaseBuild()) return;
   if (!shouldShowHostMarker()) return;
 
   if (isHostMarkerDismissedForSession()) {

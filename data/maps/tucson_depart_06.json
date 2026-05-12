@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "我常常觉得\n\n过去的事情不重要",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_depart_06_continue", "text": "继续", "targetMapId": "tucson_depart_07", "ui": { "type": "button", "priority": "primary" } }
   ]

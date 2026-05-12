@@ -8,7 +8,7 @@ function isNonEmptyString(value) {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-export function createStartWildernessSessionPatch({ areaSpec, originMapId, nowMinutes }) {
+export function createStartWildernessSessionPatch({ areaSpec, originMapId, nowMinutes, startAt }) {
   const errors = [];
   if (!areaSpec || typeof areaSpec !== "object" || Array.isArray(areaSpec)) {
     errors.push("areaSpec must be a non-null object");
@@ -19,6 +19,9 @@ export function createStartWildernessSessionPatch({ areaSpec, originMapId, nowMi
   if (!Number.isFinite(nowMinutes)) {
     errors.push("nowMinutes must be a finite number");
   }
+  const startAtObj = startAt && typeof startAt === "object" ? startAt : null;
+  const startX = startAtObj && Number.isInteger(startAtObj.x) ? startAtObj.x : 0;
+  const startY = startAtObj && Number.isInteger(startAtObj.y) ? startAtObj.y : 0;
   if (areaSpec && typeof areaSpec === "object" && !Array.isArray(areaSpec)) {
     if (!isNonEmptyString(areaSpec.id)) errors.push("areaSpec.id must be a non-empty string");
     if (!isNonEmptyString(areaSpec.regionId)) errors.push("areaSpec.regionId must be a non-empty string");
@@ -41,8 +44,8 @@ export function createStartWildernessSessionPatch({ areaSpec, originMapId, nowMi
     originMapId: originMapId.trim(),
     runtimeMapId: areaSpec.runtimeMapId.trim(),
     fallbackMapId: areaSpec.fallbackMapId.trim(),
-    x: 0,
-    y: 0,
+    x: startX,
+    y: startY,
     heading: "N",
     state: "NAVIGATING",
     trailConfidence: 100,
@@ -51,8 +54,8 @@ export function createStartWildernessSessionPatch({ areaSpec, originMapId, nowMi
     stepsTaken: 0,
     lastSafePoint: {
       areaId,
-      x: 0,
-      y: 0,
+      x: startX,
+      y: startY,
       mapId: originMapId.trim(),
       reason: "session_start"
     },

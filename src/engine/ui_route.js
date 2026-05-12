@@ -1,5 +1,5 @@
 import { getCanonicalCurrentMap, getCanonicalMapId as readCanonicalMapId } from "./map_context.js";
-import { resolveMapMiniMapBranch } from "./minimap/minimap_spec_registry.js";
+import { resolveCurrentMiniMapBranch } from "./minimap/minimap_spec_registry.js";
 
 const UI_ROUTE_TRACE_MAX = 200;
 const UI_OVERLAY_TRACE_MAX = 200;
@@ -36,6 +36,12 @@ function isMenuMapId(mapId) {
   return id === "menu" || id === "menu_more" || id.startsWith("menu_");
 }
 
+/** Overlay routing only; full VM availability is finalized in renderer. */
+export function isWildernessRuntimeMiniMapAvailable(currentMapId, stateOrUiContext = null) {
+  void stateOrUiContext;
+  return String(currentMapId || "").trim() === "wilderness_runtime";
+}
+
 export function getCanonicalMapId(state) {
   return readCanonicalMapId(state);
 }
@@ -52,16 +58,28 @@ export function readCriticalUiGateMode(state) {
   return "NORMAL";
 }
 
-export function resolveEffectiveUiOverlay(canonicalUi, currentMapId, criticalGateMode = "NORMAL") {
+export function resolveEffectiveUiOverlay(canonicalUi, currentMapId, criticalGateMode = "NORMAL", currentMap = null) {
   const page = String(canonicalUi?.page || "").trim();
   if (page !== CANONICAL_UI_PAGE_MAP) return null;
   if (isMenuMapId(currentMapId)) return null;
   if (criticalGateMode === "DEAD" || criticalGateMode === "COLLAPSE") return null;
 
+  const minimapDisabled = currentMap?.ui && typeof currentMap.ui === "object" && currentMap.ui.minimap === false;
   const explicitOverlay = normalizeUiOverlay(canonicalUi?.overlay);
+  if (explicitOverlay === UI_OVERLAY_TYPES.MAP_MINIMAP && minimapDisabled) {
+    return null;
+  }
   if (explicitOverlay) return explicitOverlay;
 
-  const minimapBranch = resolveMapMiniMapBranch(currentMapId);
+  if (minimapDisabled) {
+    return null;
+  }
+
+  if (isWildernessRuntimeMiniMapAvailable(currentMapId)) {
+    return UI_OVERLAY_TYPES.MAP_MINIMAP;
+  }
+
+  const minimapBranch = resolveCurrentMiniMapBranch(currentMapId, currentMap);
   return minimapBranch ? UI_OVERLAY_TYPES.MAP_MINIMAP : null;
 }
 
@@ -312,11 +330,12 @@ export function resolveUiSurface(state, meta = {}) {
   const snapshot = getUiRouteSnapshot(state);
   const rootType = isMenuMapId(snapshot.currentMapId) ? UI_ROOT_TYPES.MENU : UI_ROOT_TYPES.MAP;
   const criticalGateMode = readCriticalUiGateMode(state);
+  const currentMap = getCanonicalCurrentMap(state, { source: String(meta?.source || "route_resolve"), repairState: true });
   const overlayType = resolveEffectiveUiOverlay({
     page: snapshot.uiPage,
     overlay: snapshot.uiOverlay,
     modal: snapshot.uiModal
-  }, snapshot.currentMapId, criticalGateMode);
+  }, snapshot.currentMapId, criticalGateMode, currentMap);
   const hostType = rootType === UI_ROOT_TYPES.MENU ? "menu_host" : "map_host";
   const violations = [];
 

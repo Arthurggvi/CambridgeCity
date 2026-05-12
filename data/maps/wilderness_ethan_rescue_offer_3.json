@@ -1,0 +1,14 @@
+{
+  "id": "wilderness_ethan_rescue_offer_3",
+  "legacy": true,
+  "name": "迷路的企鹅",
+  "description": "伊森从六轮车上跳下来，靴底踩碎一层硬雪。\n\n“看起来我们抓到了一只迷路的企鹅。”\n\n他站在灯光边缘看了你一眼，语气还是那副不太正经的样子。",
+  "actions": [
+    {
+      "id": "ethan_rescue_offer_continue_3",
+      "text": "继续",
+      "kind": "TRANSITION",
+      "payload": { "toMapId": "wilderness_ethan_rescue_offer_4", "minutes": 0 }
+    }
+  ]
+}

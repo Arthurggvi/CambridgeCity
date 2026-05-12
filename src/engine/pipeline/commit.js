@@ -38,10 +38,23 @@ import { applyBusinessIntents } from "../business/business_commit_runtime.js";
 import { ensureItemsDbLoaded } from "../items_db.js";
 import {
   createEndWildernessSessionPatch,
+  createRecoverWildernessSessionPatch,
   createStartWildernessSessionPatch
 } from "../wilderness/wilderness_session_service.js";
-import { normalizeWildernessState } from "../wilderness/wilderness_state.js";
+import {
+  applyEthanRescueRecoveryFloor,
+  detectEthanRescueEligibleCollapse,
+  ETHAN_RESCUE_BED_MAP_ID,
+  processWildernessEthanRescueAfterMove
+} from "../wilderness/wilderness_ethan_rescue_service.js";
+import { normalizeWildernessState, oppositeWildernessMoveDirection } from "../wilderness/wilderness_state.js";
 import { normalizeWildernessBlocker } from "../wilderness/wilderness_blocker.js";
+import {
+  integrateWildernessEventQueueAfterSuccessfulMove,
+  mergeWildernessCoreWithEventQueue,
+  maybeNavigateToWildernessEventRuntimeAfterMove
+} from "./commit_adapters/wilderness_commit_adapter.js";
+import { executeWildernessEventActionCommit } from "../wilderness/events/wilderness_event_action_integration.js";
 import { advanceTimeMinutes, getTimeView } from "../time.js";
 import { applyTimeToPlayer } from "../player.js";
 
@@ -263,11 +276,16 @@ function clearTransientUiResidues() {
     "profile-overlay-host",
     "social-overlay-host",
     "notice-dialog-host",
+    "wilderness-readout-overlay-host",
     "menu-transition-overlay"
   ];
   for (const id of cleanupTargets) {
     const node = document.getElementById(id);
     if (!node) continue;
+    if (id === "wilderness-readout-overlay-host") {
+      document.getElementById("app")?.removeAttribute("inert");
+      document.getElementById("choices")?.removeAttribute("inert");
+    }
     if (id === "inventory-overlay-host" || id === "tasks-overlay-host" || id === "profile-overlay-host" || id === "social-overlay-host" || id === "notice-dialog-host") {
       node.innerHTML = "";
       node.setAttribute("aria-hidden", "true");
@@ -320,7 +338,21 @@ function takeWildernessSurvivalVitalsSnapshot(player) {
   };
 }
 
-async function applyWildernessPipelineIntents(plan, activeState) {
+function sliceWildernessLostMoveFromPlan(mp) {
+  const lm = mp?.lostMove;
+  if (!lm || typeof lm !== "object") return null;
+  return {
+    lost: lm.lost === true,
+    roll: Number(lm.roll),
+    baseChance: lm.baseChance,
+    modifierAdditive: lm.modifierAdditive,
+    finalChance: lm.finalChance,
+    intendedDirection: String(lm.intendedDirection || "").trim(),
+    actualDirection: String(lm.actualDirection || "").trim()
+  };
+}
+
+async function applyWildernessPipelineIntents(plan, activeState, wildernessExtras = {}) {
   const results = [];
   const intents = Array.isArray(plan?.wildernessPipelineIntents) ? plan.wildernessPipelineIntents : [];
   const nowMin = Math.max(0, Math.floor(Number(activeState?.time?.totalMinutes ?? 0)));
@@ -331,7 +363,8 @@ async function applyWildernessPipelineIntents(plan, activeState) {
       const patch = createStartWildernessSessionPatch({
         areaSpec: intent.areaSpec,
         originMapId: String(intent.originMapId || "").trim(),
-        nowMinutes: nowMin
+        nowMinutes: nowMin,
+        startAt: intent.startAt
       });
       if (!patch.ok) {
         results.push({ ok: false, type: "WILDERNESS_START_SESSION", errors: patch.errors || [] });
@@ -418,15 +451,39 @@ async function applyWildernessPipelineIntents(plan, activeState) {
           regionId: String(mp.regionId || ""),
           at: mp.to && typeof mp.to === "object" ? mp.to : { x: 0, y: 0 }
         });
-        results.push({
+        const failRow = {
           type: "WILDERNESS_MOVE",
           ok: false,
           direction: mp.direction,
           from: mp.from && typeof mp.from === "object" ? { x: mp.from.x, y: mp.from.y } : { x: 0, y: 0 },
           to: mp.to && typeof mp.to === "object" ? { x: mp.to.x, y: mp.to.y } : { x: 0, y: 0 },
           terrainId: mp.terrainId != null && mp.terrainId !== "" ? String(mp.terrainId) : null,
-          blocker
-        });
+          blocker,
+          wildernessEventQueue: {
+            rolled: false,
+            hit: false,
+            selectedPoolId: null,
+            selectedEventId: null,
+            enqueuedFrameId: null,
+            activeFrameId: null,
+            shouldResumeTail: false
+          }
+        };
+        if (mp.lostMove && typeof mp.lostMove === "object") {
+          const lm = mp.lostMove;
+          failRow.lostMove = {
+            lost: lm.lost === true,
+            roll: Number(lm.roll),
+            baseChance: lm.baseChance,
+            modifierAdditive: lm.modifierAdditive,
+            finalChance: lm.finalChance,
+            intendedDirection: String(lm.intendedDirection || "").trim(),
+            actualDirection: String(lm.actualDirection || "").trim()
+          };
+          failRow.intendedDirection = String(mp.intendedDirection || lm.intendedDirection || "").trim();
+          failRow.actualDirection = String(mp.actualDirection || lm.actualDirection || "").trim();
+        }
+        results.push(failRow);
         continue;
       }
 
@@ -486,13 +543,23 @@ async function applyWildernessPipelineIntents(plan, activeState) {
 
       applyTimeToPlayer(activeState.player, advanced, playerCtx);
 
+      // Bug3 (stamina soft-lock fix): movement plan may carry a
+      // `staminaInsufficient` marker when the resolver detected
+      // `0 < stamina < cost`. In that branch we explicitly clamp stamina to
+      // 0, leave coordinates / stepsTaken untouched, and let the existing
+      // Ethan rescue post-processor pick up the stamina_zero crossing via
+      // the before/after survival snapshots. Resolve never wrote to player.
+      const staminaInsufficientPath = mp.staminaInsufficient === true;
+
       const rawExtraCost = mp.staminaCost;
       const staminaExtraInfinity = rawExtraCost === Infinity;
       const staminaExtraCostFinite = staminaExtraInfinity
         ? 0
         : Math.max(0, Math.trunc(Number(rawExtraCost ?? 0)));
 
-      if (staminaExtraInfinity) {
+      if (staminaInsufficientPath) {
+        activeState.player.physio.stamina = 0;
+      } else if (staminaExtraInfinity) {
         activeState.player.physio.stamina = 0;
       } else {
         const curStamina = Number(activeState.player.physio.stamina);
@@ -503,34 +570,380 @@ async function applyWildernessPipelineIntents(plan, activeState) {
       const prevW = activeState.world?.wilderness && typeof activeState.world.wilderness === "object"
         ? activeState.world.wilderness
         : {};
-      const nextWild = normalizeWildernessState({
-        ...prevW,
-        x: mp.to.x,
-        y: mp.to.y,
-        heading: mp.direction,
-        stepsTaken: Math.max(0, Math.trunc(Number(prevW.stepsTaken ?? 0))) + 1,
-        lastUpdatedAt: Math.max(0, Math.floor(Number(activeState.time?.totalMinutes ?? 0)))
-      });
-      activeState.world.wilderness = nextWild;
+      if (!staminaInsufficientPath) {
+        const fromPx = Number.isInteger(prevW.x) ? prevW.x : 0;
+        const fromPy = Number.isInteger(prevW.y) ? prevW.y : 0;
+        const moveDirRaw = String(mp.actualDirection || mp.direction || "").trim().toUpperCase();
+        const returnDir = oppositeWildernessMoveDirection(moveDirRaw);
+        const nextWildCore = normalizeWildernessState({
+          ...prevW,
+          x: mp.to.x,
+          y: mp.to.y,
+          heading: moveDirRaw,
+          previousPosition: { x: fromPx, y: fromPy },
+          lastMoveDirection: moveDirRaw,
+          returnDirection: returnDir,
+          stepsTaken: Math.max(0, Math.trunc(Number(prevW.stepsTaken ?? 0))) + 1,
+          lastUpdatedAt: Math.max(0, Math.floor(Number(activeState.time?.totalMinutes ?? 0))),
+          ...(mp.landmarkIntercept && String(mp.landmarkIntercept.gotoMapId || "").trim()
+            ? { state: "LANDMARK" }
+            : {})
+        });
+        activeState.world.wilderness = mergeWildernessCoreWithEventQueue(prevW, nextWildCore);
+      }
 
       const afterSurvival = takeWildernessSurvivalVitalsSnapshot(activeState.player);
 
+      const gotoLandmarkId =
+        !staminaInsufficientPath
+        && mp.landmarkIntercept
+        && String(mp.landmarkIntercept.gotoMapId || "").trim()
+          ? String(mp.landmarkIntercept.gotoMapId).trim()
+          : "";
+      const moveRow = staminaInsufficientPath
+        ? {
+            ok: false,
+            type: "WILDERNESS_MOVE",
+            terrainId: mp.terrainId,
+            minutes: advanced,
+            staminaCost: staminaExtraInfinity ? Infinity : staminaExtraCostFinite,
+            from: mp.from,
+            // Coordinates do NOT advance on a stamina-collapse attempt; the
+            // canonical `to` reflects the world truth (still the origin cell).
+            to: mp.from,
+            staminaInsufficient: true,
+            collapseReason: String(mp.collapseReason || "stamina_depleted_during_wilderness_move"),
+            staminaBefore: Number.isFinite(Number(mp.staminaBefore)) ? Number(mp.staminaBefore) : null,
+            survival: {
+              playerTimeApplied: true,
+              advancedMinutes: advanced,
+              staminaExtraCost: 0,
+              staminaExtraCostInfinity: false,
+              before: beforeSurvival,
+              after: afterSurvival
+            },
+            wildernessEventQueue: {
+              rolled: false,
+              hit: false,
+              selectedPoolId: null,
+              selectedEventId: null,
+              enqueuedFrameId: null,
+              activeFrameId: null,
+              shouldResumeTail: false
+            }
+          }
+        : {
+            ok: true,
+            type: "WILDERNESS_MOVE",
+            terrainId: mp.terrainId,
+            minutes: advanced,
+            staminaCost: staminaExtraInfinity ? Infinity : staminaExtraCostFinite,
+            from: mp.from,
+            to: mp.to,
+            survival: {
+              playerTimeApplied: true,
+              advancedMinutes: advanced,
+              staminaExtraCost: staminaExtraInfinity ? null : staminaExtraCostFinite,
+              staminaExtraCostInfinity: staminaExtraInfinity,
+              before: beforeSurvival,
+              after: afterSurvival
+            }
+          };
+      const lostSlice = sliceWildernessLostMoveFromPlan(mp);
+      if (lostSlice) {
+        moveRow.lostMove = lostSlice;
+        if (!staminaInsufficientPath && lostSlice.lost === true) {
+          moveRow.uiEvent = "wilderness_lost_direction";
+        }
+      }
+      const idir = String(mp.intendedDirection || "").trim();
+      if (idir) moveRow.intendedDirection = idir;
+      const adir = String(mp.actualDirection || mp.direction || "").trim();
+      if (adir) moveRow.actualDirection = adir;
+      if (!staminaInsufficientPath && gotoLandmarkId && mp.landmarkIntercept) {
+        moveRow.landmarkIntercept = mp.landmarkIntercept;
+        moveRow.enteredMapId = gotoLandmarkId;
+        moveRow.wildernessSessionPreserved = true;
+      }
+      if (!staminaInsufficientPath) {
+        moveRow.wildernessEventQueue = integrateWildernessEventQueueAfterSuccessfulMove({
+          activeState,
+          intent,
+          movementPlan: mp,
+          rngLike: undefined,
+          registries: undefined
+        });
+      }
+      results.push(moveRow);
+
+      const ethanNav = processWildernessEthanRescueAfterMove(
+        activeState,
+        results,
+        { beforeSurvival, afterSurvival, mp },
+        wildernessExtras
+      );
+
+      // Bug3 (round 2): staminaInsufficient holdout fallback. When the
+      // resolver flagged the plan as `staminaInsufficient` but the
+      // before/after vitals do NOT cross the `stamina_zero` threshold
+      // (because `before.stamina <= 0` already), no Ethan rescue row
+      // gets pushed. The click would otherwise silently no-op, which the
+      // user explicitly disallowed ("不准吞掉 action 后无反馈"). Push a
+      // dedicated holdout notice row carrying its own dialog payload so
+      // the dispatch layer can surface a non-blocker feedback dialog
+      // (distinct from the removed "体力不足" blocker copy).
+      if (
+        staminaInsufficientPath
+        && !detectEthanRescueEligibleCollapse({ before: beforeSurvival, after: afterSurvival })
+      ) {
+        results.push({
+          type: "WILDERNESS_STAMINA_HOLDOUT_NOTICE",
+          ok: true,
+          collapseReason: String(mp.collapseReason || "stamina_already_depleted"),
+          staminaBefore: Number.isFinite(Number(mp.staminaBefore)) ? Number(mp.staminaBefore) : 0,
+          notice: {
+            title: "无力前行",
+            message: "你的双腿已经使不上力气。先停下来恢复体力，或等待援助。",
+            actions: [{ id: "ok", label: "知道了" }]
+          }
+        });
+      }
+
+      if (ethanNav.navigateMapId) {
+        const navMap = await loadMap(ethanNav.navigateMapId);
+        if (navMap) {
+          applyCommittedMapState(activeState, ethanNav.navigateMapId, navMap, {
+            clearOverlay: true,
+            clearModal: true,
+            resetScene: true
+          });
+          if (!activeState.ui || typeof activeState.ui !== "object") {
+            activeState.ui = {};
+          }
+          activeState.ui.transit = deriveTransitUiStateFromRuntimeTruth(activeState);
+        }
+      }
+
+      if (gotoLandmarkId && !ethanNav.skipLandmark) {
+        const landmarkMap = await loadMap(gotoLandmarkId);
+        if (landmarkMap) {
+          applyCommittedMapState(activeState, gotoLandmarkId, landmarkMap, {
+            clearOverlay: true,
+            clearModal: true,
+            resetScene: true
+          });
+          if (!activeState.ui || typeof activeState.ui !== "object") {
+            activeState.ui = {};
+          }
+          activeState.ui.transit = deriveTransitUiStateFromRuntimeTruth(activeState);
+        }
+      }
+
+      await maybeNavigateToWildernessEventRuntimeAfterMove({
+        activeState,
+        moveRowWildernessQueue: moveRow.wildernessEventQueue,
+        ethanNav,
+        gotoLandmarkId,
+        loadMap,
+        applyCommittedMapState,
+        deriveTransitUiStateFromRuntimeTruth
+      });
+    } else if (intent.type === "WILDERNESS_EVENT_ACTION") {
+      const evtRow = await executeWildernessEventActionCommit({
+        activeState,
+        intent,
+        loadMap,
+        applyCommittedMapState,
+        deriveTransitUiStateFromRuntimeTruth,
+        rngLike: undefined
+      });
+      results.push(evtRow);
+    } else if (intent.type === "WILDERNESS_ETHAN_RESCUE_ACCEPT") {
+      const cur = activeState?.world?.wilderness;
+      const flags = cur && typeof cur.flags === "object" ? cur.flags : {};
+      if (!cur || typeof cur !== "object" || cur.active !== true) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_ACCEPT",
+          errors: ["wilderness session not active"]
+        });
+        continue;
+      }
+      if (String(cur.state || "").trim() !== "RESCUE_PENDING") {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_ACCEPT",
+          errors: ["wilderness state must be RESCUE_PENDING"]
+        });
+        continue;
+      }
+      if (String(flags.ethanRescueLastReason || "").trim() !== "stamina_zero") {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_ACCEPT",
+          errors: ["ethanRescueLastReason must be stamina_zero"]
+        });
+        continue;
+      }
+      const nowMin = Math.max(0, Math.floor(Number(activeState?.time?.totalMinutes ?? 0)));
+      const fallbackMapId = String(cur.fallbackMapId || "west2_outpost_rescue_station").trim() || "west2_outpost_rescue_station";
+      const patch = createRecoverWildernessSessionPatch({
+        currentWilderness: cur,
+        fallbackMapId,
+        reason: "ethan_rescue_stamina_accept",
+        nowMinutes: nowMin
+      });
+      if (!patch.ok) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_ACCEPT",
+          errors: patch.errors || ["recover patch failed"]
+        });
+        continue;
+      }
+      applyEthanRescueRecoveryFloor(activeState.player);
+      activeState.world.wilderness = patch.wilderness;
+      const bedMap = await loadMap(ETHAN_RESCUE_BED_MAP_ID);
+      if (!bedMap) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_ACCEPT",
+          errors: [`loadMap failed: ${ETHAN_RESCUE_BED_MAP_ID}`]
+        });
+        continue;
+      }
+      applyCommittedMapState(activeState, ETHAN_RESCUE_BED_MAP_ID, bedMap, {
+        clearOverlay: true,
+        clearModal: true,
+        resetScene: true
+      });
+      if (!activeState.ui || typeof activeState.ui !== "object") {
+        activeState.ui = {};
+      }
+      activeState.ui.transit = deriveTransitUiStateFromRuntimeTruth(activeState);
       results.push({
         ok: true,
-        type: "WILDERNESS_MOVE",
-        terrainId: mp.terrainId,
-        minutes: advanced,
-        staminaCost: staminaExtraInfinity ? Infinity : staminaExtraCostFinite,
-        from: mp.from,
-        to: mp.to,
-        survival: {
-          playerTimeApplied: true,
-          advancedMinutes: advanced,
-          staminaExtraCost: staminaExtraInfinity ? null : staminaExtraCostFinite,
-          staminaExtraCostInfinity: staminaExtraInfinity,
-          before: beforeSurvival,
-          after: afterSurvival
-        }
+        type: "WILDERNESS_ETHAN_RESCUE_ACCEPT",
+        reason: "stamina_zero",
+        recovered: true,
+        destinationMapId: ETHAN_RESCUE_BED_MAP_ID,
+        attributeFloorApplied: true
+      });
+    } else if (intent.type === "WILDERNESS_ETHAN_RESCUE_REFUSE") {
+      const curRef = activeState?.world?.wilderness;
+      const flagsRef = curRef && typeof curRef.flags === "object" ? curRef.flags : {};
+      if (!curRef || typeof curRef !== "object" || curRef.active !== true) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_REFUSE",
+          errors: ["wilderness session not active"]
+        });
+        continue;
+      }
+      if (String(curRef.state || "").trim() !== "RESCUE_PENDING") {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_REFUSE",
+          errors: ["wilderness state must be RESCUE_PENDING"]
+        });
+        continue;
+      }
+      if (String(flagsRef.ethanRescueLastReason || "").trim() !== "stamina_zero") {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_REFUSE",
+          errors: ["ethanRescueLastReason must be stamina_zero"]
+        });
+        continue;
+      }
+      if (!activeState.player || typeof activeState.player !== "object") {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_REFUSE",
+          errors: ["player missing"]
+        });
+        continue;
+      }
+      if (!activeState.player.physio || typeof activeState.player.physio !== "object") {
+        activeState.player.physio = {};
+      }
+      const staminaBefore = Number(activeState.player.physio.stamina);
+      const baseSt = Number.isFinite(staminaBefore) ? staminaBefore : 0;
+      const staminaAfter = Math.min(100, Math.max(0, baseSt + 5));
+      activeState.player.physio.stamina = staminaAfter;
+
+      const runtimeMapId = String(curRef.runtimeMapId || "wilderness_runtime").trim() || "wilderness_runtime";
+      const rtMapRef = await loadMap(runtimeMapId);
+      if (!rtMapRef) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_ETHAN_RESCUE_REFUSE",
+          errors: [`loadMap failed: ${runtimeMapId}`]
+        });
+        continue;
+      }
+      applyCommittedMapState(activeState, runtimeMapId, rtMapRef, {
+        clearOverlay: true,
+        clearModal: true,
+        resetScene: true
+      });
+      activeState.world.wilderness = normalizeWildernessState({
+        ...curRef,
+        active: true,
+        state: "NAVIGATING"
+      });
+      if (!activeState.ui || typeof activeState.ui !== "object") {
+        activeState.ui = {};
+      }
+      activeState.ui.transit = deriveTransitUiStateFromRuntimeTruth(activeState);
+      results.push({
+        ok: true,
+        type: "WILDERNESS_ETHAN_RESCUE_REFUSE",
+        reason: "stamina_zero_refused",
+        runtimeMapId,
+        staminaBefore: baseSt,
+        staminaAfter
+      });
+    } else if (intent.type === "WILDERNESS_RETURN_FROM_LANDMARK") {
+      const cur = activeState?.world?.wilderness;
+      if (!cur || typeof cur !== "object" || cur.active !== true) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_RETURN_FROM_LANDMARK",
+          errors: ["wilderness session not active"]
+        });
+        continue;
+      }
+      const runtimeMapId = String(cur.runtimeMapId || "wilderness_runtime").trim() || "wilderness_runtime";
+      const rtMap = await loadMap(runtimeMapId);
+      if (!rtMap) {
+        results.push({
+          ok: false,
+          type: "WILDERNESS_RETURN_FROM_LANDMARK",
+          errors: [`loadMap failed: ${runtimeMapId}`]
+        });
+        continue;
+      }
+      applyCommittedMapState(activeState, runtimeMapId, rtMap, {
+        clearOverlay: true,
+        clearModal: true,
+        resetScene: true
+      });
+      activeState.world.wilderness = normalizeWildernessState({
+        ...cur,
+        active: true,
+        state: "NAVIGATING"
+      });
+      if (!activeState.ui || typeof activeState.ui !== "object") {
+        activeState.ui = {};
+      }
+      activeState.ui.transit = deriveTransitUiStateFromRuntimeTruth(activeState);
+      results.push({
+        ok: true,
+        type: "WILDERNESS_RETURN_FROM_LANDMARK",
+        runtimeMapId,
+        wildernessSessionPreserved: true,
+        return_from_landmark: true
       });
     }
   }
@@ -538,7 +951,7 @@ async function applyWildernessPipelineIntents(plan, activeState) {
   return results;
 }
 
-function applyCommittedMapState(state, mapId, map, options = {}) {
+export function applyCommittedMapState(state, mapId, map, options = {}) {
   const {
     clearOverlay = true,
     clearModal = true,
@@ -1017,8 +1430,16 @@ export async function commit(plan, gameState) {
   }
   activeState.player.social = normalizeSocialState(socialApplyResult.nextSocialState);
 
-  const wildernessPipelineResults = await applyWildernessPipelineIntents(plan, activeState);
-  
+  const wildernessExtras = {};
+  const wildernessPipelineResults = await applyWildernessPipelineIntents(plan, activeState, wildernessExtras);
+
+  let wildernessEventActionReport = null;
+  for (const row of wildernessPipelineResults) {
+    if (row?.wildernessEventAction && typeof row.wildernessEventAction === "object") {
+      wildernessEventActionReport = row.wildernessEventAction;
+    }
+  }
+
   // ========== 4. Invariants + Clamp ==========
   applyInvariants(activeState, String(plan?.action?.id || ""));
   const mapReconcile = await reconcileMapPointers(activeState);
@@ -1070,7 +1491,18 @@ export async function commit(plan, gameState) {
     profile: {
       intentsCount: mergedProfileIntents.length,
       delta: resolvedProfileDelta,
-      apply: profileApplyResult.report
+      apply: {
+        ...profileApplyResult.report,
+        // Keep intent-level reasons for UI adapters (no UI strings here).
+        intentOps: Array.isArray(resolvedProfileDelta?.intents)
+          ? resolvedProfileDelta.intents.map((intent) => ({
+              type: String(intent?.type || "").trim(),
+              key: intent?.key != null ? String(intent.key).trim() : null,
+              amount: Number.isFinite(Number(intent?.amount)) ? Math.trunc(Number(intent.amount)) : 0,
+              reason: String(intent?.reason || "").trim()
+            }))
+          : []
+      }
     },
     business: {
       intentsCount: Array.isArray(plan?.businessIntents) ? plan.businessIntents.length : 0,
@@ -1103,8 +1535,11 @@ export async function commit(plan, gameState) {
     },
     wilderness: {
       intentsCount: Array.isArray(plan?.wildernessPipelineIntents) ? plan.wildernessPipelineIntents.length : 0,
-      results: wildernessPipelineResults
+      results: wildernessPipelineResults,
+      ethanRescueHandled: wildernessExtras.ethanRescueHandled === true,
+      suppressGenericCollapseNotice: wildernessExtras.suppressGenericCollapseNotice === true
     },
+    wildernessEventAction: wildernessEventActionReport,
     events: triggeredEvents,
     advancedMinutes,
     logLines: addedLogLines,

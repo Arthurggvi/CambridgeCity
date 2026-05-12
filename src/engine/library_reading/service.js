@@ -7,6 +7,8 @@ import {
 } from "./state.js";
 
 const LIBRARY_READING_BLOCKER_REASON = "我读不下去更多了";
+const LIBRARY_READING_FIRST_READ_EXPERIENCE = 10;
+const LIBRARY_READING_FIRST_READ_REASON = "library_book_first_read";
 
 function createSeededRng(seedText) {
   let seed = 2166136261;
@@ -105,8 +107,14 @@ export function resolveLibraryReadingAction(gameState, { mapId, actionId, sceneI
     blocked: false,
     catalog,
     selectedBook,
-    selectedRecordId: String(selectedBook.recordId || "").trim() || null,
+    selectedContentId: String(selectedBook.contentId || "").trim() || null,
     isFirstRead,
+    reward: isFirstRead
+      ? Object.freeze({
+          experience: LIBRARY_READING_FIRST_READ_EXPERIENCE,
+          reason: LIBRARY_READING_FIRST_READ_REASON
+        })
+      : null,
     currentState,
     dailyState,
     nextState: createCommittedLibraryReadingState(currentState, {

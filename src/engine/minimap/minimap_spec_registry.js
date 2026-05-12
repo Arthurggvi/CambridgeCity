@@ -440,6 +440,13 @@ export function resolveMapMiniMapBranch(mapId) {
   return null;
 }
 
+export function resolveCurrentMiniMapBranch(currentMapId, currentMap) {
+  if (currentMap?.ui && typeof currentMap.ui === "object" && currentMap.ui.minimap === false) {
+    return null;
+  }
+  return resolveMapMiniMapBranch(currentMapId);
+}
+
 export function resolveWinddykeMiniMapSpec(mapId) {
   const id = String(mapId || "");
   const spec = MINIMAP_SPECS.heatcorridor.mapIdToNodeId.has(id)

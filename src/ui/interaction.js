@@ -32,6 +32,10 @@ import {
 } from "../engine/shop_goods_panel_controller.js";
 import { formatBillCents } from "../engine/medical_bill_money.js";
 import {
+  setWildernessReadoutGameSurfaceInert,
+  WILDERNESS_READOUT_OVERLAY_HOST_ID
+} from "../engine/render/wilderness_runtime_fragments.js";
+import {
   clearQuestionnaireDraft,
   exportQuestionnaireCompleted,
   loadQuestionnaireDraft,
@@ -49,6 +53,7 @@ import { closeTasksOverlay } from "../engine/tasks_overlay_controller.js";
 import { getCurrentMapContent } from "../engine/map_content_runtime.js";
 import { showInputDialog, showNoticeDialog } from "./dialogs.js";
 import { openAchievementMenuDialog } from "./achievement_menu_dialog.js";
+import { isReleaseBuild } from "../engine/release_flag.js";
 import { setupDebugFloatingTools } from "./debug_floating_tools.js";
 import { ensureTransientRuntimeHost } from "./transient/transient_host.js";
 
@@ -705,6 +710,65 @@ async function handleUiAction(route) {
   const { action, element } = route;
   logInteractionAudit({ handler: { name: "handleUiAction", action, element: snapshotElement(element), phase: "start" } });
 
+  if (action === "toggle-wilderness-move-foldout") {
+    const foldout = element?.closest?.(".wilderness-move-foldout");
+    const panel = foldout ? foldout.querySelector?.("#wilderness-move-panel") : null;
+    if (!foldout || !panel) return;
+    const isOpen = foldout.classList.contains("is-open") || foldout.dataset.open === "true";
+    const btn = foldout.querySelector?.(".wilderness-move-summary");
+    const chevron = foldout.querySelector?.(".wilderness-move-summary__chevron");
+    const ms = 180;
+    if (!isOpen) {
+      foldout.dataset.open = "true";
+      foldout.classList.remove("is-closing");
+      panel.hidden = false;
+      if (btn) btn.setAttribute("aria-expanded", "true");
+      // allow CSS transition to run
+      requestAnimationFrame(() => {
+        foldout.classList.add("is-open");
+      });
+      if (chevron) chevron.setAttribute("aria-hidden", "true");
+    } else {
+      foldout.dataset.open = "false";
+      foldout.classList.add("is-closing");
+      foldout.classList.remove("is-open");
+      if (btn) btn.setAttribute("aria-expanded", "false");
+      window.setTimeout(() => {
+        panel.hidden = true;
+        foldout.classList.remove("is-closing");
+      }, ms + 30);
+    }
+    logInteractionAudit({ handler: { name: "handleUiAction", action, phase: "done", result: "toggle-wilderness-move-foldout" } });
+    return;
+  }
+
+  if (action === "wilderness-tool-readouts-open") {
+    const ov =
+      document.getElementById(WILDERNESS_READOUT_OVERLAY_HOST_ID) ||
+      element?.closest?.(".map-panel-wilderness-runtime")?.querySelector?.(".wilderness-tool-readouts-overlay");
+    if (ov) {
+      ov.classList.add("wilderness-tool-readouts-overlay--open");
+      ov.setAttribute("aria-hidden", "false");
+      setWildernessReadoutGameSurfaceInert(true);
+    }
+    logInteractionAudit({ handler: { name: "handleUiAction", action, phase: "done", result: "wilderness-tool-readouts-open" } });
+    return;
+  }
+
+  if (action === "wilderness-tool-readouts-close") {
+    const ov =
+      document.getElementById(WILDERNESS_READOUT_OVERLAY_HOST_ID) ||
+      element?.closest?.(".map-panel-wilderness-runtime")?.querySelector?.(".wilderness-tool-readouts-overlay") ||
+      element?.closest?.(".wilderness-tool-readouts-overlay");
+    if (ov) {
+      ov.classList.remove("wilderness-tool-readouts-overlay--open");
+      ov.setAttribute("aria-hidden", "true");
+      setWildernessReadoutGameSurfaceInert(false);
+    }
+    logInteractionAudit({ handler: { name: "handleUiAction", action, phase: "done", result: "wilderness-tool-readouts-close" } });
+    return;
+  }
+
   if (action === "sidebar-show-bills") {
     const obs = Number(gameState.world?.medical?.bills?.obsCents ?? 0);
     const ward = Number(gameState.world?.medical?.bills?.wardCents ?? 0);
@@ -1051,7 +1115,21 @@ async function handleGameplayAction(route) {
     return;
   }
 
-  const payload = buildDispatchPayload(element);
+  let payload = buildDispatchPayload(element);
+  const mapIdForDispatch = String(gameState.currentMapId || gameState.currentMap?.id || "").trim();
+  if (mapIdForDispatch === "wilderness_event_runtime") {
+    try {
+      const rawWild = element?.dataset?.wildernessEventPayload;
+      if (rawWild) {
+        const parsedWild = JSON.parse(decodeURIComponent(rawWild));
+        if (parsedWild && typeof parsedWild === "object") {
+          payload = { ...(payload && typeof payload === "object" ? payload : {}), ...parsedWild };
+        }
+      }
+    } catch (_e) {
+      // Incomplete payload surfaces as resolve-side rejection; do not swallow clicks silently.
+    }
+  }
   const options = buildDispatchOptions(element);
   if (actionToDispatch === "COLLAPSE_TICK_10M") {
     if (_collapseTickInFlight) {
@@ -1154,7 +1232,9 @@ export function setupInteraction() {
   if (_interactionBound) return;
   getInteractionAuditStore();
   // Debug-only floating tools are initialized here so they are outside normal gameplay UI layout.
-  setupDebugFloatingTools();
+  if (!isReleaseBuild()) {
+    setupDebugFloatingTools();
+  }
   const root = getInteractiveRoot();
   root.addEventListener("click", onDelegatedClick);
   root.addEventListener("change", onDelegatedChange);

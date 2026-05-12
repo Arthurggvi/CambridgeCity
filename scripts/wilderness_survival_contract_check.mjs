@@ -6,15 +6,18 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { createDefaultGameState, gameState, replaceGameState } from "../src/engine/state.js";
-import { loadMap } from "../src/engine/loader.js";
+import { loadMap, getRegionConfigById, getPlaceProfileForMap } from "../src/engine/loader.js";
 import { resolve } from "../src/engine/pipeline/resolve.js";
 import { commit } from "../src/engine/pipeline/commit.js";
 import { validatePlan } from "../src/engine/pipeline/plan_types.js";
 import { STATUS_EFFECT_KEYS, STATUS_EFFECT_KINDS } from "../src/engine/status_effect_runtime.js";
+import { applyTimeToPlayer } from "../src/engine/player.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, "..");
+
+const rngWildernessMoveNeverLost = { random: () => 0.99 };
 
 function assert(c, m) {
   if (!c) throw new Error(m);
@@ -115,7 +118,7 @@ async function main() {
       type: "MAP_ACTION",
       id: "wilderness_move_E",
       payload: {},
-      meta: { atMs: Date.now(), source: "contract", mapId: "wilderness_runtime" }
+      meta: { atMs: Date.now(), source: "contract", mapId: "wilderness_runtime", wildernessMoveRngLike: rngWildernessMoveNeverLost }
     },
     gameState
   );
@@ -146,8 +149,13 @@ async function main() {
   const remAfter = Number(activeAfter[0].remainingMinutes);
   assert(remAfter === remBefore - 120, "periodic status effect remainingMinutes decreased by advanced minutes");
 
+  // Pre-existing data drift: (6,0)→E→(7,0) is no longer the canonical hard-
+  // block cell after a blueprint regen. The stable post-regen hard-block
+  // sample is (7,0)→E→(8,0) tide_crack_zone — pinned by the movement
+  // contract. Use that here so this "no survival on blocker" invariant
+  // stays anchored to a deterministic hard-block target.
   const gsBlock = createDefaultGameState();
-  await setupRuntime(gsBlock, 6, 0);
+  await setupRuntime(gsBlock, 7, 0);
   const snap = () => ({
     t: gameState.time.totalMinutes,
     st: gameState.player.physio.stamina,
@@ -164,7 +172,7 @@ async function main() {
       type: "MAP_ACTION",
       id: "wilderness_move_E",
       payload: {},
-      meta: { atMs: Date.now(), source: "contract", mapId: "wilderness_runtime" }
+      meta: { atMs: Date.now(), source: "contract", mapId: "wilderness_runtime", wildernessMoveRngLike: rngWildernessMoveNeverLost }
     },
     gameState
   );
@@ -185,7 +193,200 @@ async function main() {
   const br = blockRes.report?.wilderness?.results?.find((r) => r.type === "WILDERNESS_MOVE" && r.ok === false);
   assert(br && br.survival == null && br.playerTimeApplied !== true, "blocked: no survival summary");
 
+  // Bug3 (stamina soft-lock): the deferred-collapse branch MUST still go
+  // through applyTimeToPlayer (preserve commit survival ordering) and MUST
+  // clamp stamina to exactly 0 — never produce a negative stamina, and
+  // never bypass the existing survival pipeline.
+  const gsSoft = createDefaultGameState();
+  await setupRuntime(gsSoft, 0, 0);
+  gameState.player.physio.stamina = 1;
+  gameState.player.psycho.fatigue = 80;
+  gameState.player.physio.satiety = 80;
+  gameState.player.psycho.hp = 80;
+  const softTotalMinBefore = gameState.time.totalMinutes;
+  const softPlan = await resolve(
+    {
+      type: "MAP_ACTION",
+      id: "wilderness_move_E",
+      payload: {},
+      meta: { atMs: Date.now(), source: "contract", mapId: "wilderness_runtime", wildernessMoveRngLike: rngWildernessMoveNeverLost }
+    },
+    gameState
+  );
+  validatePlan(softPlan);
+  const softIntent = softPlan.wildernessPipelineIntents.find((i) => i?.type === "WILDERNESS_MOVE");
+  assert(softIntent?.movementPlan?.staminaInsufficient === true, "soft-collapse plan flagged");
+  const softRes = await commit(softPlan, gameState);
+  assert(softRes.ok === true, "soft-collapse commit ok");
+  // Stamina extra cost MUST NOT drive stamina below zero, regardless of how
+  // large the planned cost was relative to the player's pre-move stamina.
+  assert(
+    Number(gameState.player.physio.stamina) === 0,
+    "soft-collapse: stamina clamped exactly to 0 (no negative)"
+  );
+  assert(
+    Number(gameState.player.physio.stamina) >= 0,
+    "soft-collapse: stamina remains non-negative"
+  );
+  // applyTimeToPlayer ordering preserved: time advances normally for the
+  // attempted move; survival snapshots both sides of the tick.
+  const softRow = softRes.report?.wilderness?.results?.find(
+    (r) => r.type === "WILDERNESS_MOVE" && r.staminaInsufficient === true
+  );
+  assert(softRow, "soft-collapse report row present");
+  assert(
+    softRow.survival && softRow.survival.playerTimeApplied === true,
+    "soft-collapse honors applyTimeToPlayer ordering"
+  );
+  assert(
+    Number(softRow.survival.advancedMinutes) >= 0,
+    "soft-collapse survival.advancedMinutes finite >= 0"
+  );
+  assert(
+    Number(gameState.time.totalMinutes) >= softTotalMinBefore,
+    "soft-collapse: time monotonically advances"
+  );
+
+  // Bug4 (collapse stamina floor): in COLLAPSE the asymptotic decay near
+  // the target = 20 cap shrinks single-tick recovery to sub-0.01 numbers,
+  // so the UI shows long stretches of +0.0 and the player appears stuck.
+  // The fix is a real-value floor of 0.1 (or `gap`, if smaller) inside
+  // `computeStaminaRecoveryDelta`, written directly to `player.physio
+  // .stamina` via `applyTimeToPlayer` — strictly NOT a renderer/formatter
+  // patch. SLEEP / REST must remain untouched.
+  await assertCollapseStaminaFloor();
+  await assertSleepNotPollutedByCollapseFloor();
+
   console.log("[PASS] wilderness_survival_contract_check");
+}
+
+function buildWildernessLikePlayerCtx(gs, { isSleeping }) {
+  const wx =
+    gs.world?.weather && typeof gs.world.weather === "object"
+      ? gs.world.weather
+      : {};
+  const thermalEnvOverride = {};
+  if (Number.isFinite(Number(wx.tEnv_region))) {
+    thermalEnvOverride.tEnvRegionC = Number(wx.tEnv_region);
+  }
+  if (Number.isFinite(Number(wx.windSpeed_local))) {
+    thermalEnvOverride.worldWindSpeed = Number(wx.windSpeed_local);
+  }
+  const regionCfg = getRegionConfigById(gs.world?.regionId);
+  const placeProfileRaw = getPlaceProfileForMap(gs.currentMapId, gs.currentMap);
+  const placeProfile =
+    placeProfileRaw && typeof placeProfileRaw === "object"
+      ? {
+          ...placeProfileRaw,
+          space: String(placeProfileRaw.space || "outdoor"),
+          exposureLevel: String(placeProfileRaw.exposureLevel || "Open")
+        }
+      : {
+          space: "outdoor",
+          exposureLevel: "Open",
+          windShelter: 0,
+          heatSource: 0,
+          drying: 0
+        };
+  return {
+    isSleeping: !!isSleeping,
+    sessionCoverage: "NONE",
+    world: gs.world,
+    currentMapId: gs.currentMapId,
+    currentMap: gs.currentMap,
+    timeView: { totalMinutes: Number(gs.time?.totalMinutes) || 0 },
+    regionCfg,
+    placeProfile,
+    ...(Object.keys(thermalEnvOverride).length > 0 ? { thermalEnvOverride } : {})
+  };
+}
+
+function seedSleepEpisode(player, mode) {
+  if (!player.meta || typeof player.meta !== "object") player.meta = {};
+  player.meta.sleepEpisode = {
+    mode: String(mode),
+    // Bypass settle-in so the very first 10–11 min tick produces a non-zero
+    // effectiveSleepMin and the floor decision becomes deterministic.
+    episodeSleepMin: 60,
+    awakeGapMin: 0,
+    fatigueRecoveredInWindow: 0,
+    fatigueRecoveryWindowStartMin: 0,
+    collapseEpisodeFatigueRecovered: 0
+  };
+}
+
+async function assertCollapseStaminaFloor() {
+  const gsCol = createDefaultGameState();
+  await setupRuntime(gsCol, 0, 0);
+  const p = gameState.player;
+  p.physio.stamina = 19.9;
+  p.physio.satiety = 80;
+  p.psycho.fatigue = 80;
+  p.psycho.hp = 80;
+  seedSleepEpisode(p, "COLLAPSE");
+
+  const playerCtx = buildWildernessLikePlayerCtx(gameState, { isSleeping: false });
+  const staminaBefore = Number(p.physio.stamina);
+  assert(staminaBefore === 19.9, "collapse-floor setup: stamina exactly 19.9");
+
+  applyTimeToPlayer(p, 11, playerCtx);
+
+  const staminaAfter = Number(p.physio.stamina);
+  // Truth-level write: stamina lives on player.physio.stamina, not on a
+  // UI/formatter shim.
+  assert(
+    typeof p.physio.stamina === "number" && Number.isFinite(p.physio.stamina),
+    "collapse-floor: stamina is a real number on player.physio.stamina"
+  );
+  // Target cap (COLLAPSE recovers up to 20, never beyond):
+  assert(
+    staminaAfter <= 20 + 1e-6,
+    `collapse-floor: stamina capped at 20 (got ${staminaAfter})`
+  );
+  // Real recovery floor: in one tick we must either reach >= 20 (because
+  // gap < 0.1 collapses straight to target) or recover >= 0.1.
+  const recovered = staminaAfter - staminaBefore;
+  assert(
+    staminaAfter >= 20 - 1e-6 || recovered >= 0.1 - 1e-6,
+    `collapse-floor: single-tick recovery >= 0.1 floor (got recovered=${recovered}, after=${staminaAfter})`
+  );
+}
+
+async function assertSleepNotPollutedByCollapseFloor() {
+  const gsSleep = createDefaultGameState();
+  await setupRuntime(gsSleep, 0, 0);
+  const p = gameState.player;
+  // Near maxStamina so the natural SLEEP curve produces a delta well below
+  // 0.1 — this is the discriminating case where a leaked floor would show.
+  p.physio.stamina = 99.9;
+  p.physio.satiety = 80;
+  p.psycho.fatigue = 80;
+  p.psycho.hp = 80;
+  seedSleepEpisode(p, "SLEEP");
+
+  const playerCtx = buildWildernessLikePlayerCtx(gameState, { isSleeping: true });
+  const staminaBefore = Number(p.physio.stamina);
+
+  applyTimeToPlayer(p, 11, playerCtx);
+
+  const staminaAfter = Number(p.physio.stamina);
+  const recovered = staminaAfter - staminaBefore;
+  // SLEEP must still recover naturally (some positive delta).
+  assert(
+    recovered > 0,
+    `sleep-no-pollution: SLEEP still recovers naturally (got ${recovered})`
+  );
+  // And must NOT have been forced to the COLLAPSE 0.1 floor — natural delta
+  // at cur=99.9, gap=0.1, k=0.65 over ~11 min sits around 0.01.
+  assert(
+    recovered < 0.08,
+    `sleep-no-pollution: SLEEP delta below 0.08 (got ${recovered}; >= 0.08 means COLLAPSE floor leaked)`
+  );
+  // And remains bounded by maxStamina = 100.
+  assert(
+    staminaAfter <= 100 + 1e-6,
+    `sleep-no-pollution: stamina capped at max (got ${staminaAfter})`
+  );
 }
 
 main().catch((e) => {

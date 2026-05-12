@@ -1,0 +1,13 @@
+{
+  "id": "wilderness_ethan_rescue_refuse_stay",
+  "legacy": true,
+  "name": "留在雪里",
+  "description": "伊森皱了皱眉，看着你的状况，没有立刻多说什么。\n\n“实在扛不住了就返航，如果你还记得路的话。”\n\n他从队员手里接过一瓶水，扔到你怀里。",
+  "actions": [
+    {
+      "id": "ethan_rescue_refuse_confirm",
+      "text": "继续",
+      "kind": "WILDERNESS_ETHAN_RESCUE_REFUSE"
+    }
+  ]
+}

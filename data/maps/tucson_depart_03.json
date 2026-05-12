@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "我忘了很多事",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_depart_03_continue", "text": "继续", "targetMapId": "tucson_depart_04", "ui": { "type": "button", "priority": "primary" } }
   ]

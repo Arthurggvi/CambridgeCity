@@ -1,0 +1,22 @@
+{
+  "id": "wilderness_ethan_rescue_offer_4",
+  "legacy": true,
+  "name": "返航建议",
+  "description": "“怎么样？要不要和我们回去？”\n\n他说完，朝车后的队员抬了抬手。担架已经被人从车上抽了出来。",
+  "actions": [
+    {
+      "id": "ethan_rescue_agree_return",
+      "text": "同意回去",
+      "kind": "WILDERNESS_ETHAN_RESCUE_ACCEPT"
+    },
+    {
+      "id": "ethan_rescue_refuse_stay",
+      "text": "拒绝回去",
+      "kind": "TRANSITION",
+      "payload": {
+        "toMapId": "wilderness_ethan_rescue_refuse_stay",
+        "minutes": 0
+      }
+    }
+  ]
+}

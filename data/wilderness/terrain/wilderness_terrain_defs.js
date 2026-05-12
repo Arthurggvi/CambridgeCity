@@ -58,7 +58,7 @@ const _TERRAIN_BIOME_DEFS = {
   managed_compacted_route: makeTerrain({
     id: "managed_compacted_route",
     label: "管理压实道",
-    move: { moveTimeMult: 0.8, staminaCostMult: 0.8, vehicleTimeMult: 0.85 },
+    move: { moveTimeMult: 0.75, staminaCostMult: 0.75, vehicleTimeMult: 0.85 },
     passability: { foot: "allowed", vehicle: "allowed", requires: [] },
     surface: { snowAccumulationMult: 0.7, windScourMult: 0.9, trailRetentionMult: 1.2, slipRiskBase: 0.05 },
     hazard: { crevasseRisk: 0.02, fallRisk: 0.03, collapseRisk: 0.01, disorientationRisk: 0.02, rescueDifficulty: 0.15 },
@@ -78,7 +78,7 @@ const _TERRAIN_BIOME_DEFS = {
   wind_packed_snow: makeTerrain({
     id: "wind_packed_snow",
     label: "风压硬雪面",
-    move: { moveTimeMult: 1.1, staminaCostMult: 1.1, vehicleTimeMult: 1.1 },
+    move: { moveTimeMult: 1.15, staminaCostMult: 1.15, vehicleTimeMult: 1.10 },
     passability: { foot: "allowed", vehicle: "allowed", requires: [] },
     surface: { snowAccumulationMult: 0.85, windScourMult: 1.15, trailRetentionMult: 0.95, slipRiskBase: 0.12 },
     hazard: { crevasseRisk: 0.05, fallRisk: 0.06, collapseRisk: 0.02, disorientationRisk: 0.08, rescueDifficulty: 0.28 },
@@ -88,7 +88,7 @@ const _TERRAIN_BIOME_DEFS = {
   loose_snowfield: makeTerrain({
     id: "loose_snowfield",
     label: "松雪原",
-    move: { moveTimeMult: 1.5, staminaCostMult: 1.6, vehicleTimeMult: 1.65 },
+    move: { moveTimeMult: 1.75, staminaCostMult: 2.10, vehicleTimeMult: 1.90 },
     passability: { foot: "allowed", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 1.25, windScourMult: 0.85, trailRetentionMult: 0.75, slipRiskBase: 0.22 },
     hazard: { crevasseRisk: 0.08, fallRisk: 0.1, collapseRisk: 0.04, disorientationRisk: 0.12, rescueDifficulty: 0.35 },
@@ -98,7 +98,7 @@ const _TERRAIN_BIOME_DEFS = {
   snow_drift_zone: makeTerrain({
     id: "snow_drift_zone",
     label: "积雪堆/雪窝",
-    move: { moveTimeMult: 1.8, staminaCostMult: 2.0, vehicleTimeMult: 2.2 },
+    move: { moveTimeMult: 2.20, staminaCostMult: 2.60, vehicleTimeMult: 2.50 },
     passability: { foot: "conditional", vehicle: "forbidden", requires: [] },
     surface: { snowAccumulationMult: 1.6, windScourMult: 0.65, trailRetentionMult: 0.55, slipRiskBase: 0.35 },
     hazard: { crevasseRisk: 0.1, fallRisk: 0.12, collapseRisk: 0.06, disorientationRisk: 0.18, rescueDifficulty: 0.45 },
@@ -108,7 +108,7 @@ const _TERRAIN_BIOME_DEFS = {
   sastrugi_field: makeTerrain({
     id: "sastrugi_field",
     label: "雪垄区",
-    move: { moveTimeMult: 1.4, staminaCostMult: 1.5, vehicleTimeMult: 1.7 },
+    move: { moveTimeMult: 1.85, staminaCostMult: 2.00, vehicleTimeMult: 2.00 },
     passability: { foot: "allowed", vehicle: "slow", requires: [] },
     surface: { snowAccumulationMult: 1.05, windScourMult: 1.35, trailRetentionMult: 0.85, slipRiskBase: 0.28 },
     hazard: { crevasseRisk: 0.07, fallRisk: 0.09, collapseRisk: 0.03, disorientationRisk: 0.14, rescueDifficulty: 0.38 },
@@ -118,7 +118,7 @@ const _TERRAIN_BIOME_DEFS = {
   blue_ice_area: makeTerrain({
     id: "blue_ice_area",
     label: "蓝冰区",
-    move: { moveTimeMult: 1.2, staminaCostMult: 1.3, vehicleTimeMult: 1.25 },
+    move: { moveTimeMult: 1.35, staminaCostMult: 1.25, vehicleTimeMult: 1.25 },
     passability: { foot: "conditional", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 0.35, windScourMult: 1.4, trailRetentionMult: 0.65, slipRiskBase: 0.45 },
     hazard: { crevasseRisk: 0.12, fallRisk: 0.18, collapseRisk: 0.05, disorientationRisk: 0.1, rescueDifficulty: 0.42 },
@@ -128,7 +128,7 @@ const _TERRAIN_BIOME_DEFS = {
   ice_sheet_plateau: makeTerrain({
     id: "ice_sheet_plateau",
     label: "冰盖高原",
-    move: { moveTimeMult: 1.3, staminaCostMult: 1.4, vehicleTimeMult: 1.35 },
+    move: { moveTimeMult: 1.40, staminaCostMult: 1.35, vehicleTimeMult: 1.35 },
     passability: { foot: "allowed", vehicle: "allowed", requires: [] },
     surface: { snowAccumulationMult: 0.9, windScourMult: 1.1, trailRetentionMult: 0.9, slipRiskBase: 0.15 },
     hazard: { crevasseRisk: 0.06, fallRisk: 0.08, collapseRisk: 0.03, disorientationRisk: 0.2, rescueDifficulty: 0.5 },
@@ -138,7 +138,7 @@ const _TERRAIN_BIOME_DEFS = {
   polar_plateau_exposed: makeTerrain({
     id: "polar_plateau_exposed",
     label: "内陆暴露高原",
-    move: { moveTimeMult: 1.6, staminaCostMult: 1.8, vehicleTimeMult: 1.85 },
+    move: { moveTimeMult: 2.25, staminaCostMult: 2.20, vehicleTimeMult: 2.25 },
     passability: { foot: "conditional", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 1.1, windScourMult: 1.45, trailRetentionMult: 0.7, slipRiskBase: 0.2 },
     hazard: { crevasseRisk: 0.09, fallRisk: 0.11, collapseRisk: 0.04, disorientationRisk: 0.25, rescueDifficulty: 0.55 },
@@ -148,7 +148,7 @@ const _TERRAIN_BIOME_DEFS = {
   glacier_surface: makeTerrain({
     id: "glacier_surface",
     label: "冰川表面",
-    move: { moveTimeMult: 1.5, staminaCostMult: 1.6, vehicleTimeMult: 1.55 },
+    move: { moveTimeMult: 1.90, staminaCostMult: 1.95, vehicleTimeMult: 1.90 },
     passability: { foot: "conditional", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 0.95, windScourMult: 1.05, trailRetentionMult: 0.8, slipRiskBase: 0.25 },
     hazard: { crevasseRisk: 0.22, fallRisk: 0.14, collapseRisk: 0.08, disorientationRisk: 0.16, rescueDifficulty: 0.48 },
@@ -158,7 +158,7 @@ const _TERRAIN_BIOME_DEFS = {
   crevasse_field: makeTerrain({
     id: "crevasse_field",
     label: "裂隙带",
-    move: { moveTimeMult: 2.2, staminaCostMult: 2.4, vehicleTimeMult: 2.5 },
+    move: { moveTimeMult: 3.20, staminaCostMult: 3.80, vehicleTimeMult: 3.50 },
     passability: { foot: "conditional", vehicle: "forbidden", requires: [] },
     surface: { snowAccumulationMult: 1.15, windScourMult: 0.95, trailRetentionMult: 0.5, slipRiskBase: 0.4 },
     hazard: { crevasseRisk: 0.85, fallRisk: 0.55, collapseRisk: 0.12, disorientationRisk: 0.22, rescueDifficulty: 0.75 },
@@ -168,7 +168,7 @@ const _TERRAIN_BIOME_DEFS = {
   ice_shelf_surface: makeTerrain({
     id: "ice_shelf_surface",
     label: "冰架表面",
-    move: { moveTimeMult: 1.2, staminaCostMult: 1.3, vehicleTimeMult: 1.22 },
+    move: { moveTimeMult: 1.45, staminaCostMult: 1.40, vehicleTimeMult: 1.35 },
     passability: { foot: "conditional", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 0.75, windScourMult: 1.2, trailRetentionMult: 0.75, slipRiskBase: 0.3 },
     hazard: { crevasseRisk: 0.15, fallRisk: 0.12, collapseRisk: 0.06, disorientationRisk: 0.12, rescueDifficulty: 0.52 },
@@ -188,7 +188,7 @@ const _TERRAIN_BIOME_DEFS = {
   sea_ice_fast: makeTerrain({
     id: "sea_ice_fast",
     label: "固着海冰",
-    move: { moveTimeMult: 1.3, staminaCostMult: 1.4, vehicleTimeMult: 1.32 },
+    move: { moveTimeMult: 1.50, staminaCostMult: 1.45, vehicleTimeMult: 1.40 },
     passability: { foot: "conditional", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 1.0, windScourMult: 1.0, trailRetentionMult: 0.85, slipRiskBase: 0.2 },
     hazard: { crevasseRisk: 0.18, fallRisk: 0.1, collapseRisk: 0.05, disorientationRisk: 0.1, rescueDifficulty: 0.45 },
@@ -198,7 +198,7 @@ const _TERRAIN_BIOME_DEFS = {
   sea_ice_pressure_ridge: makeTerrain({
     id: "sea_ice_pressure_ridge",
     label: "海冰压力脊",
-    move: { moveTimeMult: 2.0, staminaCostMult: 2.2, vehicleTimeMult: 2.3 },
+    move: { moveTimeMult: 2.70, staminaCostMult: 3.20, vehicleTimeMult: 3.00 },
     passability: { foot: "conditional", vehicle: "forbidden", requires: [] },
     surface: { snowAccumulationMult: 1.35, windScourMult: 0.9, trailRetentionMult: 0.55, slipRiskBase: 0.38 },
     hazard: { crevasseRisk: 0.35, fallRisk: 0.28, collapseRisk: 0.15, disorientationRisk: 0.14, rescueDifficulty: 0.58 },
@@ -218,7 +218,7 @@ const _TERRAIN_BIOME_DEFS = {
   rock_outcrop_nunatak: makeTerrain({
     id: "rock_outcrop_nunatak",
     label: "裸露岩脊/nunatak",
-    move: { moveTimeMult: 1.7, staminaCostMult: 1.8, vehicleTimeMult: 1.9 },
+    move: { moveTimeMult: 2.40, staminaCostMult: 2.60, vehicleTimeMult: 2.70 },
     passability: { foot: "conditional", vehicle: "forbidden", requires: [] },
     surface: { snowAccumulationMult: 0.45, windScourMult: 1.25, trailRetentionMult: 1.0, slipRiskBase: 0.32 },
     hazard: { crevasseRisk: 0.2, fallRisk: 0.35, collapseRisk: 0.1, disorientationRisk: 0.12, rescueDifficulty: 0.48 },
@@ -228,7 +228,7 @@ const _TERRAIN_BIOME_DEFS = {
   dry_valley_rock_desert: makeTerrain({
     id: "dry_valley_rock_desert",
     label: "干谷岩漠",
-    move: { moveTimeMult: 1.4, staminaCostMult: 1.5, vehicleTimeMult: 1.45 },
+    move: { moveTimeMult: 1.55, staminaCostMult: 1.60, vehicleTimeMult: 1.55 },
     passability: { foot: "allowed", vehicle: "conditional", requires: [] },
     surface: { snowAccumulationMult: 0.25, windScourMult: 1.3, trailRetentionMult: 1.05, slipRiskBase: 0.18 },
     hazard: { crevasseRisk: 0.08, fallRisk: 0.22, collapseRisk: 0.06, disorientationRisk: 0.22, rescueDifficulty: 0.4 },
@@ -245,10 +245,30 @@ const _TERRAIN_BIOME_DEFS = {
     probe: { visibilityCue: "vertical_drop", landmarkCueMult: 1.05, confidenceMult: 0.95 },
     blockers: []
   }),
+  open_water: makeTerrain({
+    id: "open_water",
+    label: "大海",
+    move: { moveTimeMult: Infinity, staminaCostMult: Infinity, vehicleTimeMult: Infinity },
+    passability: { foot: "hard_block", vehicle: "hard_block", requires: [] },
+    surface: { snowAccumulationMult: 0, windScourMult: 1.4, trailRetentionMult: 0, slipRiskBase: 1 },
+    hazard: { crevasseRisk: 0, fallRisk: 0.95, collapseRisk: 0.95, disorientationRisk: 0.05, rescueDifficulty: 1 },
+    probe: { visibilityCue: "open_water", landmarkCueMult: 1, confidenceMult: 1 },
+    blockers: []
+  }),
+  coastal_open_water: makeTerrain({
+    id: "coastal_open_water",
+    label: "开阔海面",
+    move: { moveTimeMult: Infinity, staminaCostMult: Infinity, vehicleTimeMult: Infinity },
+    passability: { foot: "hard_block", vehicle: "hard_block", requires: [] },
+    surface: { snowAccumulationMult: 0, windScourMult: 1.4, trailRetentionMult: 0, slipRiskBase: 1 },
+    hazard: { crevasseRisk: 0, fallRisk: 0.95, collapseRisk: 0.9, disorientationRisk: 0.05, rescueDifficulty: 1 },
+    probe: { visibilityCue: "coastal_open_water", landmarkCueMult: 1, confidenceMult: 1 },
+    blockers: []
+  }),
   subglacial_facility_buried_zone: makeTerrain({
     id: "subglacial_facility_buried_zone",
     label: "半埋设施带",
-    move: { moveTimeMult: 1.3, staminaCostMult: 1.5, vehicleTimeMult: 1.4 },
+    move: { moveTimeMult: 2.30, staminaCostMult: 2.35, vehicleTimeMult: 2.40 },
     passability: { foot: "allowed", vehicle: "forbidden", requires: [] },
     surface: { snowAccumulationMult: 1.1, windScourMult: 0.85, trailRetentionMult: 0.95, slipRiskBase: 0.16 },
     hazard: { crevasseRisk: 0.12, fallRisk: 0.08, collapseRisk: 0.28, disorientationRisk: 0.15, rescueDifficulty: 0.62 },

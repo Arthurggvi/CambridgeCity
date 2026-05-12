@@ -1445,6 +1445,15 @@ function computeStaminaRecoveryDelta({
   if (String(mode) === "COLLAPSE" && cur + delta >= target - 0.05) {
     delta = target - cur;
   }
+  // Bug4 (collapse stamina floor): near the COLLAPSE target the exponential
+  // decay shrinks delta to sub-0.01 numbers, so the UI 1-decimal rounding
+  // shows long stretches of +0.0 and the player appears stuck. Force a
+  // real-value floor of 0.1 per tick (clamped by `gap` so we never
+  // overshoot the COLLAPSE target). Strictly COLLAPSE-only — SLEEP / REST
+  // keep their natural curves untouched.
+  if (String(mode) === "COLLAPSE" && gap > 0 && sleepHours > 0) {
+    delta = Math.max(delta, Math.min(gap, 0.1));
+  }
   return roundTo3(Math.max(0, delta));
 }
 

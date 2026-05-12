@@ -67,42 +67,41 @@ async function readDebugMapEntriesFromFileSystem(mapsDirUrl) {
   return entries;
 }
 
-function extractJsonFilenamesFromDirectoryListing(html) {
-  const names = new Set();
-  const re = /href\s*=\s*"([^"]+\.json)"/gi;
-  let match;
-  while ((match = re.exec(String(html || "")))) {
-    const href = match[1];
-    const name = href.split("/").pop();
-    if (name) names.add(name);
-  }
-  return Array.from(names).sort((left, right) => left.localeCompare(right));
-}
-
-async function readDebugMapEntriesFromHttpListing(mapsDirUrl) {
-  const listingRes = await fetch(mapsDirUrl, { cache: "no-store" });
-  if (!listingRes.ok) {
-    throw new Error(`HTTP ${listingRes.status} when fetching ${mapsDirUrl.href}`);
+async function readDebugMapEntriesFromMapContentIndex(mapsDirUrl) {
+  // Live Server / static hosting usually doesn't provide directory listing for /data/maps/.
+  // Instead, reuse the formal story-side map content index to enumerate mapIds, then fetch each map JSON.
+  const indexUrl = new URL("../../../data/story/map_content_index.json", import.meta.url);
+  const index = await readJsonFromUrl(indexUrl);
+  const entriesObj = index && typeof index === "object" ? index.entries : null;
+  if (!entriesObj || typeof entriesObj !== "object") {
+    throw new Error("map_content_index_missing_entries");
   }
 
-  const listingHtml = await listingRes.text();
-  const fileNames = extractJsonFilenamesFromDirectoryListing(listingHtml);
+  const mapIds = Object.keys(entriesObj)
+    .map((id) => normalizeMapId(id))
+    .filter(Boolean)
+    .sort((left, right) => left.localeCompare(right));
+
   const entries = [];
-
-  for (const fileName of fileNames) {
+  for (const mapId of mapIds) {
+    const fileName = `${mapId}.json`;
     try {
       const fileUrl = new URL(fileName, mapsDirUrl);
       const json = await readJsonFromUrl(fileUrl);
       if (!json || typeof json !== "object") continue;
-      const mapId = normalizeMapId(json.id);
-      if (!mapId) continue;
+      const resolvedMapId = normalizeMapId(json.id);
+      if (!resolvedMapId) continue;
       entries.push({
-        mapId,
+        mapId: resolvedMapId,
         filePath: fileUrl.href,
         json
       });
     } catch (error) {
-      console.warn(`[debug_teleport] skipped malformed map file: ${fileName} (${String(error?.message || error || "parse_failed")})`);
+      console.warn("[debug_teleport_catalog] skip map entry", {
+        mapId,
+        path: `data/maps/${fileName}`,
+        message: String(error?.message || error || "fetch_failed")
+      });
     }
   }
 
@@ -122,9 +121,10 @@ async function loadDebugMapEntries() {
   }
 
   try {
-    return await readDebugMapEntriesFromHttpListing(mapsDirUrl);
+    // Browser environment: do NOT depend on directory listing.
+    return await readDebugMapEntriesFromMapContentIndex(mapsDirUrl);
   } catch (error) {
-    attempts.push(String(error?.message || error || "http_listing_scan_failed"));
+    attempts.push(String(error?.message || error || "map_content_index_scan_failed"));
   }
 
   throw new Error(attempts.filter(Boolean).join(" | ") || "debug_teleport_catalog_scan_failed");

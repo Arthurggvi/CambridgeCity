@@ -19,7 +19,13 @@ export const EQUIPMENT_SLOT_LABELS = {
 export const TOOL_TAG_LABELS = {
   temperature: "温度",
   light: "照明",
-  fire: "火种"
+  fire: "火种",
+  wilderness_gps: "野外 GPS",
+  magnetic_compass: "磁罗盘",
+  heart_rate_monitor: "心率监测仪",
+  wind_anemometer: "手持风速仪",
+  electronic_wind_vane: "电子风向标",
+  snow_depth_sensor: "雪深传感器"
 };
 
 const BASE_CAPACITY = Object.freeze({ kindLimit: 2, stackLimit: 1 });

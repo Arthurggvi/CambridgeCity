@@ -26,6 +26,21 @@
       "id": "west2_outpost_hub_main",
       "type": "HUB_LOBBY",
       "name": "前哨区域总导航"
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate",
+      "type": "POINT",
+      "name": "出站口"
+    },
+    {
+      "id": "west2_outpost_rescue_exit_notice",
+      "type": "POINT",
+      "name": "出站通告"
+    },
+    {
+      "id": "west2_outpost_rescue_exit_attempt",
+      "type": "POINT",
+      "name": "出站"
     }
   ],
   "interactions": [
@@ -102,6 +117,76 @@
       "effects": [
         { "op": "push", "path": "logLines", "value": "你沿着原路退回前哨站牌。" }
       ]
+    },
+    {
+      "id": "go_to_rescue_exit_gate",
+      "sceneId": "west2_outpost_hub_main",
+      "type": "OBSERVE",
+      "text": "出站口",
+      "runtime": {
+        "helper": "wilderness_start_session"
+      },
+      "wilderness": {
+        "areaId": "west2_old_marker_patrol_line",
+        "x": -6,
+        "y": 1
+      }
+    },
+    {
+      "id": "wilderness_start_west2_old_marker_patrol",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "OBSERVE",
+      "text": "沿旧标记杆巡查线出站",
+      "runtime": {
+        "helper": "wilderness_start_session"
+      },
+      "wilderness": {
+        "areaId": "west2_old_marker_patrol_line",
+        "x": -6,
+        "y": 1
+      }
+    },
+    {
+      "id": "inspect_exit_notice",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "TRANSITION",
+      "text": "看出站通告",
+      "edgeId": "west2_outpost_rescue_exit_gate_to_exit_notice_edge"
+    },
+    {
+      "id": "exit_rescue_station",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "OBSERVE",
+      "text": "出站",
+      "runtime": {
+        "helper": "wilderness_start_session"
+      },
+      "wilderness": {
+        "areaId": "west2_old_marker_patrol_line",
+        "x": -6,
+        "y": 1
+      }
+    },
+    {
+      "id": "return_to_rescue_front_tent_from_exit_gate",
+      "sceneId": "west2_outpost_rescue_exit_gate",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_exit_gate_to_front_tent_edge"
+    },
+    {
+      "id": "return_to_rescue_exit_gate_from_exit_notice",
+      "sceneId": "west2_outpost_rescue_exit_notice",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_exit_notice_to_exit_gate_edge"
+    },
+    {
+      "id": "return_to_rescue_exit_gate_from_exit_attempt",
+      "sceneId": "west2_outpost_rescue_exit_attempt",
+      "type": "TRANSITION",
+      "text": "返回",
+      "edgeId": "west2_outpost_rescue_exit_attempt_to_exit_gate_edge"
     }
   ],
   "edges": [
@@ -134,6 +219,42 @@
       "fromSceneId": "west2_outpost_hub_main",
       "toMapId": "outpost_bus_stop",
       "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_front_tent_to_exit_gate_edge",
+      "fromSceneId": "west2_outpost_hub_main",
+      "toSceneId": "west2_outpost_rescue_exit_gate",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate_to_exit_notice_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_gate",
+      "toSceneId": "west2_outpost_rescue_exit_notice",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate_to_exit_attempt_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_gate",
+      "toSceneId": "west2_outpost_rescue_exit_attempt",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_rescue_exit_gate_to_front_tent_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_gate",
+      "toSceneId": "west2_outpost_hub_main",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_exit_notice_to_exit_gate_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_notice",
+      "toSceneId": "west2_outpost_rescue_exit_gate",
+      "minutes": 0
+    },
+    {
+      "id": "west2_outpost_rescue_exit_attempt_to_exit_gate_edge",
+      "fromSceneId": "west2_outpost_rescue_exit_attempt",
+      "toSceneId": "west2_outpost_rescue_exit_gate",
+      "minutes": 0
     }
   ],
   "blockers": [],

@@ -5,6 +5,7 @@
   "name": "图森 · 宅屋",
   "description": "我想...",
   "environment": { "exposureLevel": "Sheltered" },
+  "ui": { "minimap": false },
   "actions": [
     { "id": "tucson_depart_02_continue", "text": "继续", "targetMapId": "tucson_depart_03", "ui": { "type": "button", "priority": "primary" } }
   ]

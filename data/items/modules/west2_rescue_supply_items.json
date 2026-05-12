@@ -1,26 +1,262 @@
 {
   "items": [
     {
-      "id": "abandoned_special_lithium_battery",
-      "name": "废弃特种锂电池",
+      "id": "broken_marker_pole_clamp",
+      "name": "断裂标记杆扣件",
       "category": "material",
       "stackable": true,
+      "description": "一枚从标记杆上脱落的旧扣件，边缘被冻裂，螺口还残着一圈发白的冰。材料本身不稀罕，但救援站总需要这类可替换小件。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 12,
+        "quality": "white"
+      }
+    },
+    {
+      "id": "worn_reflective_marker_tape",
+      "name": "磨损反光标带",
+      "category": "material",
+      "stackable": true,
+      "description": "一截被风雪磨灰的反光标带，外层几乎失效，内侧还残留一点反光涂层。它不能再作为正式标识使用，但还能剪开做临时修补。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 16,
+        "quality": "white"
+      }
+    },
+    {
+      "id": "cracked_ceramic_insulator",
+      "name": "冻裂绝缘瓷片",
+      "category": "material",
+      "stackable": true,
+      "description": "一小块从旧线路支架上崩落的绝缘瓷片，裂纹已经穿过釉面。它不适合继续承压，但材质仍有回收价值。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 18,
+        "quality": "white"
+      }
+    },
+    {
+      "id": "short_coldproof_cable_offcut",
+      "name": "短截防寒电缆",
+      "category": "material",
+      "stackable": true,
+      "description": "一段被剪断的防寒电缆，外皮硬得像冻住的皮革。内部铜芯没有完全腐蚀，伊森应该能拆出点东西。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 24,
+        "quality": "white"
+      }
+    },
+    {
+      "id": "old_rivet_tin",
+      "name": "旧固定铆钉盒",
+      "category": "material",
+      "stackable": true,
+      "description": "一个小铁盒，里面剩着几枚不同规格的固定铆钉。盒盖已经变形，但铆钉本身还能用在非关键维修上。",
       "submission": {
         "enabled": true,
         "channel": "rescue_station",
         "value": 28,
+        "quality": "white"
+      }
+    },
+    {
+      "id": "old_glove_heater_coil",
+      "name": "旧式手套加热线圈",
+      "category": "material",
+      "stackable": true,
+      "description": "一组从旧手套里拆下来的加热线圈，外包层发脆，接口已经断开。它无法直接穿戴，但线圈和接点仍可回收。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 38,
         "quality": "green"
       }
     },
     {
-      "id": "brass_statue",
-      "name": "黄铜雕像",
+      "id": "intact_marker_number_plate",
+      "name": "完整杆号牌",
       "category": "material",
       "stackable": true,
+      "description": "一块还能辨认编号的标记杆号牌。它的材料价值不高，但编号与保存状态让它比普通废片更值得回收。",
       "submission": {
         "enabled": true,
         "channel": "rescue_station",
-        "value": 700,
+        "value": 42,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "abandoned_special_lithium_battery",
+      "name": "废弃特种锂电池",
+      "category": "material",
+      "stackable": true,
+      "description": "外壳冻得发白，接口处还留着旧编号。它已经不适合直接使用，但回收站会愿意拆它的电芯和保护板。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 52,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "sealed_sensor_casing",
+      "name": "密封传感器外壳",
+      "category": "material",
+      "stackable": true,
+      "description": "一个小型传感器的密封外壳，内部模块已经缺失，但密封圈和抗寒壳体仍然完整。它原本应当挂在某种外勤监测设备上。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 64,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "portable_device_waterproof_connector",
+      "name": "便携设备防水接头",
+      "category": "material",
+      "stackable": true,
+      "description": "一个从便携设备上拆落的防水接头，胶圈还没有完全老化。它小得不起眼，但在外勤维修里很难临时替代。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 76,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "cracked_anemometer_vane",
+      "name": "冻裂测风叶片",
+      "category": "material",
+      "stackable": true,
+      "description": "测风设备上的一枚小叶片，根部冻裂，表面磨得发亮。它已经失准，但仍能说明附近曾经布过一组简易气象点。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 84,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "coldproof_relay_module",
+      "name": "抗寒继电器模块",
+      "category": "material",
+      "stackable": true,
+      "description": "一块封在树脂里的小型继电器模块，外侧铭牌被冻风刮花。触点状态未知，但这种抗寒件在前哨维修里仍有价值。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 96,
+        "quality": "green"
+      }
+    },
+    {
+      "id": "old_locator_beacon_fragment",
+      "name": "旧式定位信标残件",
+      "category": "material",
+      "stackable": true,
+      "description": "一块旧式定位信标的残件，铭牌被磨掉了一半，接口处仍有防水胶残留。它不能再定位，但回收价值明显高于普通废料。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 140,
+        "quality": "blue"
+      }
+    },
+    {
+      "id": "micro_barometric_logger_chip",
+      "name": "微型气压记录芯片",
+      "category": "material",
+      "stackable": true,
+      "description": "一枚从小型记录器里脱落的气压记录芯片，封装边缘有冰裂痕。它不一定还能读出数据，但型号本身就不常见。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 165,
+        "quality": "blue"
+      }
+    },
+    {
+      "id": "intact_micro_data_logger",
+      "name": "完整微型数据记录器",
+      "category": "material",
+      "stackable": true,
+      "description": "一枚保存完整的微型数据记录器，外壳边缘有冻裂痕迹，但封条还在。它是否还能读出数据，要交给救援站处理。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 220,
+        "quality": "blue"
+      }
+    },
+    {
+      "id": "old_gps_antenna_head",
+      "name": "旧型GPS天线头",
+      "category": "material",
+      "stackable": true,
+      "description": "一个旧式GPS设备的天线头，外壳磨损严重，底部还有半圈断裂螺纹。它不能直接装回设备，但内部件仍有拆解价值。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 245,
+        "quality": "blue"
+      }
+    },
+    {
+      "id": "sealed_power_identification_board",
+      "name": "封存电源识别板",
+      "category": "material",
+      "stackable": true,
+      "description": "一块带有旧编号的电源识别板，表面覆着透明封胶。它不像普通废件，更像某批外勤电源箱的登记部件。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 285,
+        "quality": "blue"
+      }
+    },
+    {
+      "id": "early_expedition_badge",
+      "name": "早期科考徽章",
+      "category": "material",
+      "stackable": true,
+      "description": "一枚旧式科考徽章，边缘有明显磨损，背针已经断掉。它的材料价值不高，但年代和来源让它不该被当成普通金属片处理。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 560,
+        "quality": "pink"
+      }
+    },
+    {
+      "id": "brass_commemorative_figurine",
+      "name": "黄铜纪念小像",
+      "category": "material",
+      "stackable": true,
+      "description": "一尊沉甸甸的黄铜小像，底座刻着已经磨花的纪念字样。它不像外勤设备，更像某个早期驻留者带来的私人东西。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 720,
+        "quality": "pink"
+      }
+    },
+    {
+      "id": "sealed_identity_tag_case",
+      "name": "密封身份牌匣",
+      "category": "material",
+      "stackable": true,
+      "description": "一个小型密封牌匣，外壳没有完全打开，内侧似乎压着旧式身份牌。它不该在普通巡查线上出现，伊森大概率会单独收走。",
+      "submission": {
+        "enabled": true,
+        "channel": "rescue_station",
+        "value": 860,
         "quality": "pink"
       }
     }

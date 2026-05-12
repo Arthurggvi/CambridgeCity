@@ -1,6 +1,7 @@
 import { showNoticeDialog } from "./dialogs.js";
 import { gameState } from "../engine/state.js";
 import { dispatch } from "../engine/pipeline/dispatch.js";
+import { isReleaseBuild } from "../engine/release_flag.js";
 import { getDebugFloatingToolsConfig, isDebugItemToolsEnabled } from "../engine/debug/debug_floating_tools_config.js";
 import { getCalendarView, getTimeView, formatTimeHHMM } from "../engine/time.js";
 import { resolveTotalMinutesFromCalendarFields } from "../engine/calendar_model.js";
@@ -552,6 +553,11 @@ function createTeleportSection() {
     } catch (error) {
       state.groups = [];
       state.activeGroupId = "";
+      // Debug Tools 目录生成失败必须保留真实错误，避免“0组/0节点”无证据。
+      console.error("[debug_teleport_catalog] build failed", {
+        message: String(error?.message || error || ""),
+        stack: String(error?.stack || "")
+      });
       setFeedback("目录生成失败，请检查地图目录是否可遍历", "error");
       render();
     } finally {
@@ -2498,6 +2504,10 @@ function initializeDrag(root, button, panel, onOpenPanel) {
 
 export function setupDebugFloatingTools() {
   if (_initialized) return;
+  if (isReleaseBuild()) {
+    _initialized = true;
+    return;
+  }
 
   const config = getDebugFloatingToolsConfig();
   if (!config.enableDebugFloatingTools) {

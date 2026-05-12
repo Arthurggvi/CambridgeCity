@@ -8,6 +8,12 @@ function normalizeRecordId(recordId) {
   return String(recordId || "").trim();
 }
 
+function isForbiddenRecordId(recordId) {
+  const key = normalizeRecordId(recordId);
+  if (!key) return true;
+  return key.startsWith("west2_library_book_");
+}
+
 function normalizeUnlockedAt(unlockedAt) {
   if (unlockedAt == null) return null;
   if (typeof unlockedAt === "string") {
@@ -90,9 +96,9 @@ export function normalizeRecordState(recordsState) {
 
   for (const rawRecordId of orderSource) {
     const recordId = normalizeRecordId(rawRecordId);
-    if (!recordId || seenIds.has(recordId)) continue;
+    if (!recordId || seenIds.has(recordId) || isForbiddenRecordId(recordId)) continue;
     const entry = cloneUnlockedRecordEntry(byIdSource[recordId]);
-    if (!entry || !entry.recordId) continue;
+    if (!entry || !entry.recordId || isForbiddenRecordId(entry.recordId)) continue;
     byId[recordId] = entry;
     order.push(recordId);
     seenIds.add(recordId);
@@ -100,9 +106,9 @@ export function normalizeRecordState(recordsState) {
 
   for (const [rawRecordId, rawEntry] of Object.entries(byIdSource)) {
     const recordId = normalizeRecordId(rawRecordId);
-    if (!recordId || seenIds.has(recordId)) continue;
+    if (!recordId || seenIds.has(recordId) || isForbiddenRecordId(recordId)) continue;
     const entry = cloneUnlockedRecordEntry(rawEntry);
-    if (!entry || !entry.recordId) continue;
+    if (!entry || !entry.recordId || isForbiddenRecordId(entry.recordId)) continue;
     byId[recordId] = entry;
     order.push(recordId);
     seenIds.add(recordId);

@@ -18,6 +18,23 @@ export const WILDERNESS_SESSION_STATES = Object.freeze([
 const HEADING_SET = new Set(WILDERNESS_HEADINGS);
 const STATE_SET = new Set(WILDERNESS_SESSION_STATES);
 
+/** Opposite compass direction for "return to previous cell" UI; invalid input yields "". */
+const OPPOSITE_WILDERNESS_DIRECTION = Object.freeze({
+  N: "S",
+  NE: "SW",
+  E: "W",
+  SE: "NW",
+  S: "N",
+  SW: "NE",
+  W: "E",
+  NW: "SE"
+});
+
+export function oppositeWildernessMoveDirection(direction) {
+  const d = direction == null ? "" : String(direction).trim().toUpperCase();
+  return OPPOSITE_WILDERNESS_DIRECTION[d] || "";
+}
+
 function isPlainObject(value) {
   return value != null && typeof value === "object" && !Array.isArray(value);
 }
@@ -90,6 +107,18 @@ function normalizeLandmarks(raw) {
   return out;
 }
 
+function normalizeWildernessOptionalMoveDirection(value) {
+  const s = value == null ? "" : String(value).trim().toUpperCase();
+  return HEADING_SET.has(s) ? s : "";
+}
+
+function normalizeWildernessPreviousPosition(raw, active) {
+  if (!active) return null;
+  if (!isPlainObject(raw)) return null;
+  if (!Number.isInteger(raw.x) || !Number.isInteger(raw.y)) return null;
+  return { x: normalizeInt(raw.x, 0), y: normalizeInt(raw.y, 0) };
+}
+
 export function createDefaultWildernessState() {
   return {
     active: false,
@@ -107,6 +136,9 @@ export function createDefaultWildernessState() {
     lostness: 0,
     stepsTaken: 0,
     lastSafePoint: null,
+    previousPosition: null,
+    lastMoveDirection: "",
+    returnDirection: "",
     discoveredLandmarks: [],
     flags: {},
     sessionStartedAt: null,
@@ -167,6 +199,15 @@ export function normalizeWildernessState(input) {
     sessionStartedAt = null;
   }
 
+  let previousPosition = normalizeWildernessPreviousPosition(input.previousPosition, active);
+  let lastMoveDirection = normalizeWildernessOptionalMoveDirection(input.lastMoveDirection);
+  let returnDirection = normalizeWildernessOptionalMoveDirection(input.returnDirection);
+  if (!active) {
+    previousPosition = null;
+    lastMoveDirection = "";
+    returnDirection = "";
+  }
+
   return {
     ...base,
     active,
@@ -184,6 +225,9 @@ export function normalizeWildernessState(input) {
     lostness,
     stepsTaken,
     lastSafePoint,
+    previousPosition,
+    lastMoveDirection,
+    returnDirection,
     discoveredLandmarks,
     flags,
     sessionStartedAt,

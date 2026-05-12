@@ -1,8 +1,23 @@
 import { createDefaultGameState } from "../src/engine/state.js";
 import { validateMap } from "../src/engine/validate/map_validate.js";
 import { buildWildernessViewModel } from "../src/engine/wilderness/wilderness_view_model.js";
+import { normalizeWildernessState } from "../src/engine/wilderness/wilderness_state.js";
 import { renderWildernessRuntime } from "../src/engine/render/wilderness_runtime_fragments.js";
-import { WILDERNESS_MOVE_DIRECTIONS } from "../src/engine/wilderness/wilderness_movement_cost.js";
+import { WILDERNESS_MOVE_DIRECTIONS, getWildernessDirectionDelta } from "../src/engine/wilderness/wilderness_movement_cost.js";
+import { buildWildernessProbeResults } from "../src/engine/wilderness/wilderness_probe_service.js";
+import {
+  buildWildernessRuntimeDescription,
+  resolveWildernessDirectionalDistantView
+} from "../src/engine/wilderness/wilderness_runtime_description.js";
+import { TERRAIN_RUNTIME_TEXT } from "../data/wilderness/runtime_text/terrain_runtime_text.js";
+import { AREA_RUNTIME_TEXT } from "../data/wilderness/runtime_text/area_runtime_text.js";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const ROOT = path.resolve(__dirname, "..");
 
 const WILDERNESS_RUNTIME_VALIDATE_NAME = "wilderness_runtime.json";
 
@@ -107,10 +122,10 @@ function main() {
   console.log("[PASS] wilderness view model terrain sample (2,1) passed");
 
   const t70 = buildWildernessViewModel(withWilderness(activeWest2Session(7, 0)));
-  assertPass(t70.status === "ready" && t70.terrain?.terrainId === "ice_shelf_edge", "(7,0) terrain");
+  assertPass(t70.status === "ready" && t70.terrain?.terrainId === "ice_shelf_surface", "(7,0) terrain");
   console.log("[PASS] wilderness view model terrain sample (7,0) passed");
 
-  const b = buildWildernessViewModel(withWilderness(activeWest2Session(9, 0)));
+  const b = buildWildernessViewModel(withWilderness(activeWest2Session(12, 0)));
   assertPass(b.status === "boundary" && b.warnings.includes("boundary") && (b.terrain == null || b.terrain?.terrainId == null), "boundary");
   console.log("[PASS] wilderness view model boundary sample passed");
 
@@ -130,6 +145,134 @@ function main() {
   assertPass(copy.terrain?.terrainId === vm.terrain?.terrainId, "roundtrip clone");
   console.log("[PASS] wilderness view model purity checks passed");
 
+  // Directional distantView: forward probe along heading vs foot terrainId (no area visibility fallback).
+  const dE = getWildernessDirectionDelta("E");
+  assertPass(dE && dE.x === 1 && dE.y === 0, "wilderness E delta is +1 x (contract parity with movement)");
+  const flatArea = {
+    id: "contract_flat_wind",
+    regionId: "West2",
+    bounds: { minX: 0, maxX: 12, minY: 0, maxY: 12 },
+    defaultTerrainId: "wind_packed_snow",
+    terrainZones: []
+  };
+  const dSame = buildWildernessRuntimeDescription({
+    areaId: "west2_old_marker_patrol_line",
+    terrainId: "wind_packed_snow",
+    timePhase: "morning",
+    visibilityBand: "clear",
+    terrainRuntimeTextRegistry: TERRAIN_RUNTIME_TEXT,
+    areaRuntimeTextRegistry: AREA_RUNTIME_TEXT,
+    fallbackText: "",
+    areaSpec: flatArea,
+    originX: 5,
+    originY: 5,
+    heading: "E"
+  });
+  assertPass(dSame.distantViewText === "", "directional distantView empty when forward 3 same terrain");
+
+  const layeredArea = {
+    ...flatArea,
+    terrainZones: [
+      {
+        id: "z_dry_e2",
+        terrainId: "dry_valley_rock_desert",
+        priority: 1000,
+        shape: { type: "rect", x1: 7, y1: 5, x2: 7, y2: 5 }
+      },
+      {
+        id: "z_ice_e3",
+        terrainId: "ice_shelf_surface",
+        priority: 500,
+        shape: { type: "rect", x1: 8, y1: 5, x2: 8, y2: 5 }
+      }
+    ]
+  };
+  const rNear = resolveWildernessDirectionalDistantView({
+    areaSpec: layeredArea,
+    x: 5,
+    y: 5,
+    heading: "E",
+    currentTerrainId: "wind_packed_snow",
+    terrainRuntimeTextRegistry: TERRAIN_RUNTIME_TEXT,
+    maxDistance: 3
+  });
+  assertPass(rNear.distance === 2 && rNear.targetTerrainId === "dry_valley_rock_desert", "nearest differing terrain at distance 2");
+
+  const earlyHitArea = {
+    ...flatArea,
+    terrainZones: [
+      {
+        id: "z_dry_e1",
+        terrainId: "dry_valley_rock_desert",
+        priority: 1000,
+        shape: { type: "rect", x1: 6, y1: 5, x2: 6, y2: 5 }
+      },
+      {
+        id: "z_ice_e2",
+        terrainId: "ice_shelf_surface",
+        priority: 500,
+        shape: { type: "rect", x1: 7, y1: 5, x2: 7, y2: 5 }
+      }
+    ]
+  };
+  const r1 = resolveWildernessDirectionalDistantView({
+    areaSpec: earlyHitArea,
+    x: 5,
+    y: 5,
+    heading: "E",
+    currentTerrainId: "wind_packed_snow",
+    terrainRuntimeTextRegistry: TERRAIN_RUNTIME_TEXT,
+    maxDistance: 3
+  });
+  assertPass(r1.distance === 1 && r1.targetTerrainId === "dry_valley_rock_desert", "first differing step wins (distance 1)");
+
+  const missingDvTerrainId = "__wilderness_contract_missing_distant_view_row__";
+  const missingDvArea = {
+    ...flatArea,
+    terrainZones: [
+      {
+        id: "z_contract_missing_dv_e1",
+        terrainId: missingDvTerrainId,
+        priority: 1000,
+        shape: { type: "rect", x1: 6, y1: 5, x2: 6, y2: 5 }
+      }
+    ]
+  };
+  const rMiss = resolveWildernessDirectionalDistantView({
+    areaSpec: missingDvArea,
+    x: 5,
+    y: 5,
+    heading: "E",
+    currentTerrainId: "wind_packed_snow",
+    terrainRuntimeTextRegistry: TERRAIN_RUNTIME_TEXT,
+    maxDistance: 3
+  });
+  assertPass(rMiss.text === "" && rMiss.targetTerrainId === missingDvTerrainId, "hit terrain without distantView copy yields empty text");
+  assertPass(
+    rMiss.warnings.some((w) => String(w).includes(`directionalDistantView:missing_copy:${missingDvTerrainId}`)),
+    "missing distantView emits warning"
+  );
+
+  const dMissDesc = buildWildernessRuntimeDescription({
+    areaId: "west2_old_marker_patrol_line",
+    terrainId: "wind_packed_snow",
+    timePhase: "morning",
+    visibilityBand: "clear",
+    terrainRuntimeTextRegistry: TERRAIN_RUNTIME_TEXT,
+    areaRuntimeTextRegistry: AREA_RUNTIME_TEXT,
+    fallbackText: "fb",
+    areaSpec: missingDvArea,
+    originX: 5,
+    originY: 5,
+    heading: "E"
+  });
+  assertPass(dMissDesc.distantViewText === "", "description distantView empty when registry copy missing");
+  assertPass(
+    !dMissDesc.description.includes("undefined") && !dMissDesc.description.includes("null") && !dMissDesc.description.includes("[object Object]"),
+    "no undefined/null/object leak in description"
+  );
+  console.log("[PASS] directional distantView runtime description checks passed");
+
   const frag = renderWildernessRuntime(vm);
   assertPass(
     frag && (frag.__wildernessRuntimeHeadlessStub === true || typeof frag.appendChild === "function"),
@@ -142,6 +285,106 @@ function main() {
   const moveActs = vm.actions.filter((a) => String(a.id || "").startsWith("wilderness_move_"));
   assertPass(moveActs.length === 8 && moveActs.every((a) => a.probe && a.probe.direction), "move actions carry probe");
   console.log("[PASS] wilderness runtime fragment check passed");
+
+  // Return-step fields: normalize defaults + VM passthrough + renderer wiring (static source read).
+  const normOld = normalizeWildernessState({ ...activeWest2Session(0, 0) });
+  assertPass(
+    normOld.previousPosition === null && normOld.lastMoveDirection === "" && normOld.returnDirection === "",
+    "normalize: legacy-compatible empty return-step fields"
+  );
+  const normBad = normalizeWildernessState({
+    ...activeWest2Session(1, 1),
+    previousPosition: { x: "x", y: 2 },
+    lastMoveDirection: "bogus",
+    returnDirection: "XX"
+  });
+  assertPass(
+    normBad.previousPosition === null && normBad.lastMoveDirection === "" && normBad.returnDirection === "",
+    "normalize: invalid return-step inputs sanitized"
+  );
+  const vmRet = buildWildernessViewModel(
+    withWilderness({
+      ...activeWest2Session(2, 2),
+      previousPosition: { x: 2, y: 1 },
+      lastMoveDirection: "N",
+      returnDirection: "S"
+    })
+  );
+  assertPass(vmRet.session?.returnDirection === "S", "vm session.returnDirection passthrough");
+  assertPass(
+    vmRet.session?.previousPosition?.x === 2 && vmRet.session?.previousPosition?.y === 1,
+    "vm session.previousPosition passthrough"
+  );
+  assertPass(vmRet.session?.lastMoveDirection === "N", "vm session.lastMoveDirection passthrough");
+  const rendererPath = path.join(ROOT, "src", "engine", "renderer.js");
+  const rendererSrc = fs.readFileSync(rendererPath, "utf8");
+  assertPass(
+    rendererSrc.includes("is-return-step") &&
+      rendererSrc.includes("session?.returnDirection") &&
+      rendererSrc.includes("dataset.returnStep"),
+    "renderer: return-step class wired from session.returnDirection"
+  );
+  console.log("[PASS] wilderness return-step normalize + vm + renderer static check passed");
+
+  // Bug4 (round 1, hard-terrain UI hiding): on the eastern shelf cell (11,0)
+  // the W neighbor is ice_shelf_edge (passability.foot === "hard_block"); the
+  // VM action for `wilderness_move_W` MUST carry hidden:true with the
+  // hard_terrain blockerStyle so the renderer never offers it as a clickable
+  // button. E/NE/SE are bounds-out and keep blockerStyle:"void" — verifies the
+  // two styles do not collide. The resolve-layer hard blocker stays in place
+  // as the fallback (see wilderness_movement_contract_check.mjs).
+  const vmShelf = buildWildernessViewModel(withWilderness(activeWest2Session(11, 0)));
+  assertPass(vmShelf.active === true && vmShelf.status === "ready", "(11,0) VM ready");
+  const shelfById = new Map();
+  for (const a of Array.isArray(vmShelf.actions) ? vmShelf.actions : []) shelfById.set(String(a.id || ""), a);
+  const shelfW = shelfById.get("wilderness_move_W");
+  assertPass(shelfW && shelfW.hidden === true, "(11,0) wilderness_move_W hidden:true");
+  assertPass(shelfW.blockerStyle === "hard_terrain", "(11,0) wilderness_move_W blockerStyle === 'hard_terrain'");
+  assertPass(shelfW.probe && shelfW.probe.hardBlock === true, "(11,0) W probe.hardBlock === true");
+  assertPass(
+    String(shelfW.probe.terrainId || "") === "ice_shelf_edge",
+    "(11,0) W probe terrainId === 'ice_shelf_edge'"
+  );
+  const shelfE = shelfById.get("wilderness_move_E");
+  assertPass(shelfE && shelfE.hidden === true, "(11,0) E hidden (bounds-out)");
+  assertPass(shelfE.blockerStyle === "void", "(11,0) E blockerStyle === 'void'");
+  console.log("[PASS] hard_terrain direction hidden + tagged blockerStyle on VM action");
+
+  // Synthetic full-shelf area: confirm that even when surrounded by hard
+  // terrain, all 8 directions carry hidden:true. Uses the production VM so
+  // the probe service + attachProbesToRuntimeActions glue is end-to-end tested.
+  const allHardArea = {
+    id: "synthetic_full_hardblock",
+    label: "synthetic",
+    regionId: "West2",
+    entryMapId: "synthetic",
+    runtimeMapId: "wilderness_runtime",
+    fallbackMapId: "synthetic",
+    bounds: { minX: -2, maxX: 2, minY: -2, maxY: 2 },
+    step: { metersPerCell: 150, baseMinutes: 10, baseStaminaCost: 5 },
+    defaultTerrainId: "wind_packed_snow",
+    terrainZones: [
+      { id: "ring_sea", terrainId: "open_water", priority: 100, shape: { type: "rect", x1: -2, y1: -2, x2: 2, y2: 2 } }
+    ],
+    landmarks: []
+  };
+  // Don't rely on the registry — exercise the cost helpers directly so the
+  // contract owns its synthetic terrain truth. Pulls the probe shape from the
+  // probe service indirectly by routing through buildWildernessProbeResults.
+  {
+    const probes = buildWildernessProbeResults({
+      wilderness: { x: 0, y: 0 },
+      areaSpec: allHardArea,
+      regionProfile: { climate: {} },
+      worldWeather: {},
+      totalMinutes: null
+    });
+    for (const p of probes) {
+      assertPass(p.hardBlock === true, `synthetic full-sea: ${p.direction} hardBlock`);
+      assertPass(p.blockerStyle === "sea", `synthetic full-sea: ${p.direction} blockerStyle === 'sea'`);
+    }
+  }
+  console.log("[PASS] synthetic open_water ring tags every direction hardBlock + sea");
 
   assertPass(validateMap(wrBase(), WILDERNESS_RUNTIME_VALIDATE_NAME) === true, "wilderness_runtime positive map validate");
   assertMapValidateFails({ ...wrBase(), actions: [] }, "wilderness_runtime actions empty");

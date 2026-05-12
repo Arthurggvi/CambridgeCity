@@ -3282,9 +3282,8 @@
     {
       "id": "greet_marg_at_checkout",
       "sceneId": "west2_outpost_library_checkout",
-      "type": "TRANSITION",
+      "type": "OBSERVE",
       "text": "打招呼",
-      "edgeId": "west2_outpost_library_checkout_to_floor1_edge",
       "requires": {
         "all": [
           {
@@ -7275,6 +7274,12 @@
       "id": "west2_outpost_library_checkout_to_floor1_edge",
       "fromSceneId": "west2_outpost_library_checkout",
       "toSceneId": "west2_outpost_library_floor1",
+      "minutes": 1
+    },
+    {
+      "id": "west2_outpost_library_checkout_to_intro_greeting_edge",
+      "fromSceneId": "west2_outpost_library_checkout",
+      "toSceneId": "west2_outpost_library_checkout_intro_greeting",
       "minutes": 1
     },
     {

@@ -1,0 +1,9 @@
+{
+  "id": "wilderness_event_runtime",
+  "legacy": true,
+  "mapType": "normal",
+  "name": "野外事件",
+  "description": "",
+  "tags": ["wilderness", "event_runtime"],
+  "actions": []
+}
